@@ -14,11 +14,17 @@ NAME = miniRT
 
 CC = cc  
 
-CFLAGS = -Wall -Werror -Wextra  
+CFLAGS = -Wall -Werror -Wextra  -I./minilibx-linux
 
 RM = rm -f
 
-SRCS = ./src/main.c
+SRCS =  ./src/main.c \
+		./src/rt_utils/gnl.c \
+		./src/rt_in/read_file.c \
+		./src/rt_utils/conv.c \
+		./src/rt_utils/utils.c \
+		./src/rt_init/init.c \
+
 
 MINILIBX = -L ./minilibx-linux -lmlx -lXext -lX11 -lm
 
@@ -30,6 +36,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)  
 	$(MAKE) -C ./libft
+	$(MAKE) bonus -C ./libft
 	$(MAKE) -C ./minilibx-linux
 	$(CC) $(OBJS) -o $(NAME) $(LIBPF) $(MINILIBX)  
 
