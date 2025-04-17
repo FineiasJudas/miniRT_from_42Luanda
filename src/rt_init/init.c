@@ -34,11 +34,11 @@ void init_image(t_image *img, void *mlx, int width, int height)
             &img->endian);
 }
 
-void put_pixel(t_image *img, int x, int y, int color)
+void put_pixel(t_image *img, int x, int y, t_color color)
 {
     if (x < 0 || x >= img->width || y < 0 || y >= img->height)
         return;
     char *dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
-    *(unsigned int *)dst = color;
+    *(unsigned int *)dst = color_to_int(color);
 }
 

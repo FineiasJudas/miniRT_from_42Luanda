@@ -17,6 +17,9 @@
 #  define BUFFER_SIZE 42
 # endif
 
+#define WIDTH  800
+#define HEIGHT 600
+
 #include "../libft/libft.h"
 #include "mlx.h"
 #include <stdio.h>
@@ -87,14 +90,18 @@ int parse_rt_file(char *filename, t_scene *scene);
 t_vector conv_vector(char *str);
 t_color conv_color(char *str);
 void add_to_scene_list(t_list **list, void *element);
+int color_to_int(t_color color);
 
 //rt_utils/util
 int count_tokens(char **strs);
 
+//rt_mayh
+void draw_circle(t_color image[HEIGHT][WIDTH], int cx, int cy, int radius, t_color color);
+
 //rt_init/init
 t_scene *create_scene(void);
 void init_image(t_image *img, void *mlx, int width, int height);
-void put_pixel(t_image *img, int x, int y, int color);
+void put_pixel(t_image *img, int x, int y, t_color color);
 
 //
 

@@ -48,3 +48,7 @@ void add_to_scene_list(t_list **list, void *element)
     ft_lstadd_back(list, node);
 }
 
+int color_to_int(t_color color)
+{
+    return ((color.r & 0xFF) << 16) | ((color.g & 0xFF) << 8) | (color.b & 0xFF);
+}
