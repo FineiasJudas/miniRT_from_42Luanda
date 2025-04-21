@@ -56,6 +56,13 @@ typedef struct s_sphere {
     double radius;
     t_color color;
 } t_sphere;
+
+typedef struct s_cube {
+    t_vector min; // canto mínimo (x_min, y_min, z_min)
+    t_vector max; // canto máximo (x_max, y_max, z_max)
+    t_color color;
+} t_cube;
+
 typedef struct s_scene {
     t_ambient ambient;
     t_camera camera;
@@ -87,8 +94,11 @@ typedef struct s_data {
     void *win;
     t_image img;
     t_vector light_pos;
+    //objectos
     t_sphere sphere;
+    t_cube cube;
     t_vector cam_origin;
+    t_camera camera;
 } t_data;
 
 
