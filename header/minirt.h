@@ -82,6 +82,16 @@ typedef struct s_ray
 } t_ray;
 
 
+typedef struct s_data {
+    void *mlx;
+    void *win;
+    t_image img;
+    t_vector light_pos;
+    t_sphere sphere;
+    t_vector cam_origin;
+} t_data;
+
+
 //functions
 char	*get_next_line(int fd);
 int parse_rt_file(char *filename, t_scene *scene);
