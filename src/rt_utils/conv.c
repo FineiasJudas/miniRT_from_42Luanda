@@ -1,6 +1,52 @@
 #include "minirt.h"
 
-t_vector conv_vector(char *str)
+double count_digits(char *arg)
+{
+    char    *base;
+    char    *out;
+    double  number;
+
+    if (!arg)
+        return (-1);
+    base = malloc(sizeof(char) * 1);
+    if (!base)
+        printf("Malloc não funconou!\n");
+    ft_strlcpy(base, "1", 2);
+    out = ft_strjoin(base, arg);
+    number = ft_atoi(out) - ft_atoi(arg);
+    return (number);
+}
+
+double  float_convert(char *arg)
+{
+    char *integer;
+    char *floater;
+    double in;
+    double f;
+    double out;
+
+    if (!arg || ft_strlen(arg) < 1)
+        return (-1);
+    floater = ft_strchr(arg, '.');
+    if (floater)
+    {
+        *floater = '\0';
+        floater ++;
+        integer = arg;
+    }
+    else
+    {
+        printf("%s não é um tipo ponto flutuante\n", arg);
+        return (-1);
+    }
+    in = ft_atoi(integer);
+    f = ft_atoi(floater);
+    out = in + (f / count_digits(floater));
+    printf("Final - %4f\n", out);
+    return (out);
+}
+
+t_vector    conv_vector(char *str)
 {
     char **components = ft_split(str, ',');
     t_vector v;
@@ -31,8 +77,6 @@ t_color conv_color(char *str)
     //free_split(components); // liberta memória (usa tua função)
     return c;
 }
-
-
 
 void add_to_scene_list(t_list **list, void *element)
 {

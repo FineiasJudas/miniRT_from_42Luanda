@@ -1,6 +1,5 @@
 #include "minirt.h"
 
-
 t_scene *create_scene(void)
 {
     t_scene *scene = malloc(sizeof(t_scene));
