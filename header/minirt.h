@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/18 09:20:00 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/06/25 09:04:58 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,15 @@ typedef struct s_image
     int     height;
 }   t_image;
 
+typedef struct s_render
+{
+    t_vector hit;
+    t_vector normal;
+    t_vector light_dir;
+    t_color color;
+}   t_render;
+     
+
 typedef struct s_ray
 {
     t_vector origin;     // ponto de origem do raio (da câmera, por exemplo)
@@ -125,6 +134,7 @@ typedef struct s_data
     t_image img;
     t_light *light;
     t_ambient   *ambient;
+    t_ray   ray;
 
     //objectos
     t_sphere *sphere;
@@ -133,6 +143,7 @@ typedef struct s_data
     t_cylinder  *cylinder;
     t_vector *cam_origin;
     t_camera *camera;
+    t_render *render;
 }   t_data;
 
 

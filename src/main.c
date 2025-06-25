@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/20 08:50:50 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:12:15 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,13 +163,15 @@ t_vector rotate_y(t_vector v, float angle)
         -v.x * sin_a + v.z * cos_a};
 }
 
-t_vector get_ray_direction(int x, int y, int width, int height) {
-    t_vector dir;
-    double aspect_ratio = (double)width / height;
-    dir.x = (2.0 * x / width - 1.0) * aspect_ratio; // Normaliza x para [-aspect, aspect]
-    dir.y = 1.0 - 2.0 * y / height;      // Normaliza y para [-1, 1]
-    dir.z = -1.0;                                   // Direção Z (para frente)
-    return dir;
+void get_ray_direction(int x, int y, int width, int height, t_data *data)
+{
+    double  aspect_ratio;
+
+    aspect_ratio = (double)width / height;
+    data->ray.direction.x = (2.0 * x / width - 1.0) * aspect_ratio; // Normaliza x para [-aspect, aspect]
+    data->ray.direction.y = 1.0 - 2.0 * y / height;      // Normaliza y para [-1, 1]
+    data->ray.direction.z = -1.0;                           // Direção Z (para frente).
+    data->ray.origin = data->camera->origin;
 }
 
 t_color calc_ambient(t_color *c, t_ambient *ambient)
@@ -211,72 +213,104 @@ t_color ambient_light(t_color *src, double intensity, t_ambient *ambient)
 /*FIM INTERACAO*/
 
 /*INICIO DOS RENDER(DEPOIS REFACTORAR E TORNAR GENERICO)*/
-void render_scene(t_data *data)
+
+void    calculate_ray(int x, int y, t_data *data)
 {
-    for (int y = 0; y < 600; y++)
+    float   ndc_x;
+    float   ndc_y;
+
+    // Converter coordenadas de pixel para espaço NDC
+    ndc_x = (2 * (float)x / 800 - 1);
+    ndc_y = (1 - 2 * (float)y / 600);
+
+    // Definir a direção do raio
+    data->ray.direction = vec_normalize((t_vector){ndc_x * 2, ndc_y * 1.5, -2});
+    data->ray.origin = data->camera->origin;
+}
+
+void    render_element(t_render *render, t_data *data, float element)
+{
+    // Renderizar a esfera
+    render->hit = vec_add(data->ray.origin, vec_scale(data->ray.direction, element));
+    render->normal = vec_normalize(vec_sub(render->hit, data->sphere->center));
+    render->light_dir = vec_normalize(vec_sub(data->light->position, render->hit));
+}
+
+void    sphere_shadow_check(t_render *render, t_data *data)
+{
+    float   t_shadow;
+    double  t_plane_shadow;
+    float   diffuse_intensity;
+    int in_shadow;
+
+    // Verificar se está na sombra
+    in_shadow = 0;
+    t_ray shadow_ray = {vec_add(render->hit, vec_scale(render->normal , 0.001)), render->light_dir}; // Pequeno offset para evitar auto-interseção
+
+    t_plane_shadow = intersect_plane(&shadow_ray.origin, &shadow_ray.direction, data->plane);
+    if (intersect_ray_sphere(shadow_ray, data->sphere, &t_shadow) && t_shadow 
+        < vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+        in_shadow = 1;
+    else if (t_plane_shadow > 0 && t_plane_shadow < 
+        vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+        in_shadow = 1;
+    // Calcular intensidade
+    diffuse_intensity = in_shadow ? 0.0 : fmax(0.0, vec_dot(render->normal, render->light_dir));
+    render->color = ambient_light(&data->sphere->color, diffuse_intensity, data->ambient);
+}
+
+void    plane_shadow_check(t_render *render, t_data *data)
+{
+    float   t_shadow;
+    float   diffuse_intensity;
+    int in_shadow;
+
+    // Verificar se está na sombra
+    in_shadow = 0;
+    t_ray shadow_ray = {vec_add(render->hit, vec_scale(data->plane->normalized, 0.001)), render->light_dir};
+    if (intersect_ray_sphere(shadow_ray, data->sphere, &t_shadow) && t_shadow < 
+        vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+        in_shadow = 1;
+    // Não verificamos o plano novamente, pois o raio de sombra já está acima dele
+    
+    // Calcular intensidade
+    diffuse_intensity = in_shadow ? 0.0 : fmax(0.0, vec_dot(data->plane->normalized, render->light_dir));
+    render->color = ambient_light(&data->plane->color, diffuse_intensity, data->ambient);
+}
+
+void    render_scene(t_data *data)
+{
+    t_render    *render = malloc(sizeof(t_render));
+    float   t_sphere;
+    double  t_plane;
+    int hit_sphere;
+    int xy[2];
+
+    xy[0] = 0;
+    while (xy[0]++ < 600)
     {
-        for (int x = 0; x < 800; x++)
+        xy[1] = 0;
+        while(xy[1]++ < 800)
         {
-            // Converter coordenadas de pixel para espaço NDC
-            float ndc_x = (2 * (float)x / 800 - 1);
-            float ndc_y = (1 - 2 * (float)y / 600);
-
-            // Definir a direção do raio
-            t_vector ray_dir = vec_normalize((t_vector){ndc_x * 2, ndc_y * 1.5, -2});
-            t_ray ray = {data->camera->origin, ray_dir};
-            // Calcular interseções
-            
-            float t_sphere = -1.0f;
-            double t_plane = intersect_plane(&data->camera->origin, &ray_dir, data->plane);
-            int hit_sphere = intersect_ray_sphere(ray, data->sphere, &t_sphere);
-            
-
+            get_ray_direction(xy[1], xy[0], 800, 600, data);
+            ///calculate_ray(xy[1], xy[0], data);
+            t_sphere = -1.0f;
+            hit_sphere = intersect_ray_sphere(data->ray, data->sphere, &t_sphere);
+            t_plane = intersect_plane(&data->camera->origin, &data->ray.direction, data->plane);
             if (hit_sphere && t_sphere > 0 && (t_plane < 0 || t_sphere < t_plane))
             {
-                // Renderizar a esfera
-                t_vector hit = vec_add(ray.origin, vec_scale(ray.direction, t_sphere));
-                t_vector normal = vec_normalize(vec_sub(hit, data->sphere->center));
-                t_vector light_dir = vec_normalize(vec_sub(data->light->position, hit));
-                
-                // Verificar se está na sombra
-                int in_shadow = 0;
-                t_ray shadow_ray = {vec_add(hit, vec_scale(normal, 0.001)), light_dir}; // Pequeno offset para evitar auto-interseção
-                float t_shadow;
-                double t_plane_shadow = intersect_plane(&shadow_ray.origin, &shadow_ray.direction, data->plane);
-                if (intersect_ray_sphere(shadow_ray, data->sphere, &t_shadow) && t_shadow < vec_dot(vec_sub(data->light->position, hit), vec_sub(data->light->position, hit)))
-                    in_shadow = 1;
-                else if (t_plane_shadow > 0 && t_plane_shadow < vec_dot(vec_sub(data->light->position, hit), vec_sub(data->light->position, hit)))
-                    in_shadow = 1;
-                
-                // Calcular intensidade
-                float diffuse_intensity = in_shadow ? 0.0 : fmax(0.0, vec_dot(normal, light_dir));
-                t_color color = ambient_light(&data->sphere->color, diffuse_intensity, data->ambient);
-                put_pixel(&data->img, x, y, color);
+                render_element(render, data, t_sphere);
+                sphere_shadow_check(render, data);
+                put_pixel(&data->img, xy[1], xy[0], render->color);
             }
             else if (t_plane > 0)
             {
-                // Renderizar o plano
-                t_vector hit = vec_add(ray.origin, vec_scale(ray.direction, t_plane));
-                t_vector light_dir = vec_normalize(vec_sub(data->light->position, hit));
-                
-                // Verificar se está na sombra
-                int in_shadow = 0;
-                t_ray shadow_ray = {vec_add(hit, vec_scale(data->plane->normalized, 0.001)), light_dir};
-                float t_shadow;
-                if (intersect_ray_sphere(shadow_ray, data->sphere, &t_shadow) && t_shadow < vec_dot(vec_sub(data->light->position, hit), vec_sub(data->light->position, hit)))
-                    in_shadow = 1;
-                // Não verificamos o plano novamente, pois o raio de sombra já está acima dele
-                
-                // Calcular intensidade
-                float diffuse_intensity = in_shadow ? 0.0 : fmax(0.0, vec_dot(data->plane->normalized, light_dir));
-                t_color color = ambient_light(&data->plane->color, diffuse_intensity, data->ambient);
-                put_pixel(&data->img, x, y, color);
+                render_element(render, data, t_plane);
+                plane_shadow_check(render, data);
+                put_pixel(&data->img, xy[1], xy[0], render->color);
             }
             else
-            {
-                // Sem interseção
-                put_pixel(&data->img, x, y, (t_color){19, 24, 33});
-            }
+                put_pixel(&data->img, xy[1], xy[0], (t_color){19, 24, 33});
         }
     }
     mlx_put_image_to_window(data->mlx, data->win, data->img.img_ptr, 0, 0);
