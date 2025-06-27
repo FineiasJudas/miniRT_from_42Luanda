@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/25 09:45:58 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/06/26 11:30:08 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,25 +127,25 @@ int identify_and_process(char **tokens, t_data *data)
     return (result);
 }
 
-int process_line(char *line, t_data *scene)
+int process_line(char *line, t_data *data)
 {
     char **tokens;
     int result;
 
     if (!line || ft_strlen(line) < 1)
         return((0 * printf("Sem tokens!\n")) + 1);
-    tokens = ft_split(line, ' ');        
+    tokens = ft_split(line, ' ');     
     int i = 0;
     while (tokens[i])
         printf("%s\n", tokens[i++]);
     if (!tokens)
         return (1);
-    result = identify_and_process(tokens, scene);
+    result = identify_and_process(tokens, data);
     // free_tokens(tokens);
     return (result);
 }
 
-int read_and_process_lines(int fd, t_data * scene)
+int read_and_process_lines(int fd, t_data * data)
 {
     char    *line;
     int result;
@@ -156,7 +156,7 @@ int read_and_process_lines(int fd, t_data * scene)
         line = get_next_line(fd);
         if (line)
         {
-            result += process_line(line, scene);
+            result += process_line(line, data);
             if (line)
                 free(line);
         }
@@ -178,7 +178,7 @@ int open_rt_file(char *filename)
     return (fd);
 }
 
-int parse_rt_file(char *filename, t_data *scene)
+int parse_rt_file(char *filename, t_data *data)
 {
     int fd;
     int result;
@@ -186,7 +186,7 @@ int parse_rt_file(char *filename, t_data *scene)
     fd = open_rt_file(filename);
     if (fd < 0)
         return (1);
-    result = read_and_process_lines(fd, scene);
+    result = read_and_process_lines(fd, data);
     close(fd);
     return (result);
 }

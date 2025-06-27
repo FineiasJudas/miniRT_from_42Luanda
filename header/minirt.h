@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/25 09:04:58 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/06/27 14:05:54 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # define HEIGHT 600
 
 # include "../libft/libft.h"
+# include "minirt.h"
 # include "mlx.h"
 # include <stdio.h>
 # include <stdlib.h>
@@ -29,6 +30,22 @@
 # include <fcntl.h>
 
 //structs
+
+typedef enum s_object_type
+{
+    SPHERE,
+    PLANE,
+    CYLINDER
+}   t_object_type;
+
+typedef enum s_hit_type
+{
+    HIT_NONE,
+    HIT_SIDE,
+    HIT_CAP1,
+    HIT_CAP2
+}   t_hit_type;
+
 typedef struct s_vector
 {
     double x, y, z;
@@ -117,6 +134,7 @@ typedef struct s_render
     t_vector normal;
     t_vector light_dir;
     t_color color;
+    t_hit_type hit_type;
 }   t_render;
      
 
@@ -134,6 +152,9 @@ typedef struct s_data
     t_image img;
     t_light *light;
     t_ambient   *ambient;
+    t_camera *camera;
+    t_render *render;
+    t_vector *cam_origin;
     t_ray   ray;
 
     //objectos
@@ -141,10 +162,12 @@ typedef struct s_data
     t_cube *cube;
     t_plane *plane;
     t_cylinder  *cylinder;
-    t_vector *cam_origin;
-    t_camera *camera;
-    t_render *render;
+    t_list *sphere_l;
+    t_list *lights_l;
+    t_list *cylinder_l;
+    
 }   t_data;
+
 
 
 //functions
@@ -172,6 +195,16 @@ void put_pixel(t_image *img, int x, int y, t_color color);
 //vectors
 t_vector vec_normalize(t_vector v);
 
+void    create_data(t_data data);
 void    prin_data(t_data *arg);
+
+t_vector vec_sub(t_vector a, t_vector b);
+float vec_dot(t_vector a, t_vector b);
+t_vector vec_normalize(t_vector v);
+t_vector vec_scale(t_vector v, float s);
+t_vector vec_add(t_vector a, t_vector b);
+t_color scale_color(t_color color, float factor);
+int intersect_ray_cylinder(t_ray ray, t_cylinder *cy, float *t_out, int *is_cap);
+t_vector get_cylinder_normal(t_vector hit, t_cylinder *cy, int is_cap);
 
 #endif

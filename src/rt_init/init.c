@@ -1,25 +1,24 @@
 #include "minirt.h"
 
-t_scene *create_scene(void)
+void    create_data(t_data data)
 {
-    t_scene *scene = malloc(sizeof(t_scene));
-    if (!scene)
-        printf("Erro ao alocar memória para a cena");
-
-    // Inicializa listas como NULL
-    scene->lights = NULL;
-    scene->spheres = NULL;
-   // scene->planes = NULL;
-   // scene->cylinders = NULL;
-
-    // Inicializa campos escalares com valores padrão (opcional)
-    scene->ambient.ratio = 0;
-    scene->ambient.color = (t_color){0, 0, 0};
-    scene->camera.origin = (t_vector){0, 0, 0};
-    scene->camera.direction = (t_vector){0, 0, 1};
-    scene->camera.fov = 70;
-
-    return scene;
+    (void)data;
+    data.ambient = NULL;
+    data.cam_origin = NULL;
+    data.camera = NULL;
+    data.cube = NULL;
+    data.cylinder = NULL;
+    data.light = NULL;
+    data.mlx = NULL;
+    data.plane = NULL;
+    data.render = NULL;
+    data.sphere = NULL;
+    data.win = NULL;
+    data.img.addr = NULL;
+    data.img.img_ptr = NULL;
+    data.sphere_l = NULL;
+    data.cylinder_l = NULL;
+    data.lights_l = NULL;
 }
 
 void init_image(t_image *img, void *mlx, int width, int height)

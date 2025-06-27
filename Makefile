@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/11 09:47:37 by fjilaias          #+#    #+#              #
-#    Updated: 2025/06/11 10:01:17 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/06/26 15:25:37 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRCS =  ./src/main.c \
 		./src/rt_utils/conv.c \
 		./src/rt_utils/utils.c \
 		./src/rt_init/init.c \
+		./src/rt_render/cylinder.c \
 
 
 MINILIBX = -L ./minilibx-linux -lmlx -lXext -lX11 -lm
