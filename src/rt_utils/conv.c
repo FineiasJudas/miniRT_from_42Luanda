@@ -83,12 +83,14 @@ void add_to_scene_list(t_list **list, void *element)
     t_list *node;
 
     if (!list || !element)
-        return;
+        return ;
 
     node = ft_lstnew(element);
     if (!node)
-        printf("Erro ao alocar memória para objeto");
-
+    {
+        fprintf(stderr, "Erro ao alocar memória para objeto\n");
+        exit(1);
+    }
     ft_lstadd_back(list, node);
 }
 

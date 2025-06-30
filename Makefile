@@ -6,13 +6,13 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/11 09:47:37 by fjilaias          #+#    #+#              #
-#    Updated: 2025/06/26 15:25:37 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/06/30 08:07:37 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = miniRT  
+NAME = miniRT
 
-CC = cc  
+CC = cc
 
 CFLAGS = -Wall -Werror -Wextra  -I./minilibx-linux
 
@@ -23,9 +23,13 @@ SRCS =  ./src/main.c \
 		./src/rt_in/read_file.c \
 		./src/rt_utils/conv.c \
 		./src/rt_utils/utils.c \
+		./src/rt_utils/vec_operations.c \
 		./src/rt_init/init.c \
-		./src/rt_render/cylinder.c \
-
+		./src/rt_scene/cylinder.c \
+		./src/rt_scene/plane.c \
+		./src/rt_scene/sphere.c \
+		./src/rt_scene/utils.c \
+		./src/rt_render/render.c
 
 MINILIBX = -L ./minilibx-linux -lmlx -lXext -lX11 -lm
 
@@ -35,11 +39,11 @@ OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)  
 
-$(NAME): $(OBJS)  
+$(NAME): $(OBJS)
 	$(MAKE) -C ./libft
 	$(MAKE) bonus -C ./libft
 	$(MAKE) -C ./minilibx-linux
-	$(CC) $(OBJS) -o $(NAME) $(LIBPF) $(MINILIBX)  
+	$(CC) $(OBJS) -o $(NAME) $(LIBPF) $(MINILIBX)
 
 %.o: %.c  
 	$(CC) $(CFLAGS) -Iheader -c $< -o $@

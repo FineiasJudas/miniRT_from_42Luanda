@@ -1,25 +1,30 @@
 #include "minirt.h"
 
-void    create_data(t_data data)
+void create_data(t_data *data)
 {
-    (void)data;
-    data.ambient = NULL;
-    data.cam_origin = NULL;
-    data.camera = NULL;
-    data.cube = NULL;
-    data.cylinder = NULL;
-    data.light = NULL;
-    data.mlx = NULL;
-    data.plane = NULL;
-    data.render = NULL;
-    data.sphere = NULL;
-    data.win = NULL;
-    data.img.addr = NULL;
-    data.img.img_ptr = NULL;
-    data.sphere_l = NULL;
-    data.cylinder_l = NULL;
-    data.lights_l = NULL;
+    data->ambient     = NULL;
+    data->cam_origin  = NULL;
+    data->camera      = NULL;
+    data->cube        = NULL;
+    data->cylinder    = NULL;
+    data->light       = NULL;
+    data->mlx         = NULL;
+    data->plane       = NULL;
+    data->render      = NULL;
+    data->sphere      = NULL;
+    data->win         = NULL;
+    data->img.addr        = NULL;
+    data->img.img_ptr     = NULL;
+    data->img.bits_per_pixel = 0;
+    data->img.line_length    = 0;
+    data->img.endian         = 0;
+    data->img.width          = 0;
+    data->img.height         = 0;
+    data->sphere_l    = NULL;
+    data->cylinder_l  = NULL;
+    data->lights_l    = NULL;
 }
+
 
 void init_image(t_image *img, void *mlx, int width, int height)
 {
