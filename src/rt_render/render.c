@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:47:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 14:14:15 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/06/30 14:26:55 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,34 +78,24 @@ int intersect_ray_object(t_data *d)
         {
             t_min       = s->ts;
             hit_type    = SPHERE;
-            d->sphere   = s;      // marca qual esfera colidiu
+            d->sphere   = s;
         }
         node = node->next;
     }
-
     // 2) PLANO (único)
+    double tp = intersect_ray_plane( &d->ray.origin,
+            &d->ray.direction, d->plane);
+    if (tp > EPS && tp < t_min)
     {
-        double tp = intersect_ray_plane(
-                        &d->ray.origin,
-                        &d->ray.direction,
-                        d->plane);
-        if (tp > EPS && tp < t_min)
-        {
-            t_min     = tp;
-            hit_type  = PLANE;
-        }
+        t_min     = tp;
+        hit_type  = PLANE;
     }
-
-    // 3) CILINDRO (único)
+    double tc;
+    if (intersect_cylinder(d->ray, *d->cylinder, &tc)
+        && tc > EPS && tc < t_min)
     {
-        double tc;
-        if (intersect_cylinder(d->ray, *d->cylinder, &tc)
-            && tc > EPS
-            && tc < t_min)
-        {
-            t_min        = tc;
-            hit_type     = CYLINDER;
-        }
+        t_min        = tc;
+        hit_type     = CYLINDER;
     }
     if (t_min < INF)
     {

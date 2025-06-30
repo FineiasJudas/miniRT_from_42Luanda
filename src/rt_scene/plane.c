@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:26 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 08:45:56 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/06/30 15:06:49 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void plane_shadow_check(t_render *render, t_data *data)
 {
     int   in_shadow = 0;
     float dist_light;
-    float t_sph;
+   // float t_sph;
     double t_cyl;
 
     // 1) cria shadow‐ray com offset acima do plano
@@ -36,13 +36,17 @@ void plane_shadow_check(t_render *render, t_data *data)
 
     // 2) distância real até a luz
     dist_light = vec_dist(data->light->position, render->hit);
-
     // 3) testa esfera
-    if (intersect_ray_sphere(shadow_ray, data->sphere, &t_sph)
-        && t_sph > EPS
-        && t_sph < dist_light)
-        in_shadow = 1;
-
+    t_list *node = data->sphere_l;
+    while (node)
+    {
+        t_sphere *t = (t_sphere *)node->content;
+        if (intersect_ray_sphere(shadow_ray, t, &t->ts) 
+            && t->ts > EPS && t->ts < dist_light)
+            in_shadow = 1;
+        node = node->next;
+    }
+    
     // 4) testa cilindro
     if (intersect_cylinder(shadow_ray, *data->cylinder, &t_cyl)
         && t_cyl > EPS
