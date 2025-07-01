@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:47:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 08:33:48 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 13:38:04 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,51 +67,41 @@ int    render_element(t_render *render, t_data *data, t_object_type type, float 
 int intersect_ray_object(t_data *d)
 {
     double        t_min = INF;
-    t_object_type hit_type;
-    t_list *node;
-
-    node = d->sphere_l;
-    while(node)
+    
+    d->tmp = d->sphere_l;
+    while(d->tmp)
     {
-        t_sphere *s = (t_sphere*)node->content;
-        if (intersect_ray_sphere(d->ray, s, &s->ts)
-            && s->ts > EPS && s->ts < t_min)
+        d->s = (t_sphere*)d->tmp->content;
+        if (intersect_ray_sphere(d->ray, d->s, &d->s->ts) && d->s->ts > EPS && d->s->ts < t_min)
         {
-            t_min       = s->ts;
-            hit_type    = SPHERE;
-            d->sphere   = s;
+            t_min        = d->s->ts;
+            d->hit_type    = SPHERE;
+            d->sphere   = d->s;
         }
-        node = node->next;
+        d->tmp = d->tmp->next;
     }
-    // 2) PLANO (único)
-    double tp = intersect_ray_plane( &d->ray.origin,
-            &d->ray.direction, d->plane);
-    if (tp > EPS && tp < t_min)
+    d->plane->tp = intersect_ray_plane( &d->ray.origin, &d->ray.direction, d->plane);
+    if (d->plane->tp > EPS && d->plane->tp < t_min)
     {
-        t_min     = tp;
-        hit_type  = PLANE;
+        t_min     = d->plane->tp;
+        d->hit_type  = PLANE;
     }
-    t_list *node2 = d->cylinder_l;
-    while (node2)
+    d->tmp = d->cylinder_l;
+    while (d->tmp)
     {
-        t_cylinder *c = (t_cylinder *)node2->content;
-        if (intersect_cylinder(d->ray, *c, &c->tc)
-            && c->tc > EPS && c->tc < t_min)
+        d->c = (t_cylinder *)d->tmp->content;
+        if (intersect_cylinder(d->ray, *d->c, &d->c->tc) && d->c->tc > EPS && d->c->tc < t_min)
         {
-            t_min        = c->tc;
-            hit_type     = CYLINDER;
-            d->cylinder   = c;
+            t_min        = d->c->tc;
+            d->hit_type     = CYLINDER;
+            d->cylinder   = d->c;
         }
-        node2 = node2->next;
+        d->tmp = d->tmp->next;
     }
     if (t_min < INF)
-    {
-        render_element(d->render, d, hit_type, (float)t_min);
-        return 1;
-    }
+        return (1 * render_element(d->render, d, d->hit_type, (float)t_min)); 
     return 0;
 }
-
 
 void    render_scene(t_data *data)
 {

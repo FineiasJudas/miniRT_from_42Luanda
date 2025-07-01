@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 14:33:29 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 13:42:37 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int key_press(int keycode, t_data *data)
         data->light->position.y = fmod(data->light->position.y + 1, 200);
         printf("Nova luz.y = %f\n", data->light->position.y);
     }
-
     // mudar a posicao da camera com w-a-s
     else if (keycode == 119)
     {
@@ -65,7 +64,6 @@ int key_press(int keycode, t_data *data)
     {
         data->camera->origin.x = fmod(data->camera->origin.x + 0.5, 25);
     }
-//    render_scene_cube(data); // primeira renderização
 	render_scene(data); // redesenha com nova posição
     return 0;
 }

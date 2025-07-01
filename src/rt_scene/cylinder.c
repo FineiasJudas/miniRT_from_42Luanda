@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 14:55:03 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 12:03:11 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 13:49:26 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,10 @@ int intersect_cylinder(t_ray ray, t_cylinder cyl, double *t_out)
 
 void cylinder_shadow_check(t_render *render, t_data *data)
 {
-    int in_shadow = 0;
+    float diffuse_intensity;
+    int in_shadow;
 
+    in_shadow = 0;
     if(shadow_spheres_check(render, data))
         in_shadow = 1;
     // Verifica interseção com plano
@@ -96,7 +98,10 @@ void cylinder_shadow_check(t_render *render, t_data *data)
     if (shadow_cylinders_check(render, data))
         in_shadow = 1;
     // Cálculo da luz difusa
-    float diffuse_intensity = in_shadow ? 0.0 : fmax(0.0, vec_dot(render->normal, render->light_dir));
+    if (in_shadow)
+        diffuse_intensity = 0.0;
+    else
+        diffuse_intensity = fmax(0.0, vec_dot(render->normal, render->light_dir));
     // Cor final
     render->color = ambient_light(&data->cylinder->color, diffuse_intensity, data->ambient);
 }

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 11:46:52 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 14:04:20 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,8 +160,8 @@ typedef struct s_data
     t_camera    *camera;
     t_render    *render;
     t_vector    *cam_origin;
+    t_ray   shadow_ray;
     t_ray   ray;
-    t_ray shadow_ray;
 
     //objectos
     t_sphere    *sphere;
@@ -171,6 +171,12 @@ typedef struct s_data
     t_list  *sphere_l;
     t_list  *lights_l;
     t_list  *cylinder_l;
+
+    //uteis
+    t_cylinder *c;
+    t_sphere    *s;
+    t_list  *tmp;
+    t_object_type hit_type;
 
 }   t_data;
 
