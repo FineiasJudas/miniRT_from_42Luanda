@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:47:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 14:26:55 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 08:33:48 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,9 @@ int intersect_ray_object(t_data *d)
 {
     double        t_min = INF;
     t_object_type hit_type;
+    t_list *node;
 
-    t_list *node = d->sphere_l;
+    node = d->sphere_l;
     while(node)
     {
         t_sphere *s = (t_sphere*)node->content;
@@ -90,12 +91,18 @@ int intersect_ray_object(t_data *d)
         t_min     = tp;
         hit_type  = PLANE;
     }
-    double tc;
-    if (intersect_cylinder(d->ray, *d->cylinder, &tc)
-        && tc > EPS && tc < t_min)
+    t_list *node2 = d->cylinder_l;
+    while (node2)
     {
-        t_min        = tc;
-        hit_type     = CYLINDER;
+        t_cylinder *c = (t_cylinder *)node2->content;
+        if (intersect_cylinder(d->ray, *c, &c->tc)
+            && c->tc > EPS && c->tc < t_min)
+        {
+            t_min        = c->tc;
+            hit_type     = CYLINDER;
+            d->cylinder   = c;
+        }
+        node2 = node2->next;
     }
     if (t_min < INF)
     {

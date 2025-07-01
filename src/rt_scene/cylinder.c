@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 14:55:03 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 08:46:25 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 12:03:11 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,49 +85,18 @@ int intersect_cylinder(t_ray ray, t_cylinder cyl, double *t_out)
 
 void cylinder_shadow_check(t_render *render, t_data *data)
 {
-    float t_sphere_shadow;
-    double t_plane_shadow;
-    double t_cylinder_shadow;
     int in_shadow = 0;
 
-    // Raio de sombra com pequeno offset na direção da normal
-    t_ray shadow_ray;
-    shadow_ray.origin = vec_add(render->hit, vec_scale(render->normal, 0.001));
-    shadow_ray.direction = render->light_dir;
-
-    // Verifica interseção com esfera
-    if (intersect_ray_sphere(shadow_ray, data->sphere, &t_sphere_shadow) &&
-        t_sphere_shadow < vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+    if(shadow_spheres_check(render, data))
         in_shadow = 1;
-
     // Verifica interseção com plano
-    t_plane_shadow = intersect_ray_plane(&shadow_ray.origin, &shadow_ray.direction, data->plane);
-    if (t_plane_shadow > 0 &&
-        t_plane_shadow < vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+    if (shadow_plane_check(render, data))
         in_shadow = 1;
-
     // Verifica interseção com o próprio cilindro (ou outros, se houver)
-    if (intersect_cylinder(shadow_ray, *data->cylinder, &t_cylinder_shadow) &&
-        t_cylinder_shadow < vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+    if (shadow_cylinders_check(render, data))
         in_shadow = 1;
-
     // Cálculo da luz difusa
     float diffuse_intensity = in_shadow ? 0.0 : fmax(0.0, vec_dot(render->normal, render->light_dir));
-
     // Cor final
     render->color = ambient_light(&data->cylinder->color, diffuse_intensity, data->ambient);
 }
-
-/*float get_min_t(float t1, float t2, float t_base, float t_top)
-{
-    float t_min = -1.0f;
-    if (t1 > 0 && (t_min < 0 || t1 < t_min))
-        t_min = t1;
-    if (t2 > 0 && (t_min < 0 || t2 < t_min))
-        t_min = t2;
-    if (t_base > 0 && (t_min < 0 || t_base < t_min))
-        t_min = t_base;
-    if (t_top > 0 && (t_min < 0 || t_top < t_min))
-        t_min = t_top;
-    return t_min;
-}*/

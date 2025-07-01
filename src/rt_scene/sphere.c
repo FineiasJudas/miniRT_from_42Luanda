@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 15:14:21 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 11:39:28 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,33 +28,17 @@ int intersect_ray_sphere(t_ray ray, t_sphere *s, float *t)
 
 void    sphere_shadow_check(t_render *render, t_data *data)
 {
-    float   t_shadow;
-    double  t_plane_shadow;
-    double  t_cyl;
     float   diffuse_intensity;
     int in_shadow;
 
     // Verificar se está na sombra
     in_shadow = 0;
-    t_cyl = EPS;
-
-    t_ray shadow_ray = {vec_add(render->hit, vec_scale(render->normal , 0.001)), render->light_dir}; // Pequeno offset para evitar auto-interseção
-
-    t_plane_shadow = intersect_ray_plane(&shadow_ray.origin, &shadow_ray.direction, data->plane);
-    if (intersect_ray_sphere(shadow_ray, data->sphere, &t_shadow) && t_shadow 
-        < vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+    if (shadow_plane_check(render, data))
         in_shadow = 1;
-    else if (t_plane_shadow > 0 && t_plane_shadow < 
-        vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
+    if (shadow_spheres_check(render, data))
         in_shadow = 1;
-    
-    if (intersect_cylinder(shadow_ray, *data->cylinder, &t_cyl)
-        && t_cyl > EPS
-        && t_cyl)
+    if (shadow_cylinders_check(render, data))
         in_shadow = 1;
-    
-        // Calcular intensidade
-
     diffuse_intensity = in_shadow ? 0.0 : fmax(0.0, vec_dot(render->normal, render->light_dir));
     render->color = ambient_light(&data->sphere->color, diffuse_intensity, data->ambient);
 }

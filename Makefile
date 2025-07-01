@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/11 09:47:37 by fjilaias          #+#    #+#              #
-#    Updated: 2025/06/30 14:52:14 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/07/01 09:57:12 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,8 +28,9 @@ SRCS =  ./src/main.c \
 		./src/rt_scene/cylinder.c \
 		./src/rt_scene/plane.c \
 		./src/rt_scene/sphere.c \
+		./src/rt_scene/shadow_checkers.c \
 		./src/rt_scene/utils.c \
-		./src/rt_render/render.c
+		./src/rt_render/render.c \
 
 MINILIBX = -L ./minilibx-linux -lmlx -lXext -lX11 -lm
 

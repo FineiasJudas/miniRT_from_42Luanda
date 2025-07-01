@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 14:52:03 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 11:46:52 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ typedef struct s_data
     t_render    *render;
     t_vector    *cam_origin;
     t_ray   ray;
+    t_ray shadow_ray;
 
     //objectos
     t_sphere    *sphere;
@@ -229,5 +230,11 @@ void    sphere_shadow_check(t_render *render, t_data *data);
 //src/rt_scene/cylinder.c
 int intersect_cylinder(t_ray ray, t_cylinder cyl, double *t_out);
 void cylinder_shadow_check(t_render *render, t_data *data);
+
+//src/rt_scene/shadow_checkers.c
+int shadow_spheres_check(t_render *render, t_data *data);
+int shadow_plane_check(t_render *render, t_data *data);
+int shadow_cylinders_check(t_render *render, t_data *data);
+
 
 #endif

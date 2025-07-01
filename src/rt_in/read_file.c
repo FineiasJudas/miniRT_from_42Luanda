@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/06/30 14:14:31 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/01 08:18:23 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int parse_cylinder(char **tokens, t_data *cylinder)
     cylinder->cylinder->diameter = ft_atoi(tokens[3]);
     cylinder->cylinder->height = ft_atoi(tokens[4]);
     cylinder->cylinder->color = conv_color(tokens[5]);
+    add_to_scene_list(&cylinder->cylinder_l, cylinder->cylinder);
     return (1);
 }
 int parse_light(char **tokens, t_data *light)
@@ -155,7 +156,7 @@ int read_and_process_lines(int fd, t_data * data)
         }
         else
             break;
-        if (result == 8)
+        if (result == 9)
             return (0);
     }
     return (1);
