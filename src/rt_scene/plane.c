@@ -6,13 +6,13 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:26 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 13:59:56 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:16:24 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-void plane_shadow_check(t_render *render, t_data *data)
+int shadow_plane_check(t_render *render, t_data *data)
 {
     float diff;
     int in_shadow;
@@ -30,6 +30,7 @@ void plane_shadow_check(t_render *render, t_data *data)
     // 6) cor final: ambiente + difusa
     render->color = ambient_light(&data->plane->color, 
         diff, data->ambient);
+    return (0);
 }
 
 double intersect_ray_plane(t_vector *ray_origin, t_vector *ray_dir, t_plane *plane)

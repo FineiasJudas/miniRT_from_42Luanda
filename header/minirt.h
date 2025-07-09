@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 14:04:20 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:15:54 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,14 @@ typedef struct s_data
     t_list  *tmp;
     t_object_type hit_type;
 
+    char    *filename;
+    char    *line;
+    char    **tokens;
+    int     fd;
+    int     line_count;
+    int     invalid_line;
+
+    t_list *garbage; // lista de objetos para liberar memória
 }   t_data;
 
 //functions
@@ -218,7 +226,7 @@ t_vector get_cylinder_normal(t_vector hit, t_cylinder *cy, int is_cap);
 
 //src/rt_scene/utils.c
 t_color ambient_light(t_color *src, double intensity, t_ambient *ambient);
-void get_ray_direction(int x, int y, int width, int height, t_data *data);
+int get_ray_direction(int x, int y, int width, int height, t_data *data);
 t_color calc_ambient(t_color *c, t_ambient *ambient);
 
 //src/rt_render
@@ -228,19 +236,60 @@ void    render_scene(t_data *data);
 
 //src/rt_scene
 double intersect_ray_plane(t_vector *ray_origin, t_vector *ray_dir, t_plane *plane);
-void plane_shadow_check(t_render *render, t_data *data);
+int shadow_plane_check(t_render *render, t_data *data);
 
 int intersect_ray_sphere(t_ray ray, t_sphere *s, float *t);
-void    sphere_shadow_check(t_render *render, t_data *data);
+int    sphere_shadow_check(t_render *render, t_data *data);
 
 //src/rt_scene/cylinder.c
 int intersect_cylinder(t_ray ray, t_cylinder cyl, double *t_out);
-void cylinder_shadow_check(t_render *render, t_data *data);
+int cylinder_shadow_check(t_render *render, t_data *data);
 
 //src/rt_scene/shadow_checkers.c
 int shadow_spheres_check(t_render *render, t_data *data);
-int shadow_plane_check(t_render *render, t_data *data);
+//int shadow_plane_check(t_render *render, t_data *data);
 int shadow_cylinders_check(t_render *render, t_data *data);
+
+//src/rt_in/parse_elements.c
+int parse_plane(char **tokens, t_data *plane);
+int parse_sphere(char **tokens, t_data *scene);
+int parse_ambient(char **tokens, t_data *a);
+int parse_cylinder(char **tokens, t_data *cylinder);
+int parse_light(char **tokens, t_data *light);
+int parse_camera(char **tokens, t_data *scene);
+
+//src/rt_in/utils.c
+int is_first_word_one_of(char *line);
+int open_rt_file(char *filename);
+char    *ft_strtok(char *str, const char *delim);
+int file_line_counter(int fd, t_data *data);
+
+// src/rt_in/read_file.c
+int ft_strcmp(const char *s1, const char *s2);
+int identify_and_process(char **tokens, t_data *data);
+int process_line(char *line, t_data *data);
+int read_and_process_lines(int fd, t_data * data);
+int parse_rt_file(char *filename, t_data *data);
+
+//src/hooks/hooks.c
+int close_window(t_data *data);
+int resize_window(int width, int height, t_data *data);
+int mouse_move(int x, int y, t_data *data);
+int mouse_click(int button, int x, int y, t_data *data);
+int camera_move(int keycode, t_data *data);
+int key_press(int keycode, t_data *data);
+
+// src/rt_free_up/free_up.c
+void *gc_malloc(t_list **garbage, size_t size);
+void free_all(t_list **garbage);
+
+void my_free(void *ptr);
+void *my_malloc(size_t size);
+void* mm_alloc(size_t size);
+void mm_free(void *ptr);
+void mm_free_all(void);
+void mm_init(void);
+
 
 
 #endif

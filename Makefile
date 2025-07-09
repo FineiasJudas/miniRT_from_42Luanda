@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/11 09:47:37 by fjilaias          #+#    #+#              #
-#    Updated: 2025/07/01 09:57:12 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/07/09 13:20:38 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,8 @@ RM = rm -f
 SRCS =  ./src/main.c \
 		./src/rt_utils/gnl.c \
 		./src/rt_in/read_file.c \
+		./src/rt_in/utils.c \
+		./src/rt_in/parse_elements.c \
 		./src/rt_utils/conv.c \
 		./src/rt_utils/utils.c \
 		./src/rt_utils/vec_operations.c \
@@ -31,6 +33,8 @@ SRCS =  ./src/main.c \
 		./src/rt_scene/shadow_checkers.c \
 		./src/rt_scene/utils.c \
 		./src/rt_render/render.c \
+		./src/rt_hooks/hooks.c \
+		./src/rt_free_up/free_up.c \
 
 MINILIBX = -L ./minilibx-linux -lmlx -lXext -lX11 -lm
 

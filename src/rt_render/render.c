@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:47:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 13:38:04 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:19:01 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int    render_element(t_render *render, t_data *data, t_object_type type, float 
     {
         render->hit = vec_add(data->ray.origin, vec_scale(data->ray.direction, element));
         render->light_dir = vec_normalize(vec_sub(data->light->position, render->hit));
-        plane_shadow_check(data->render, data);
+        shadow_plane_check(data->render, data);
     }
     else if (type == CYLINDER)
     {

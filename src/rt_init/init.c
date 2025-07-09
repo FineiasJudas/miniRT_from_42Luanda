@@ -20,12 +20,15 @@ void create_data(t_data *data)
     data->img.endian         = 0;
     data->img.width          = 0;
     data->img.height         = 0;
+    data->invalid_line       = 0;
+    data->hit_type          = -1;
     data->sphere_l    = NULL;
     data->cylinder_l  = NULL;
     data->lights_l    = NULL;
     data->tmp         = NULL;
     data->c           = NULL;
     data->s           = NULL;
+    data->garbage     = NULL;
 }
 
 

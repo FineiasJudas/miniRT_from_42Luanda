@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 14:55:03 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 13:49:26 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:09:04 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int intersect_cylinder(t_ray ray, t_cylinder cyl, double *t_out)
     return 0;
 }
 
-void cylinder_shadow_check(t_render *render, t_data *data)
+int cylinder_shadow_check(t_render *render, t_data *data)
 {
     float diffuse_intensity;
     int in_shadow;
@@ -104,4 +104,5 @@ void cylinder_shadow_check(t_render *render, t_data *data)
         diffuse_intensity = fmax(0.0, vec_dot(render->normal, render->light_dir));
     // Cor final
     render->color = ambient_light(&data->cylinder->color, diffuse_intensity, data->ambient);
+    return (0);
 }

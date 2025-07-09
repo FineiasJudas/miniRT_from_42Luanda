@@ -6,13 +6,13 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:52:28 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 12:28:48 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:09:37 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-void get_ray_direction(int x, int y, int width, int height, t_data *data)
+int get_ray_direction(int x, int y, int width, int height, t_data *data)
 {
     double  aspect_ratio;
 
@@ -21,6 +21,7 @@ void get_ray_direction(int x, int y, int width, int height, t_data *data)
     data->ray.direction.y = 1.0 - 2.0 * y / height;      // Normaliza y para [-1, 1]
     data->ray.direction.z = -1.0;                           // Direção Z (para frente).
     data->ray.origin = data->camera->origin;
+    return (0);
 }
 
 t_color calc_ambient(t_color *c, t_ambient *ambient)

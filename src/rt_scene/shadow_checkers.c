@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 09:26:54 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 12:54:23 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:16:10 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int shadow_spheres_check(t_render *render, t_data *data)
     return (in_shadow);
 }
 
-int shadow_plane_check(t_render *render, t_data *data)
+/*int shadow_plane_check(t_render *render, t_data *data)
 {
     float t_plane_shadow;
     float t_shadow;
@@ -59,7 +59,7 @@ int shadow_plane_check(t_render *render, t_data *data)
         vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
         in_shadow = 1;
     return (in_shadow);
-}
+}*/
 
 int shadow_cylinders_check(t_render *render, t_data *data)
 {
@@ -84,4 +84,3 @@ int shadow_cylinders_check(t_render *render, t_data *data)
     }
     return (in_shadow);
 }
-

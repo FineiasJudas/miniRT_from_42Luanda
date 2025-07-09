@@ -8,12 +8,14 @@ double count_digits(char *arg)
 
     if (!arg)
         return (-1);
-    base = malloc(sizeof(char) * 1);
+    base = (char *)malloc(sizeof(char) * 2);
     if (!base)
         printf("Malloc não funconou!\n");
     ft_strlcpy(base, "1", 2);
     out = ft_strjoin(base, arg);
     number = ft_atoi(out) - ft_atoi(arg);
+    free(out);
+    free(base);
     return (number);
 }
 
@@ -42,7 +44,7 @@ double  float_convert(char *arg)
     in = ft_atoi(integer);
     f = ft_atoi(floater);
     out = in + (f / count_digits(floater));
-    printf("Final - %4f\n", out);
+    //printf("Final - %4f\n", out);
     return (out);
 }
 

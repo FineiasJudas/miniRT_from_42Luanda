@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/01 14:02:46 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/09 14:08:16 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int intersect_ray_sphere(t_ray ray, t_sphere *s, float *t)
     return (*t > 0);
 }
 
-void    sphere_shadow_check(t_render *render, t_data *data)
+int    sphere_shadow_check(t_render *render, t_data *data)
 {
     float   diffuse_intensity;
     int in_shadow;
@@ -50,4 +50,5 @@ void    sphere_shadow_check(t_render *render, t_data *data)
     else
         diffuse_intensity = fmax(0.0, vec_dot(render->normal, render->light_dir));
     render->color = ambient_light(&data->sphere->color, diffuse_intensity, data->ambient);
+    return (0);
 }
