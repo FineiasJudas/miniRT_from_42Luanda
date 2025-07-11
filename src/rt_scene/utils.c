@@ -6,11 +6,23 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:52:28 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 14:09:37 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/11 12:59:14 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+
+int get_mouse_direction(int x, int y, int width, int height, t_data *data)
+{
+    double  aspect_ratio;
+
+    aspect_ratio = (double)width / height;
+    data->mouse_ray.direction.x = (2.0 * x / width - 1.0) * aspect_ratio; // Normaliza x para [-aspect, aspect]
+    data->mouse_ray.direction.y = 1.0 - 2.0 * y / height;      // Normaliza y para [-1, 1]
+    data->mouse_ray.direction.z = -1.0;                           // Direção Z (para frente).
+    data->mouse_ray.origin = data->camera->origin;
+    return (0);
+}
 
 int get_ray_direction(int x, int y, int width, int height, t_data *data)
 {

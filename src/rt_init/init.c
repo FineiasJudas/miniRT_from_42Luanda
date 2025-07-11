@@ -5,7 +5,6 @@ void create_data(t_data *data)
     data->ambient     = NULL;
     data->cam_origin  = NULL;
     data->camera      = NULL;
-    data->cube        = NULL;
     data->cylinder    = NULL;
     data->light       = NULL;
     data->mlx         = NULL;
@@ -22,13 +21,15 @@ void create_data(t_data *data)
     data->img.height         = 0;
     data->invalid_line       = 0;
     data->hit_type          = -1;
+    data->selected_type = NONE;
+    data->selected_node = NULL;
+    data->selected_obj = NULL;
     data->sphere_l    = NULL;
     data->cylinder_l  = NULL;
     data->lights_l    = NULL;
     data->tmp         = NULL;
     data->c           = NULL;
     data->s           = NULL;
-    data->garbage     = NULL;
 }
 
 // total heap usage: 671 allocs, 652 frees, 144,005 bytes allocated

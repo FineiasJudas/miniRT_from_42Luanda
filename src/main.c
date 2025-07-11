@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/11 08:33:18 by manandre         ###   ########.fr       */
+/*   Updated: 2025/07/11 16:29:14 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int main(int ac, char **av)
 {
     t_data  data;
 
-     printf("::::");
     create_data(&data);
     if (ac == 2)
     {
@@ -63,7 +62,6 @@ int main(int ac, char **av)
     init_image(&data.img, data.mlx, 800, 600);
     render_scene(&data); // primeira renderização 
     mlx_hook(data.win, 2, 1L << 0, key_press, &data); // eventos de tecla
-     mlx_mouse_hook(data.win, mouse_click, NULL);
     mlx_loop(data.mlx);
     return (0);
 }

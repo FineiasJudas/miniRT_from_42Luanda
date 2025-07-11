@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 10:11:18 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/10 13:34:19 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/11 16:47:52 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int parse_sphere(char **tokens, t_data *scene)
     scene->sphere->center =  conv_vector(tokens[1]);
     scene->sphere->radius = float_convert(tokens[2]) / 2.0;
     scene->sphere->color = conv_color(tokens[3]);
+    scene->sphere->clicked = 0;
     add_to_scene_list(&scene->sphere_l, scene->sphere);
     return (1);
 }
@@ -52,7 +53,6 @@ int parse_ambient(char **tokens, t_data *a)
         return (0);
     collect_mem(a->ambient);
     a->ambient->ratio = float_convert(tokens[1]);
-   // printf("Luz ambiente %f\n",  a->ambient->ratio);
     a->ambient->color = conv_color(tokens[2]);
     return (1);
 }
@@ -71,6 +71,7 @@ int parse_cylinder(char **tokens, t_data *cylinder)
     cylinder->cylinder->diameter = ft_atoi(tokens[3]);
     cylinder->cylinder->height = ft_atoi(tokens[4]);
     cylinder->cylinder->color = conv_color(tokens[5]);
+    cylinder->cylinder->clicked = 0;
     add_to_scene_list(&cylinder->cylinder_l, cylinder->cylinder);
     return (1);
 }
@@ -85,6 +86,7 @@ int parse_light(char **tokens, t_data *light)
     light->light->position = conv_vector(tokens[1]);
     light->light->brightness = float_convert(tokens[2]);
     light->light->color = conv_color(tokens[3]);
+    add_to_scene_list(&light->lights_l, light->light);
     return (1);
 }
 
@@ -100,7 +102,7 @@ int parse_camera(char **tokens, t_data *scene)
     if (scene->camera->direction.x == 0 && scene->camera->direction.y == 0 && scene->camera->direction.z == 0)
     {
         printf("Direção da câmera inválida\n");
-        return (0); 
+        return (0);
     }
     if (scene->camera->direction.z < 0)
     {
