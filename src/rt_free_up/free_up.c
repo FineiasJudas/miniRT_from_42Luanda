@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 11:10:24 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 11:50:47 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/10 08:55:42 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,22 @@ void free_all(t_list **garbage)
 		*garbage = (*garbage)->next;
 		free(tmp);
 	}
+}
+
+int free_tokens(char **tokens)
+{
+    int i;
+
+    if (!tokens)
+        return (0);
+    i = 0;
+    while (tokens[i])
+    {
+        free(tokens[i]);
+        i ++;
+    }
+    free(tokens);
+    return (1);
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 14:15:54 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:18:50 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,6 +282,8 @@ int key_press(int keycode, t_data *data);
 // src/rt_free_up/free_up.c
 void *gc_malloc(t_list **garbage, size_t size);
 void free_all(t_list **garbage);
+int free_tokens(char **tokens);
+void free_list(t_list **list);
 
 void my_free(void *ptr);
 void *my_malloc(size_t size);
@@ -290,6 +292,10 @@ void mm_free(void *ptr);
 void mm_free_all(void);
 void mm_init(void);
 
-
+void	collect_mem(void *content);
+void	*allocate_mem(size_t nmemb, size_t size);
+void	collect_env_mem(char **env_table);
+void	free_mem(t_list **list);
+t_list	**get_mem_address(void);
 
 #endif

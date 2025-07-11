@@ -60,7 +60,7 @@ t_vector    conv_vector(char *str)
     v.y = ft_atoi(components[1]);
     v.z = ft_atoi(components[2]);
 
-    //free_split(components); // liberta memória (usa tua função)
+    free_tokens(components);
     return v;
 }
 
@@ -76,7 +76,7 @@ t_color conv_color(char *str)
     c.g = ft_atoi(components[1]);
     c.b = ft_atoi(components[2]);
 
-    //free_split(components); // liberta memória (usa tua função)
+    free_tokens(components); // liberta memória (usa tua função)
     return c;
 }
 

@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/11 09:47:37 by fjilaias          #+#    #+#              #
-#    Updated: 2025/07/09 13:20:38 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/07/10 09:35:42 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,8 @@ SRCS =  ./src/main.c \
 		./src/rt_render/render.c \
 		./src/rt_hooks/hooks.c \
 		./src/rt_free_up/free_up.c \
+		./src/rt_free_up/allocate_mem.c \
+		./src/rt_free_up/free_mem.c \
 
 MINILIBX = -L ./minilibx-linux -lmlx -lXext -lX11 -lm
 

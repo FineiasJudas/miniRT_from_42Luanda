@@ -1,26 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew_bonus.c                                  :+:      :+:    :+:   */
+/*   free_mem.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/20 12:02:14 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/10 11:15:52 by fjilaias         ###   ########.fr       */
+/*   Created: 2025/01/11 10:07:00 by lantonio          #+#    #+#             */
+/*   Updated: 2025/07/10 11:37:44 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minirt.h"
 
-t_list	*ft_lstnew(void *content)
+void	free_mem(t_list **list)
 {
-	t_list	*new;
+	t_list	*cur;
 
-	new = malloc(sizeof(t_list));
-	if (new == NULL)
-		return (NULL);
-	new->content = content;
-	new->next = NULL;
-	return (new);
+	while (*list)
+	{
+		cur = (*list)->next;
+		if ((*list)->content)
+		{
+			free((*list)->content);
+			(*list)->content = NULL;
+		}
+		free(*list);
+		*list = NULL;
+		*list = cur;
+	}
 }
 
+void free_list(t_list **list)
+{
+	t_list	*cur;
+
+	while (*list)
+	{
+		cur = (*list)->next;
+		free(*list);
+		*list = NULL;
+		*list = cur;
+	}
+}

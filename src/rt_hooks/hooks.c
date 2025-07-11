@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:41:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 12:41:52 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:19:58 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,16 @@ int light_move(int keycode, t_data *data)
 // Função de callback para o evento de fechamento da janela
 int close_window(t_data *data)
 {
-    free_all(&data->garbage); // Libera todos os objetos alocados
+    free_mem(get_mem_address()); // Libera memória alocada
+    mlx_destroy_window(data->mlx, data->win); // Destrói a janela
+    if (data->img.img_ptr)
+        mlx_destroy_image(data->mlx, data->img.img_ptr); // Destrói a imagem
+    if (data->mlx)
+        mlx_destroy_display(data->mlx); // Destrói o display do mlx
+    free_list(&data->sphere_l); // Libera a lista de esferas
+    free_list(&data->cylinder_l); // Libera a lista de cilindros
+    free(data->mlx); // Libera a memória do mlx
+    printf("Janela fechada e memória liberada.\n");
     exit(0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 13:44:10 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:39:09 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,14 @@ int main(int ac, char **av)
             || data.invalid_line)
             return (1);
     }
-    data.render = gc_malloc(&data.garbage, sizeof(t_render));
+    data.render = (t_render *)malloc(sizeof(t_render));
     if (!data.render)
-    {
-        fprintf(stderr, "Erro ao alocar memória para render\n");
-        return (1);
-    }
-    //prin_data(&data);
+        return 1 * fprintf(stderr, "Erro ao alocar memória para render\n");
+    collect_mem(data.render);
     data.mlx = mlx_init();
     data.win = mlx_new_window(data.mlx, 800, 600, "miniRT");
     init_image(&data.img, data.mlx, 800, 600);
-    render_scene(&data); // primeira renderização
+    render_scene(&data); // primeira renderização 
     mlx_hook(data.win, 2, 1L << 0, key_press, &data); // eventos de tecla
     mlx_loop(data.mlx);
     return (0);

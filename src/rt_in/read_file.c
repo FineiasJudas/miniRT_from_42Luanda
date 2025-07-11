@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 09:32:14 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/10 14:14:45 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,14 +51,11 @@ int process_line(char *line, t_data *data)
 
     if (!line || ft_strlen(line) < 1)
         return((0 * printf("Sem tokens!\n")) + 1);
-    tokens = ft_split(line, ' ');     
-    /*int i = 0;
-    while (tokens[i])
-        printf("%s\n", tokens[i++]);*/
+    tokens = ft_split(line, ' ');
     if (!tokens)
         return (1);
     result = identify_and_process(tokens, data);
-    // free_tokens(tokens);
+    free_tokens(tokens);
     return (result);
 }
 
@@ -99,6 +96,7 @@ int parse_rt_file(char *filename, t_data *data)
     if (data->fd < 0)
         return (1);
     result = read_and_process_lines(data->fd, data);
+    printf("Resultado da leitura do ficheiro: %d\n", result);
     close(data->fd);
     return (result);
 }
