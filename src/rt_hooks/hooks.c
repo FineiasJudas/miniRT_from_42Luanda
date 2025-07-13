@@ -12,24 +12,71 @@
 
 #include "minirt.h"
 
-// Função de callback para o evento de movimento da câmera com as teclas a, s, d, w
+t_vector rotate_vector(t_vector v, char axis, double angle)
+{
+    t_vector r;
+    double cos_a = cos(angle);
+    double sin_a = sin(angle);
+
+    if (axis == 'x')
+    {
+        r.x = v.x;
+        r.y = v.y * cos_a - v.z * sin_a;
+        r.z = v.y * sin_a + v.z * cos_a;
+    }
+    else if (axis == 'y')
+    {
+        r.x = v.x * cos_a + v.z * sin_a;
+        r.y = v.y;
+        r.z = -v.x * sin_a + v.z * cos_a;
+    }
+    else if (axis == 'z')
+    {
+        r.x = v.x * cos_a - v.y * sin_a;
+        r.y = v.x * sin_a + v.y * cos_a;
+        r.z = v.z;
+    }
+    return r;
+}
+
 int camera_move(int keycode, t_data *data)
 {
-    if (keycode == 119) // W key
-        data->camera->origin.z += 0.5; // Move the camera forward
-    else if (keycode == 115) // S key
-        data->camera->origin.z -= 0.5; // Move the camera backward
-    else if (keycode == 100) // D key
-        data->camera->origin.x += 0.5; // Move the camera right
-    else if (keycode == 97) // A key
-        data->camera->origin.x -= 0.5; // Move the camera left
-    else if (keycode == 101) // E key
-        data->camera->origin.y += 0.5; // Move the camera up
-    else if (keycode == 113) // Q key
-        data->camera->origin.y -= 0.5; // Move the camera down
-    render_scene(data); // Re-render the scene after moving the camera
-    return (0);
+    double angle = 0.087; // ~5 graus em radianos
+
+    if (keycode == 119) // W
+        data->camera->origin.z += 0.5;
+    else if (keycode == 115) // S
+        data->camera->origin.z -= 0.5;
+    else if (keycode == 100) // D
+        data->camera->origin.x += 0.5;
+    else if (keycode == 97) // A
+        data->camera->origin.x -= 0.5;
+    else if (keycode == 101) // E
+        data->camera->origin.y += 0.5;
+    else if (keycode == 113) // Q
+        data->camera->origin.y -= 0.5;
+
+    // ROTACIONAR CÂMERA
+    else if (keycode == 'j') // Rotaciona para a esquerda (em torno do eixo Y)
+        data->camera->direction = rotate_vector(data->camera->direction, 'y', angle);
+    else if (keycode == 'l') // Rotaciona para a direita (em torno do eixo Y)
+        data->camera->direction = rotate_vector(data->camera->direction, 'y', -angle);
+    else if (keycode == 'i') // Olha para cima (em torno do eixo X)
+        data->camera->direction = rotate_vector(data->camera->direction, 'x', angle);
+    else if (keycode == 'k') // Olha para baixo (em torno do eixo X)
+        data->camera->direction = rotate_vector(data->camera->direction, 'x', -angle);
+
+    // Normaliza para evitar distorções acumuladas
+    data->camera->direction = vec_normalize(data->camera->direction);
+
+    printf("Camera pos: (%.2f, %.2f, %.2f), direção: (%.2f, %.2f, %.2f)\n",
+        data->camera->origin.x, data->camera->origin.y, data->camera->origin.z,
+        data->camera->direction.x, data->camera->direction.y, data->camera->direction.z);
+
+    render_scene(data);
+    return 0;
 }
+
 
 // Função de callback para o evento de movimento da luz com as teclas de seta
 int light_move(int keycode, t_light *light, t_data *data)
@@ -76,10 +123,9 @@ int resize_window(int width, int height, t_data *data)
     render_scene(data);
     return (0);
 }
+
 void select_next_object(t_data *data)
 {
-    printf("Selecionando próximo objeto...\n");
-    // Avança para o próximo elemento da lista atual
     if (data->selected_type == SPHERE && data->selected_node && data->selected_node->next)
         data->selected_node = data->selected_node->next;
     else if (data->selected_type == SPHERE)
@@ -91,6 +137,13 @@ void select_next_object(t_data *data)
         data->selected_node = data->selected_node->next;
     else if (data->selected_type == CYLINDER)
     {
+        data->selected_type = PLANE;
+        data->selected_node = data->plane_l;
+    }
+    else if (data->selected_type == PLANE && data->selected_node && data->selected_node->next)
+        data->selected_node = data->selected_node->next;
+    else if (data->selected_type == PLANE)
+    {
         data->selected_type = LIGHT;
         data->selected_node = data->lights_l;
     }
@@ -98,12 +151,10 @@ void select_next_object(t_data *data)
         data->selected_node = data->selected_node->next;
     else
     {
-        // Volta para o início das esferas
         data->selected_type = SPHERE;
         data->selected_node = data->sphere_l;
     }
 
-    // Atualiza ponteiro do objeto
     if (!data->selected_node)
     {
         data->selected_type = NONE;
@@ -118,17 +169,39 @@ void select_next_object(t_data *data)
         printf("Selecionou esfera\n");
     else if (data->selected_type == CYLINDER)
         printf("Selecionou cilindro\n");
+    else if (data->selected_type == PLANE)
+        printf("Selecionou plano\n");
     else if (data->selected_type == LIGHT)
         printf("Selecionou luz\n");
 
     render_scene(data);
 }
 
-
 int is_any_object_selected(t_data *data)
 {
     return (data->selected_type != NONE && data->selected_obj != NULL);
 }
+
+int plane_move(int keycode, t_plane *p, t_data *data)
+{
+    if (keycode == 65361) // ←
+        p->coordinates.x -= 0.5;
+    else if (keycode == 65363) // →
+        p->coordinates.x += 0.5;
+    else if (keycode == 65362) // ↑
+        p->coordinates.y += 0.5;
+    else if (keycode == 65364) // ↓
+        p->coordinates.y -= 0.5;
+    else if (keycode == 65451) // PgUp
+        p->coordinates.z += 0.5;
+    else if (keycode == 65453) // PgDn
+        p->coordinates.z -= 0.5;
+
+    printf("Plano movido para: (%f, %f, %f)\n", p->coordinates.x, p->coordinates.y, p->coordinates.z);
+    render_scene(data);
+    return (0);
+}
+
 
 int sphere_move(int keycode, t_sphere *s, t_data *data)
 {
@@ -136,38 +209,47 @@ int sphere_move(int keycode, t_sphere *s, t_data *data)
     else if (keycode == 65363) s->center.x += 0.5;
     else if (keycode == 65362) s->center.y += 0.5;
     else if (keycode == 65364) s->center.y -= 0.5;
-    else if (keycode == 65451) s->center.z += 0.5;
-    else if (keycode == 65453) s->center.z -= 0.5;
+    else if (keycode == 'u') s->center.z += 0.5;
+    else if (keycode == 'n') s->center.z -= 0.5;
+
     render_scene(data);
     return (0);
 }
 
-
 int cylinder_move(int keycode, t_cylinder *c, t_data *data)
 {
-    if (keycode == 65361) // Left arrow key
-    {
-        c->center.x -= 0.5; // Move o cilindro para a esquerda
-        printf("Cylinder moved left to: (%f, %f, %f)\n", data->cylinder->center.x, data->cylinder->center.y, data->cylinder->center.z);
-    }
-    else if (keycode == 65363) // Right arrow key
-    {
-        c->center.x += 0.5; // Move o cilindro para a direita
-        printf("Cylinder moved right to: (%f, %f, %f)\n", data->cylinder->center.x, data->cylinder->center.y, data->cylinder->center.z);
-    }
-    else if (keycode == 65362) // Up arrow key
-    {
-        c->center.y += 0.5; // Move o cilindro para cima
-        printf("Cylinder moved up to: (%f, %f, %f)\n", data->cylinder->center.x, data->cylinder->center.y, data->cylinder->center.z);
-    }
-    else if (keycode == 65364) // Down arrow key
-    {
-        c->center.y -= 0.5; // Move o cilindro para baixo
-        printf("Cylinder moved down to: (%f, %f, %f)\n", data->cylinder->center.x, data->cylinder->center.y, data->cylinder->center.z);
-    }
-    render_scene(data); // Re-renderiza a cena após mover o objeto
-    return (0);
+    double angle = 0.087; // ~5 graus em radianos
+
+    if (keycode == 65361) // Left
+        c->center.x -= 0.5;
+    else if (keycode == 65363) // Right
+        c->center.x += 0.5;
+    else if (keycode == 65362) // Up
+        c->center.y += 0.5;
+    else if (keycode == 65364) // Down
+        c->center.y -= 0.5;
+    else if (keycode == 'u') // Backward
+        c->center.z -= 0.5;
+    else if (keycode == 'n') // Forward
+        c->center.z += 0.5;
+    else if (keycode == 'x') // Rotação eixo X
+        c->normalized = rotate_vector(c->normalized, 'x', angle);
+    else if (keycode == 'y') // Rotação eixo Y
+        c->normalized = rotate_vector(c->normalized, 'y', angle);
+    else if (keycode == 'z') // Rotação eixo Z
+        c->normalized = rotate_vector(c->normalized, 'z', angle);
+
+    // Normaliza para evitar deformações acumuladas
+    c->normalized = vec_normalize(c->normalized);
+
+    printf("Cilindro em (%f, %f, %f), eixo: (%f, %f, %f)\n",
+           c->center.x, c->center.y, c->center.z,
+           c->normalized.x, c->normalized.y, c->normalized.z);
+
+    render_scene(data);
+    return 0;
 }
+
 
 int key_press(int keycode, t_data *data)
 {
@@ -178,21 +260,22 @@ int key_press(int keycode, t_data *data)
         select_next_object(data);
 
     else if ((keycode == 65361 || keycode == 65363
-           ||  keycode == 65362 || keycode == 65364
-           ||  keycode == 65451 || keycode == 65453))
+       ||  keycode == 65362 || keycode == 65364
+       ||  keycode == 'u' || keycode == 'n' || keycode == 'x' || keycode == 'y' || keycode == 'z'))
     {
         if (!is_any_object_selected(data))
             return (0);
-
         if (data->selected_type == SPHERE)
             sphere_move(keycode, (t_sphere *)data->selected_obj, data);
         else if (data->selected_type == CYLINDER)
             cylinder_move(keycode, (t_cylinder *)data->selected_obj, data);
+        else if (data->selected_type == PLANE)
+            plane_move(keycode, (t_plane *)data->selected_obj, data);
         else if (data->selected_type == LIGHT)
             light_move(keycode, (t_light *)data->selected_obj, data);
     }
-
-    else if (keycode == 119 || keycode == 115 || keycode == 97 || keycode == 100 || keycode == 113 || keycode == 101)
+    else if (keycode == 119 || keycode == 115 || keycode == 97 || keycode == 100 || keycode == 113 || keycode == 101
+    || keycode == 'j' || keycode == 'l' || keycode == 'i' || keycode == 'k')
         camera_move(keycode, data);
 
     return (0);

@@ -54,7 +54,7 @@ int    render_element(t_render *render, t_data *data, t_object_type type, float 
     {
         render->hit = vec_add(data->ray.origin, vec_scale(data->ray.direction, element));
         render->light_dir = vec_normalize(vec_sub(data->light->position, render->hit));
-        shadow_plane_check(data->render, data);
+        plane_shadow_check(data->render, data);
     }
     else if (type == CYLINDER)
     {
@@ -66,41 +66,54 @@ int    render_element(t_render *render, t_data *data, t_object_type type, float 
 
 int intersect_ray_object(t_data *d)
 {
-    double        t_min = INF;
-    
+    double t_min = INF;
+
+    // Checa esferas
     d->tmp = d->sphere_l;
-    while(d->tmp)
+    while (d->tmp)
     {
-        d->s = (t_sphere*)d->tmp->content;
+        d->s = (t_sphere *)d->tmp->content;
         if (intersect_ray_sphere(d->ray, d->s, &d->s->ts) && d->s->ts > EPS && d->s->ts < t_min)
         {
-            t_min        = d->s->ts;
-            d->hit_type    = SPHERE;
-            d->sphere   = d->s;
+            t_min = d->s->ts;
+            d->hit_type = SPHERE;
+            d->sphere = d->s;
         }
         d->tmp = d->tmp->next;
     }
-    d->plane->tp = intersect_ray_plane( &d->ray.origin, &d->ray.direction, d->plane);
-    if (d->plane->tp > EPS && d->plane->tp < t_min)
+
+    // Checa planos
+    d->tmp = d->plane_l;
+    while (d->tmp)
     {
-        t_min     = d->plane->tp;
-        d->hit_type  = PLANE;
+        d->p = (t_plane *)d->tmp->content;
+        d->p->tp = intersect_ray_plane(&d->ray.origin, &d->ray.direction, d->p);
+        if (intersect_ray_plane(&d->ray.origin, &d->ray.direction, d->p) && d->p->tp > EPS && d->p->tp < t_min)
+        {
+            t_min = d->p->tp;
+            d->hit_type = PLANE;
+            d->plane = d->p;
+        }
+        d->tmp = d->tmp->next;
     }
+
+    // Checa cilindros
     d->tmp = d->cylinder_l;
     while (d->tmp)
     {
         d->c = (t_cylinder *)d->tmp->content;
         if (intersect_cylinder(d->ray, *d->c, &d->c->tc) && d->c->tc > EPS && d->c->tc < t_min)
         {
-            t_min        = d->c->tc;
-            d->hit_type     = CYLINDER;
-            d->cylinder   = d->c;
+            t_min = d->c->tc;
+            d->hit_type = CYLINDER;
+            d->cylinder = d->c;
         }
         d->tmp = d->tmp->next;
     }
+
     if (t_min < INF)
-        return (1 * render_element(d->render, d, d->hit_type, (float)t_min)); 
-    return 0;
+        return (render_element(d->render, d, d->hit_type, (float)t_min));
+    return (0);
 }
 
 void    render_scene(t_data *data)

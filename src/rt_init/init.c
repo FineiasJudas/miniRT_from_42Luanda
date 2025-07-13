@@ -27,6 +27,7 @@ void create_data(t_data *data)
     data->sphere_l    = NULL;
     data->cylinder_l  = NULL;
     data->lights_l    = NULL;
+    data->plane_l     = NULL;
     data->tmp         = NULL;
     data->c           = NULL;
     data->s           = NULL;

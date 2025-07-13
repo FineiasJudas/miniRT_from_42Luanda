@@ -23,6 +23,7 @@ int parse_plane(char **tokens, t_data *plane)
     plane->plane->coordinates = conv_vector(tokens[1]);
     plane->plane->normalized = vec_normalize(conv_vector(tokens[2]));
     plane->plane->color = conv_color(tokens[3]);
+    add_to_scene_list(&plane->plane_l, plane->plane);
     return (1);
 }
 

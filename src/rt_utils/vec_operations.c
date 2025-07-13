@@ -14,6 +14,25 @@
 
 // INÍCIO OPERAÇÕES COM VECTORES
 
+t_vector look_at(t_vector from, t_vector to)
+{
+    return vec_normalize((t_vector){
+        to.x - from.x,
+        to.y - from.y,
+        to.z - from.z
+    });
+}
+
+
+t_vector cross(t_vector a, t_vector b)
+{
+    return (t_vector){
+        a.y * b.z - a.z * b.y,
+        a.z * b.x - a.x * b.z,
+        a.x * b.y - a.y * b.x
+    };
+}
+
 t_vector vec_sub(t_vector a, t_vector b)
 {
     return (t_vector){a.x - b.x, a.y - b.y, a.z - b.z};
@@ -31,7 +50,7 @@ t_vector vec_normalize(t_vector v)
         return (t_vector){0, 0, 0}; // evitar divisão por 0
     return (t_vector){v.x / len, v.y / len, v.z / len};
 }
-
+ 
 t_vector vec_scale(t_vector v, float s)
 {
     return (t_vector){v.x * s, v.y * s, v.z * s};

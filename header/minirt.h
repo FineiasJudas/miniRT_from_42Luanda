@@ -13,7 +13,7 @@
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# ifndef BUFFER_SIZE
+# ifndef BUFFER_SIZE 
 #  define BUFFER_SIZE 42
 # endif
 
@@ -149,13 +149,15 @@ typedef struct s_data
     t_sphere    *sphere;
     t_plane *plane;
     t_cylinder  *cylinder;
+    t_list *plane_l;
     t_list  *sphere_l;
     t_list  *lights_l;
     t_list  *cylinder_l;
 
     //uteis
-    t_cylinder *c;
+    t_cylinder  *c;
     t_sphere    *s;
+    t_plane     *p;
     t_list  *tmp;
     t_object_type hit_type;
     
@@ -196,6 +198,7 @@ void    create_data(t_data *data);
 void    prin_data(t_data *arg);
 
 //src/rt_scene/vec_operations.c
+t_vector cross(t_vector a, t_vector b);
 t_vector vec_sub(t_vector a, t_vector b);
 float vec_dot(t_vector a, t_vector b);
 t_vector vec_normalize(t_vector v);
@@ -220,6 +223,7 @@ void    render_scene(t_data *data);
 //src/rt_scene
 double intersect_ray_plane(t_vector *ray_origin, t_vector *ray_dir, t_plane *plane);
 int shadow_plane_check(t_render *render, t_data *data);
+int plane_shadow_check(t_render *render, t_data *data);
 
 int intersect_ray_sphere(t_ray ray, t_sphere *s, float *t);
 int    sphere_shadow_check(t_render *render, t_data *data);
@@ -280,5 +284,7 @@ void	*allocate_mem(size_t nmemb, size_t size);
 void	collect_env_mem(char **env_table);
 void	free_mem(t_list **list);
 t_list	**get_mem_address(void);
+
+t_vector look_at(t_vector from, t_vector to);
 
 #endif

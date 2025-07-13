@@ -12,19 +12,35 @@
 
 #include "minirt.h"
 
-int get_mouse_direction(int x, int y, int width, int height, t_data *data)
+int get_ray_direction(int x, int y, int width, int height, t_data *data)
 {
-    double  aspect_ratio;
+    double aspect_ratio = (double)width / height;
+    double fov_radians = data->camera->fov * M_PI / 180.0;
+    double scale = tan(fov_radians / 2.0);
 
-    aspect_ratio = (double)width / height;
-    data->mouse_ray.direction.x = (2.0 * x / width - 1.0) * aspect_ratio; // Normaliza x para [-aspect, aspect]
-    data->mouse_ray.direction.y = 1.0 - 2.0 * y / height;      // Normaliza y para [-1, 1]
-    data->mouse_ray.direction.z = -1.0;                           // Direção Z (para frente).
-    data->mouse_ray.origin = data->camera->origin;
-    return (0);
+    // Coordenadas normalizadas da tela (px, py) de -1 a +1
+    double px = (2.0 * ((double)x + 0.5) / width - 1.0) * aspect_ratio * scale;
+    double py = (1.0 - 2.0 * ((double)y + 0.5) / height) * scale;
+
+    // Base da câmera
+    t_vector forward = vec_normalize(data->camera->direction);
+    t_vector world_up = {0, 1, 0};
+    t_vector right = vec_normalize(cross(forward, world_up));
+    t_vector up = vec_normalize(cross(right, forward));
+
+    // Direção do raio combinando os vetores
+    t_vector ray_direction = vec_add(
+        vec_add(vec_scale(right, px), vec_scale(up, py)),
+        forward
+    );
+
+    data->ray.origin = data->camera->origin;
+    data->ray.direction = vec_normalize(ray_direction);
+    return 0;
 }
 
-int get_ray_direction(int x, int y, int width, int height, t_data *data)
+
+/*int get_ray_direction(int x, int y, int width, int height, t_data *data)
 {
     double  aspect_ratio;
 
@@ -34,7 +50,7 @@ int get_ray_direction(int x, int y, int width, int height, t_data *data)
     data->ray.direction.z = -1.0;                           // Direção Z (para frente).
     data->ray.origin = data->camera->origin;
     return (0);
-}
+}*/
 
 t_color calc_ambient(t_color *c, t_ambient *ambient)
 {

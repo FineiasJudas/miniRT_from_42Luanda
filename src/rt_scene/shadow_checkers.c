@@ -42,24 +42,37 @@ int shadow_spheres_check(t_render *render, t_data *data)
     return (in_shadow);
 }
 
-/*int shadow_plane_check(t_render *render, t_data *data)
+int shadow_plane_check(t_render *render, t_data *data)
 {
-    float t_plane_shadow;
-    float t_shadow;
-    int in_shadow;
+    float plane;
+    float dist_light;
+    int in_shadow = 0;
+
+    // Calcula distância da luz ao ponto de interseção
+    dist_light = vec_dist(data->light->position, render->hit);
 
     // Raio de sombra com pequeno offset na direção da normal
-    in_shadow = 0;
-    data->shadow_ray = (t_ray){vec_add(render->hit, vec_scale(render->normal, 0.001)), render->light_dir};
-    t_plane_shadow = intersect_ray_plane(&data->shadow_ray.origin, &data->shadow_ray.direction, data->plane);
-    if (intersect_ray_sphere(data->shadow_ray, data->sphere, &t_shadow) && t_shadow 
-        < vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
-        in_shadow = 1;
-    else if (t_plane_shadow > 0 && t_plane_shadow < 
-        vec_dot(vec_sub(data->light->position, render->hit), vec_sub(data->light->position, render->hit)))
-        in_shadow = 1;
-    return (in_shadow);
-}*/
+    data->shadow_ray = (t_ray){
+        vec_add(render->hit, vec_scale(render->normal, 0.001)),
+        vec_normalize(render->light_dir)
+    };
+
+    // Verifica todos os planos
+    data->tmp = data->plane_l;
+    while (data->tmp)
+    {
+        data->p = (t_plane *)data->tmp->content;
+        plane = intersect_ray_plane(&data->shadow_ray.origin, &data->shadow_ray.direction, data->p);
+        if (plane > EPS && plane < dist_light)
+        {
+            in_shadow = 1;
+            break;
+        }
+        data->tmp = data->tmp->next;
+    }
+    return in_shadow;
+}
+
 
 int shadow_cylinders_check(t_render *render, t_data *data)
 {

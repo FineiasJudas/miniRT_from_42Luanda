@@ -12,7 +12,7 @@
 
 #include "minirt.h"
 
-int shadow_plane_check(t_render *render, t_data *data)
+int plane_shadow_check(t_render *render, t_data *data)
 {
     float diff;
     int in_shadow;
@@ -23,6 +23,8 @@ int shadow_plane_check(t_render *render, t_data *data)
     // Verifica interseção com o próprio cilindro (ou outros, se houver)
     if (shadow_cylinders_check(render, data))
         in_shadow = 1;
+    if (shadow_plane_check(render, data))
+        in_shadow = 1;
     if (in_shadow)
         diff = 0.0f;
     else
@@ -32,6 +34,8 @@ int shadow_plane_check(t_render *render, t_data *data)
         diff, data->ambient);
     return (0);
 }
+
+
 
 double intersect_ray_plane(t_vector *ray_origin, t_vector *ray_dir, t_plane *plane)
 {

@@ -58,8 +58,13 @@ int main(int ac, char **av)
         return 1 * fprintf(stderr, "Erro ao alocar memória para render\n");
     collect_mem(data.render);
     data.mlx = mlx_init();
+    if (!data.mlx)
+	    return (1 * printf("mlx não iniciada!\n"));
     data.win = mlx_new_window(data.mlx, 800, 600, "miniRT");
+    if (!data.win)
+	    return (1 * printf("Janela não criada\n"));
     init_image(&data.img, data.mlx, 800, 600);
+    data.camera->direction = look_at(data.camera->origin, (t_vector){0,1,0});
     render_scene(&data); // primeira renderização 
     mlx_hook(data.win, 2, 1L << 0, key_press, &data); // eventos de tecla
     mlx_loop(data.mlx);
