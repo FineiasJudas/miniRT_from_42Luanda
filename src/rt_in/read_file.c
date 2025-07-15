@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 09:59:50 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:53:09 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,20 @@ int	parse_camera(char **tokens, t_data *scene)
 	if (!scene->camera)
 		return (0);
 	collect_mem(scene->camera);
-	scene->camera->direction = vec_normalize(conv_vector(tokens[1]));
-	if (scene->camera->direction.x == 0 && scene->camera->direction.y == 0
-		&& scene->camera->direction.z == 0)
+	scene->camera->dir = vec_normalize(conv_vector(tokens[1]));
+	if (scene->camera->dir.x == 0 && scene->camera->dir.y == 0
+		&& scene->camera->dir.z == 0)
 	{
 		printf("Direção da câmera inválida\n");
 		return (0);
 	}
-	if (scene->camera->direction.z < 0)
+	if (scene->camera->dir.z < 0)
 	{
-		scene->camera->direction.x *= -1;
-		scene->camera->direction.y *= -1;
-		scene->camera->direction.z *= -1;
+		scene->camera->dir.x *= -1;
+		scene->camera->dir.y *= -1;
+		scene->camera->dir.z *= -1;
 	}
-	scene->camera->direction = conv_vector(tokens[1]);
+	scene->camera->dir = conv_vector(tokens[1]);
 	scene->camera->origin = conv_vector(tokens[2]);
 	scene->camera->fov = ft_atoi(tokens[3]);
 	return (1);

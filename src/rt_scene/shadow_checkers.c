@@ -6,22 +6,21 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 09:26:54 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:17:13 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:01:25 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
 /* Refatoração de intersect_cylinder em funções menores e struct de variáveis */
-
 static void	init_cyl_vars(t_cyl_vars *v, t_ray ray, t_cylinder cyl)
 {
 	v->r = cyl.diameter * 0.5;
 	v->halfh = cyl.height * 0.5;
 	v->d = cyl.normalized;
 	v->co = vec_sub(ray.origin, cyl.center);
-	v->V = ray.direction;
-	v->m = vec_sub(v->V, vec_scale(v->d, vec_dot(v->V, v->d)));
+	v->v = ray.direction;
+	v->m = vec_sub(v->v, vec_scale(v->d, vec_dot(v->v, v->d)));
 	v->n = vec_sub(v->co, vec_scale(v->d, vec_dot(v->co, v->d)));
 }
 

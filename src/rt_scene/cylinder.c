@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/26 14:55:03 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 11:39:34 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:35:20 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,31 @@
 
 void	cylinder_normal(t_render *render, t_data *data, float t)
 {
-	t_vector	d;
-	t_vector	c;
-	t_vector	hit;
+	t_vector	d_c_h[3];
 	double		halfh;
 	t_vector	ch;
 	double		y;
 	t_vector	proj;
 
-	hit = vec_add(data->ray.origin, vec_scale(data->ray.direction, t));
-	d = data->cylinder->normalized;
-	c = data->cylinder->center;
+	d_c_h[0] = vec_add(data->ray.origin, vec_scale(data->ray.direction, t));
+	d_c_h[1] = data->cylinder->normalized;
+	d_c_h[2] = data->cylinder->center;
 	halfh = data->cylinder->height / 2.0;
-	ch = vec_sub(hit, c);
-	y = vec_dot(ch, d);
+	ch = vec_sub(d_c_h[0], d_c_h[2]);
+	y = vec_dot(ch, d_c_h[1]);
 	if (fabs(y) > halfh - EPS && fabs(y) < halfh + EPS)
 	{
 		if (y > 0)
-			render->normal = d;
+			render->normal = d_c_h[1];
 		else
-			render->normal = vec_scale(d, -1.0);
+			render->normal = vec_scale(d_c_h[1], -1.0);
 	}
 	else
 	{
-		proj = vec_scale(d, y);
+		proj = vec_scale(d_c_h[1], y);
 		render->normal = vec_normalize(vec_sub(ch, proj));
 	}
-	render->light_dir = vec_normalize(vec_sub(data->light->position, hit));
+	render->light_dir = vec_normalize(vec_sub(data->light->position, d_c_h[0]));
 }
 
 int	shadow_cylinders_check(t_render *render, t_data *data)

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:22:14 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:22:18 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:35:55 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ static char	*read_to_stash(int fd, char *stash)
 	ssize_t	bytes_read;
 
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
-		return (NULL);
 	bytes_read = 1;
 	while (bytes_read > 0 && !ft_strchr(stash, '\n'))
 	{
@@ -98,4 +96,10 @@ char	*get_next_line(int fd)
 	line = extract_line(stash);
 	stash = update_stash(stash);
 	return (line);
+}
+
+t_color	scale_color(t_color color, float factor)
+{
+	return ((t_color){fmin(color.r * factor, 255), fmin(color.g * factor, 255),
+		fmin(color.b * factor, 255)});
 }

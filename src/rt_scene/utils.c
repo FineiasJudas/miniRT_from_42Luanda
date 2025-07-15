@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:52:28 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:15:27 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:25:23 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,28 +25,21 @@ float	vec_dist(t_vector a, t_vector b)
 
 int	get_ray_direction(int *xy, int width, int height, t_data *data)
 {
-	double		ar_fov_scale[3];
-	double		p[2];
-	t_vector	forward;
-	t_vector	world_up;
-	t_vector	right;
-	t_vector	up;
+	t_vector	cor[3];
+	double		aspect;
+	double		fov_scale;
+	double		n_xy[2];
 	t_vector	ray_direction;
 
-	ar_fov_scale[0] = (double)width / height;
-	ar_fov_scale[1] = data->camera->fov * PI / 180.0;
-	ar_fov_scale[2] = tan(ar_fov_scale[1] / 2.0);
-	p[0] = (2.0 * ((double)xy[1] + 0.5) / width - 1.0) * ar_fov_scale[0]
-		* ar_fov_scale[2];
-	p[1] = (1.0 - 2.0 * ((double)xy[0] + 0.5) / height) * ar_fov_scale[2];
-	forward = vec_normalize(data->camera->direction);
-	world_up.x = 0;
-	world_up.y = 1;
-	world_up.z = 0;
-	right = vec_normalize(cross(forward, world_up));
-	up = vec_normalize(cross(right, forward));
-	ray_direction = vec_add(vec_add(vec_scale(right, p[0]), vec_scale(up,
-					p[1])), forward);
+	aspect = (double)width / height;
+	fov_scale = tan(data->camera->fov * PI / 360.0);
+	n_xy[0] = (2.0 * ((double)xy[1] + 0.5) / width - 1.0) * aspect * fov_scale;
+	n_xy[1] = (1.0 - 2.0 * ((double)xy[0] + 0.5) / height) * fov_scale;
+	cor[0] = vec_normalize(data->camera->dir);
+	cor[1] = vec_normalize(cross(cor[0], (t_vector){0, 1, 0}));
+	cor[2] = vec_normalize(cross(cor[1], cor[0]));
+	ray_direction = vec_add(vec_add(vec_scale(cor[1], n_xy[0]),
+				vec_scale(cor[2], n_xy[1])), cor[0]);
 	data->ray.origin = data->camera->origin;
 	data->ray.direction = vec_normalize(ray_direction);
 	return (0);
@@ -92,4 +85,27 @@ t_color	ambient_light(t_color *src, double intensity, t_ambient *ambient)
 	if (out.b > 255)
 		out.b = 255;
 	return (out);
+}
+
+void	print_log(t_object_type type, t_data *data)
+{
+	if (type == PLANE)
+	{
+		printf("Plano movido para: (%f, %f, %f)\n", data->p->coordinates.x,
+			data->p->coordinates.y, data->p->coordinates.z);
+	}
+	else if (type == CYLINDER)
+	{
+		printf("Cilindro em (%f, %f, %f), eixo: (%f, %f, %f)\n",
+			data->c->center.x, data->c->center.y, data->c->center.z,
+			data->c->normalized.x, data->c->normalized.y,
+			data->c->normalized.z);
+	}
+	else if (type == 3)
+	{
+		printf("Camera pos: (%.2f, %.2f, %.2f), direção: (%.2f, %.2f, %.2f)\n",
+			data->camera->origin.x, data->camera->origin.y,
+			data->camera->origin.z, data->camera->dir.x, data->camera->dir.y,
+			data->camera->dir.z);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:49:00 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:49:59 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:31:31 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,4 @@ void	add_to_scene_list(t_list **list, void *element)
 		exit(1);
 	}
 	ft_lstadd_back(list, node);
-}
-
-t_color	scale_color(t_color color, float factor)
-{
-	return ((t_color){fmin(color.r * factor, 255), fmin(color.g * factor, 255),
-		fmin(color.b * factor, 255)});
 }

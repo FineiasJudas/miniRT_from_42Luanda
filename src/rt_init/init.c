@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:48:53 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:47:30 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:44:09 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	create_data(t_data *data)
 	data->filename = NULL;
 	data->line = NULL;
 	data->tokens = NULL;
-	data->t_min = INF;
 	data->fd = -1;
 	data->img.img_ptr = NULL;
 	data->img.addr = NULL;
