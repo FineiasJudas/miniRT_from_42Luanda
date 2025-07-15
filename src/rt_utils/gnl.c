@@ -1,9 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gnl.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 13:22:14 by fjilaias          #+#    #+#             */
+/*   Updated: 2025/07/15 13:22:18 by fjilaias         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minirt.h"
-/**
- * Extrai uma linha do buffer estático
- * @param stash Buffer estático
- * @return Uma nova linha ou NULL em caso de erro
- */
+
 static char	*extract_line(char *stash)
 {
 	int		i;
@@ -20,11 +28,6 @@ static char	*extract_line(char *stash)
 	return (line);
 }
 
-/**
- * Atualiza o buffer estático removendo a linha já lida
- * @param stash Buffer estático
- * @return Nova versão do buffer ou NULL em caso de erro
- */
 static char	*update_stash(char *stash)
 {
 	int		i;
@@ -45,12 +48,6 @@ static char	*update_stash(char *stash)
 	return (new_stash);
 }
 
-/**
- * Lê do arquivo e armazena no buffer estático
- * @param fd File descriptor
- * @param stash Buffer estático
- * @return Buffer atualizado ou NULL em caso de erro
- */
 static char	*read_to_stash(int fd, char *stash)
 {
 	char	*buffer;
@@ -81,11 +78,6 @@ static char	*read_to_stash(int fd, char *stash)
 	return (stash);
 }
 
-/**
- * Lê uma linha de um arquivo
- * @param fd File descriptor
- * @return A próxima linha do arquivo ou NULL se não houver mais linhas
- */
 char	*get_next_line(int fd)
 {
 	static char	*stash;

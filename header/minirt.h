@@ -6,22 +6,25 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/11 16:39:30 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 12:00:14 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# ifndef BUFFER_SIZE 
+# ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
 
-# define WIDTH  800
+# ifndef PI
+#  define PI 3.14159265358979323846
+ #endif
+
+# define WIDTH 800
 # define HEIGHT 600
 # define EPS 1e-4
 # define INF 1e30
-# define EPS 1e-4
 
 # include "../libft/libft.h"
 # include "minirt.h"
@@ -31,8 +34,6 @@
 # include <unistd.h>
 # include <math.h>
 # include <fcntl.h>
-
-//structs
 
 typedef enum s_object_type
 {
@@ -49,6 +50,17 @@ typedef struct s_vector
     double  y;
     double  z;
 }   t_vector;
+
+typedef struct s_cyl_vars
+{
+	double r, halfh;
+	t_vector d, co, V;
+	t_vector m, n;
+	double a, b, c, disc;
+	double t0, t1, t_lat;
+	double	t_min;
+	int		hit;
+}			t_cyl_vars;
 
 typedef struct s_color
 {
@@ -75,7 +87,6 @@ typedef struct s_light
     t_vector    position; // posição da luz
     double  brightness; // valor entre 0.0 e 1.0
     t_color color;     // cor da luz
-    int     clicked; // 1 se a luz foi clicada, 0 caso contrário
 }   t_light;
 
 typedef struct s_sphere
@@ -84,7 +95,6 @@ typedef struct s_sphere
     double  radius;
     float   ts;
     t_color color;
-    int     clicked; // 1 se a esfera foi clicada, 0 caso contrário
 }   t_sphere;
 
 typedef struct s_cylinder
@@ -95,7 +105,6 @@ typedef struct s_cylinder
     double  diameter;
     double  height;
     double  tc;
-    int     clicked; // 1 se o cilindro foi clicado, 0 caso contrário
 }   t_cylinder;
 
 typedef struct s_plane
@@ -136,18 +145,17 @@ typedef struct s_data
     void    *mlx;
     void    *win;
     t_image img;
-    t_light *light;
     t_ambient   *ambient;
     t_camera    *camera;
     t_render    *render;
     t_vector    *cam_origin;
     t_ray   shadow_ray;
     t_ray   ray;
-    t_ray   mouse_ray;
 
     //objectos
-    t_sphere    *sphere;
     t_plane *plane;
+    t_sphere    *sphere;
+    t_light *light;
     t_cylinder  *cylinder;
     t_list *plane_l;
     t_list  *sphere_l;
@@ -158,6 +166,7 @@ typedef struct s_data
     t_cylinder  *c;
     t_sphere    *s;
     t_plane     *p;
+    t_light     *l;
     t_list  *tmp;
     t_object_type hit_type;
     
@@ -165,6 +174,7 @@ typedef struct s_data
     t_object_type  selected_type;
     void          *selected_obj;
 
+    double	t_min;
     char    *filename;
     char    *line;
     char    **tokens;
@@ -188,9 +198,6 @@ double  float_convert(char *arg);
 //rt_utils/util
 int count_tokens(char **strs);
 
-//rt_mayh
-void draw_circle(t_color image[HEIGHT][WIDTH], int cx, int cy, int radius, t_color color);
-
 //rt_init/init
 void    init_image(t_image *img, void *mlx, int width, int height);
 void    put_pixel(t_image *img, int x, int y, t_color color);
@@ -206,12 +213,11 @@ t_vector vec_scale(t_vector v, float s);
 t_vector vec_add(t_vector a, t_vector b);
 t_color scale_color(t_color color, float factor);
 
-int intersect_ray_cylinder(t_ray ray, t_cylinder *cy, float *t_out, int *is_cap);
-t_vector get_cylinder_normal(t_vector hit, t_cylinder *cy, int is_cap);
+void	cylinder_normal(t_render *render, t_data *data, float t);
 
 //src/rt_scene/utils.c
 t_color ambient_light(t_color *src, double intensity, t_ambient *ambient);
-int get_ray_direction(int x, int y, int width, int height, t_data *data);
+int	get_ray_direction(int *xy, int width, int height, t_data *data);
 int get_mouse_direction(int x, int y, int width, int height, t_data *data);
 t_color calc_ambient(t_color *c, t_ambient *ambient);
 
@@ -222,7 +228,7 @@ void    render_scene(t_data *data);
 
 //src/rt_scene
 double intersect_ray_plane(t_vector *ray_origin, t_vector *ray_dir, t_plane *plane);
-int shadow_plane_check(t_render *render, t_data *data);
+int shadow_planes_check(t_render *render, t_data *data);
 int plane_shadow_check(t_render *render, t_data *data);
 
 int intersect_ray_sphere(t_ray ray, t_sphere *s, float *t);
@@ -244,6 +250,8 @@ int parse_ambient(char **tokens, t_data *a);
 int parse_cylinder(char **tokens, t_data *cylinder);
 int parse_light(char **tokens, t_data *light);
 int parse_camera(char **tokens, t_data *scene);
+
+float vec_dist(t_vector a, t_vector b);
 
 //src/rt_in/utils.c
 int is_first_word_one_of(char *line);
@@ -272,13 +280,6 @@ void free_all(t_list **garbage);
 int free_tokens(char **tokens);
 void free_list(t_list **list);
 
-void my_free(void *ptr);
-void *my_malloc(size_t size);
-void* mm_alloc(size_t size);
-void mm_free(void *ptr);
-void mm_free_all(void);
-void mm_init(void);
-
 void	collect_mem(void *content);
 void	*allocate_mem(size_t nmemb, size_t size);
 void	collect_env_mem(char **env_table);
@@ -286,5 +287,20 @@ void	free_mem(t_list **list);
 t_list	**get_mem_address(void);
 
 t_vector look_at(t_vector from, t_vector to);
+t_vector rotate_vector(t_vector v, char axis, double angle);
+
+int plane_move(int keycode, t_plane *p, t_data *data);
+int sphere_move(int keycode, t_sphere *s, t_data *data);
+int cylinder_move(int keycode, t_cylinder *c, t_data *data);
+int light_move(int keycode, t_light *light, t_data *data);
+int camera_move(int keycode, t_data *data);
+
+int close_window(t_data *data);
+int resize_window(int width, int height, t_data *data);
+
+int any_object_moviment_key(int keycode);
+int any_camera_moviment_key(int keycode);
+
+int	intersect_ray_object(t_data *d);
 
 #endif

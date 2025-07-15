@@ -6,51 +6,75 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:26 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 14:16:24 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 11:50:57 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-int plane_shadow_check(t_render *render, t_data *data)
+int	shadow_planes_check(t_render *render, t_data *data)
 {
-    float diff;
-    int in_shadow;
+	float	plane;
+	float	dist_light;
+	int		in_shadow;
 
-    in_shadow = 0;
-    if(shadow_spheres_check(render, data))
-        in_shadow = 1;
-    // Verifica interseção com o próprio cilindro (ou outros, se houver)
-    if (shadow_cylinders_check(render, data))
-        in_shadow = 1;
-    if (shadow_plane_check(render, data))
-        in_shadow = 1;
-    if (in_shadow)
-        diff = 0.0f;
-    else
-        diff = fmax(0.0, vec_dot(data->plane->normalized, render->light_dir));
-    // 6) cor final: ambiente + difusa
-    render->color = ambient_light(&data->plane->color, 
-        diff, data->ambient);
-    return (0);
+	in_shadow = 0;
+	dist_light = vec_dist(data->light->position, render->hit);
+	data->shadow_ray = (t_ray){vec_add(render->hit, vec_scale(render->normal,
+				0.001)), vec_normalize(render->light_dir)};
+	data->tmp = data->plane_l;
+	while (data->tmp)
+	{
+		data->p = (t_plane *)data->tmp->content;
+		plane = intersect_ray_plane(&data->shadow_ray.origin,
+				&data->shadow_ray.direction, data->p);
+		if (plane > EPS && plane < dist_light)
+		{
+			in_shadow = 1;
+			break ;
+		}
+		data->tmp = data->tmp->next;
+	}
+	return (in_shadow);
 }
 
-
-
-double intersect_ray_plane(t_vector *ray_origin, t_vector *ray_dir, t_plane *plane)
+int	plane_shadow_check(t_render *render, t_data *data)
 {
-    t_vector origin_to_plane;
-    double denominator;
-    double numerator;
-    double t;
+	float	diffuse_intensity;
+	int		in_shadow;
 
-    origin_to_plane = vec_sub(*ray_origin, plane->coordinates);
-    numerator = vec_dot(plane->normalized, origin_to_plane);
-    denominator = vec_dot(plane->normalized, *ray_dir);
-    if (fabs(denominator) < 0.0001)
-        return (-1.0);
-    t = -numerator / denominator;
-    if (t > 0.0001)
-        return (t);
-    return (-1.0);
+	in_shadow = 0;
+	if (shadow_spheres_check(render, data))
+		in_shadow = 1;
+	if (shadow_cylinders_check(render, data))
+		in_shadow = 1;
+	if (shadow_planes_check(render, data))
+		in_shadow = 1;
+	if (in_shadow)
+		diffuse_intensity = 0.0f;
+	else
+		diffuse_intensity = fmax(0.0, vec_dot(render->normal,
+					render->light_dir));
+	render->color = ambient_light(&data->plane->color, diffuse_intensity,
+			data->ambient);
+	return (0);
+}
+
+double	intersect_ray_plane(t_vector *ray_origin, t_vector *ray_dir,
+		t_plane *plane)
+{
+	t_vector	origin_to_plane;
+	double		denominator;
+	double		numerator;
+	double		t;
+
+	origin_to_plane = vec_sub(*ray_origin, plane->coordinates);
+	numerator = vec_dot(plane->normalized, origin_to_plane);
+	denominator = vec_dot(plane->normalized, *ray_dir);
+	if (fabs(denominator) < 0.0001)
+		return (-1.0);
+	t = -numerator / denominator;
+	if (t > 0.0001)
+		return (t);
+	return (-1.0);
 }

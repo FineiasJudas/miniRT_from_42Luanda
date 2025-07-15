@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 10:07:00 by lantonio          #+#    #+#             */
-/*   Updated: 2025/07/10 11:37:44 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 09:30:51 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	free_mem(t_list **list)
 	}
 }
 
-void free_list(t_list **list)
+void	free_list(t_list **list)
 {
 	t_list	*cur;
 

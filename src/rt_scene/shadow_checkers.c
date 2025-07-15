@@ -6,94 +6,107 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 09:26:54 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/09 14:16:10 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 13:17:13 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-// utilitário: distância ponto-a-ponto
-static float vec_dist(t_vector a, t_vector b)
+/* Refatoração de intersect_cylinder em funções menores e struct de variáveis */
+
+static void	init_cyl_vars(t_cyl_vars *v, t_ray ray, t_cylinder cyl)
 {
-    t_vector d = { a.x-b.x, a.y-b.y, a.z-b.z };
-    return sqrtf(d.x*d.x + d.y*d.y + d.z*d.z);
+	v->r = cyl.diameter * 0.5;
+	v->halfh = cyl.height * 0.5;
+	v->d = cyl.normalized;
+	v->co = vec_sub(ray.origin, cyl.center);
+	v->V = ray.direction;
+	v->m = vec_sub(v->V, vec_scale(v->d, vec_dot(v->V, v->d)));
+	v->n = vec_sub(v->co, vec_scale(v->d, vec_dot(v->co, v->d)));
 }
 
-int shadow_spheres_check(t_render *render, t_data *data)
+static int	solve_quadratic(t_cyl_vars *v)
 {
-    float t_sphere_shadow;
-    int in_shadow;
+	double	sd;
 
-    // Raio de sombra com pequeno offset na direção da normal
-    in_shadow = 0;
-    data->shadow_ray = (t_ray){vec_add(render->hit, 
-        vec_scale(render->normal, 0.001)), render->light_dir};
-    // Verifica interseção com esfera
-    data->tmp = data->sphere_l;
-    while (data->tmp)
-    {
-        data->s = (t_sphere *)data->tmp->content;
-        if (intersect_ray_sphere(data->shadow_ray, data->s, &t_sphere_shadow) &&
-            t_sphere_shadow < vec_dot(vec_sub(data->light->position, render->hit),
-                vec_sub(data->light->position, render->hit)))
-            in_shadow = 1;
-        data->tmp = data->tmp->next;
-    }
-    return (in_shadow);
+	v->a = vec_dot(v->m, v->m);
+	v->b = 2.0 * vec_dot(v->m, v->n);
+	v->c = vec_dot(v->n, v->n) - v->r * v->r;
+	v->disc = v->b * v->b - 4 * v->a * v->c;
+	if (v->disc < 0.0 || fabs(v->a) < EPS)
+		return (0);
+	sd = sqrt(v->disc);
+	v->t0 = (-v->b - sd) / (2.0 * v->a);
+	v->t1 = (-v->b + sd) / (2.0 * v->a);
+	if (v->t0 > EPS)
+		v->t_lat = v->t0;
+	else
+		v->t_lat = INF;
+	if (v->t1 > EPS && v->t1 < v->t_lat)
+		v->t_lat = v->t1;
+	return (1);
 }
 
-int shadow_plane_check(t_render *render, t_data *data)
+static void	check_lateral(t_cyl_vars *v, t_ray ray, t_cylinder cyl)
 {
-    float plane;
-    float dist_light;
-    int in_shadow = 0;
+	t_vector	p;
+	double		y;
 
-    // Calcula distância da luz ao ponto de interseção
-    dist_light = vec_dist(data->light->position, render->hit);
-
-    // Raio de sombra com pequeno offset na direção da normal
-    data->shadow_ray = (t_ray){
-        vec_add(render->hit, vec_scale(render->normal, 0.001)),
-        vec_normalize(render->light_dir)
-    };
-
-    // Verifica todos os planos
-    data->tmp = data->plane_l;
-    while (data->tmp)
-    {
-        data->p = (t_plane *)data->tmp->content;
-        plane = intersect_ray_plane(&data->shadow_ray.origin, &data->shadow_ray.direction, data->p);
-        if (plane > EPS && plane < dist_light)
-        {
-            in_shadow = 1;
-            break;
-        }
-        data->tmp = data->tmp->next;
-    }
-    return in_shadow;
+	if (v->t_lat < INF)
+	{
+		p = vec_add(ray.origin, vec_scale(ray.direction, v->t_lat));
+		y = vec_dot(v->d, vec_sub(p, cyl.center));
+		if (y >= -v->halfh && y <= v->halfh)
+		{
+			v->t_min = v->t_lat;
+			v->hit = 1;
+		}
+	}
 }
 
-
-int shadow_cylinders_check(t_render *render, t_data *data)
+static void	check_caps(t_cyl_vars *v, t_ray ray, t_cylinder cyl)
 {
-    float dist_light;
-    int in_shadow;
+	double		denom;
+	t_vector	cc;
+	double		tc;
+	t_vector	pcap;
+	int			s;
 
-    in_shadow = 0;
-    dist_light = vec_dist(data->light->position, render->hit);
-    // Raio de sombra com pequeno offset na direção da normal
-    data->shadow_ray = (t_ray){vec_add(render->hit, 
-        vec_scale(render->normal, 0.001)), render->light_dir};
+	denom = vec_dot(ray.direction, v->d);
+	if (fabs(denom) < EPS)
+		return ;
+	s = -1;
+	while (s <= 1)
+	{
+		cc = vec_add(cyl.center, vec_scale(v->d, s * v->halfh));
+		tc = vec_dot(vec_sub(cc, ray.origin), v->d) / denom;
+		if (tc > EPS && tc < v->t_min)
+		{
+			pcap = vec_add(ray.origin, vec_scale(ray.direction, tc));
+			if (vec_dot(vec_sub(pcap, cc), vec_sub(pcap, cc)) <= v->r * v->r)
+			{
+				v->t_min = tc;
+				v->hit = 1;
+			}
+		}
+		s += 2;
+	}
+}
 
-    // Verifica interseção com esfera
-    data->tmp = data->cylinder_l;
-    while (data->tmp)
-    {
-        data->c = (t_cylinder *)data->tmp->content;
-        if (intersect_cylinder(data->shadow_ray, *data->c, &data->c->tc)
-            && data->c->tc > EPS && data->c->tc < dist_light)
-            in_shadow = 1;
-        data->tmp = data->tmp->next;
-    }
-    return (in_shadow);
+int	intersect_cylinder(t_ray ray, t_cylinder cyl, double *t_out)
+{
+	t_cyl_vars	v;
+
+	ft_bzero(&v, 0);
+	init_cyl_vars(&v, ray, cyl);
+	if (!solve_quadratic(&v))
+		return (0);
+	v.hit = 0;
+	v.t_min = INF;
+	check_lateral(&v, ray, cyl);
+	check_caps(&v, ray, cyl);
+	if (!v.hit)
+		return (0);
+	*t_out = v.t_min;
+	return (1);
 }

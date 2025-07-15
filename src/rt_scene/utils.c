@@ -6,84 +6,90 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:52:28 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/11 12:59:14 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/15 13:15:27 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-int get_ray_direction(int x, int y, int width, int height, t_data *data)
+// utilitário: distância ponto-a-ponto
+float	vec_dist(t_vector a, t_vector b)
 {
-    double aspect_ratio = (double)width / height;
-    double fov_radians = data->camera->fov * M_PI / 180.0;
-    double scale = tan(fov_radians / 2.0);
+	t_vector	d;
 
-    // Coordenadas normalizadas da tela (px, py) de -1 a +1
-    double px = (2.0 * ((double)x + 0.5) / width - 1.0) * aspect_ratio * scale;
-    double py = (1.0 - 2.0 * ((double)y + 0.5) / height) * scale;
-
-    // Base da câmera
-    t_vector forward = vec_normalize(data->camera->direction);
-    t_vector world_up = {0, 1, 0};
-    t_vector right = vec_normalize(cross(forward, world_up));
-    t_vector up = vec_normalize(cross(right, forward));
-
-    // Direção do raio combinando os vetores
-    t_vector ray_direction = vec_add(
-        vec_add(vec_scale(right, px), vec_scale(up, py)),
-        forward
-    );
-
-    data->ray.origin = data->camera->origin;
-    data->ray.direction = vec_normalize(ray_direction);
-    return 0;
+	d.x = a.x - b.x;
+	d.y = a.y - b.y;
+	d.z = a.z - b.z;
+	return (sqrtf(d.x * d.x + d.y * d.y + d.z * d.z));
 }
 
-
-/*int get_ray_direction(int x, int y, int width, int height, t_data *data)
+int	get_ray_direction(int *xy, int width, int height, t_data *data)
 {
-    double  aspect_ratio;
+	double		ar_fov_scale[3];
+	double		p[2];
+	t_vector	forward;
+	t_vector	world_up;
+	t_vector	right;
+	t_vector	up;
+	t_vector	ray_direction;
 
-    aspect_ratio = (double)width / height;
-    data->ray.direction.x = (2.0 * x / width - 1.0) * aspect_ratio; // Normaliza x para [-aspect, aspect]
-    data->ray.direction.y = 1.0 - 2.0 * y / height;      // Normaliza y para [-1, 1]
-    data->ray.direction.z = -1.0;                           // Direção Z (para frente).
-    data->ray.origin = data->camera->origin;
-    return (0);
-}*/
-
-t_color calc_ambient(t_color *c, t_ambient *ambient)
-{
-    t_color out;
-
-    out.r =(int) c->r * (ambient->color.r / 255.0) * ambient->ratio;
-    out.g =(int) c->g * (ambient->color.g / 255.0) * ambient->ratio;
-    out.b =(int) c->b * (ambient->color.b / 255.0) * ambient->ratio;
-    
-    if (out.r > 255) out.r = 255;
-    if (out.g > 255) out.g = 255;
-    if (out.b > 255) out.b = 255;
-    if (out.r < 0) out.r = 0;
-    if (out.g < 0) out.g = 0;
-    if (out.b < 0) out.b = 0;
-
-    return (out);
+	ar_fov_scale[0] = (double)width / height;
+	ar_fov_scale[1] = data->camera->fov * PI / 180.0;
+	ar_fov_scale[2] = tan(ar_fov_scale[1] / 2.0);
+	p[0] = (2.0 * ((double)xy[1] + 0.5) / width - 1.0) * ar_fov_scale[0]
+		* ar_fov_scale[2];
+	p[1] = (1.0 - 2.0 * ((double)xy[0] + 0.5) / height) * ar_fov_scale[2];
+	forward = vec_normalize(data->camera->direction);
+	world_up.x = 0;
+	world_up.y = 1;
+	world_up.z = 0;
+	right = vec_normalize(cross(forward, world_up));
+	up = vec_normalize(cross(right, forward));
+	ray_direction = vec_add(vec_add(vec_scale(right, p[0]), vec_scale(up,
+					p[1])), forward);
+	data->ray.origin = data->camera->origin;
+	data->ray.direction = vec_normalize(ray_direction);
+	return (0);
 }
 
-t_color ambient_light(t_color *src, double intensity, t_ambient *ambient)
+t_color	calc_ambient(t_color *c, t_ambient *ambient)
 {
-    t_color dif;
-    t_color amb;
-    t_color out;
+	t_color	out;
 
-    dif = scale_color(*src, intensity);
-    amb = calc_ambient(src, ambient);
+	out.r = (int)c->r * (ambient->color.r / 255.0) * ambient->ratio;
+	out.g = (int)c->g * (ambient->color.g / 255.0) * ambient->ratio;
+	out.b = (int)c->b * (ambient->color.b / 255.0) * ambient->ratio;
+	if (out.r > 255)
+		out.r = 255;
+	if (out.g > 255)
+		out.g = 255;
+	if (out.b > 255)
+		out.b = 255;
+	if (out.r < 0)
+		out.r = 0;
+	if (out.g < 0)
+		out.g = 0;
+	if (out.b < 0)
+		out.b = 0;
+	return (out);
+}
 
-    out.r = dif.r + amb.r;
-    out.g = dif.g + amb.g;
-    out.b = dif.b + amb.b;
-    if (out.r > 255) out.r = 255;
-    if (out.g > 255) out.g = 255;
-    if (out.b > 255) out.b = 255;
-    return (out);
+t_color	ambient_light(t_color *src, double intensity, t_ambient *ambient)
+{
+	t_color	dif;
+	t_color	amb;
+	t_color	out;
+
+	dif = scale_color(*src, intensity);
+	amb = calc_ambient(src, ambient);
+	out.r = dif.r + amb.r;
+	out.g = dif.g + amb.g;
+	out.b = dif.b + amb.b;
+	if (out.r > 255)
+		out.r = 255;
+	if (out.g > 255)
+		out.g = 255;
+	if (out.b > 255)
+		out.b = 255;
+	return (out);
 }

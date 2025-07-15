@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/11 09:47:37 by fjilaias          #+#    #+#              #
-#    Updated: 2025/07/10 09:35:42 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/07/15 10:39:59 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,10 +33,13 @@ SRCS =  ./src/main.c \
 		./src/rt_scene/shadow_checkers.c \
 		./src/rt_scene/utils.c \
 		./src/rt_render/render.c \
+		./src/rt_render/utils.c \
 		./src/rt_hooks/hooks.c \
 		./src/rt_free_up/free_up.c \
 		./src/rt_free_up/allocate_mem.c \
 		./src/rt_free_up/free_mem.c \
+		./src/rt_hooks/utils.c \
+		./src/rt_hooks/hooks_2.c \
 
 MINILIBX = -L ./minilibx-linux -lmlx -lXext -lX11 -lm
 
@@ -44,7 +47,7 @@ LIBPF = -L ./libft -lft
 
 OBJS = $(SRCS:.c=.o)
 
-all: $(NAME)  
+all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(MAKE) -C ./libft
