@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 09:46:32 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:15:11 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ int	main(int ac, char **av)
 	data.mlx = mlx_init();
 	data.win = mlx_new_window(data.mlx, WIDTH, HEIGHT, "miniRT");
 	init_image(&data.img, data.mlx, WIDTH, HEIGHT);
-	data.camera->dir = look_at(data.camera->origin, (t_vector){0, 1, 0});
 	render_scene(&data);
 	guide();
 	mlx_hook(data.win, 2, 1L << 0, key_press, &data);

@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/02/11 09:47:37 by fjilaias          #+#    #+#              #
-#    Updated: 2025/07/15 16:28:50 by fjilaias         ###   ########.fr        #
+#    Created: 2025/07/15 16:47:54 by fjilaias          #+#    #+#              #
+#    Updated: 2025/07/16 15:50:24 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,14 +14,16 @@ NAME = miniRT
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra  -I./minilibx-linux
-
-RM = rm -f
+CFLAGS = -Wall -Werror -Wextra -I./header \
+         -I./libft \
+         -I./minilibx-linux \
 
 SRCS =  ./src/main.c \
 		./src/rt_utils/gnl.c \
+		./src/rt_utils/gnl_utils.c \
 		./src/rt_in/read_file.c \
 		./src/rt_in/utils.c \
+		./src/rt_in/validate.c \
 		./src/rt_in/parse_elements.c \
 		./src/rt_utils/conv.c \
 		./src/rt_utils/utils.c \

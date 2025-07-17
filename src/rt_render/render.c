@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:47:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/16 16:52:31 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:43:00 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,30 +23,28 @@ int	is_blank_line(const char *s)
 	return (1);
 }
 
-int	render_element(t_render *render, t_data *data, t_object_type type,
-		float element)
+int	render_element(t_render *r, t_data *data, t_object_type type, float element)
 {
-	render->hit = vec_add(data->ray.origin, vec_scale(data->ray.direction,
-				element));
+	r->hit = vec_add(data->ray.origin, vec_scale(data->ray.direction, element));
 	if (type == SPHERE)
 	{
-		render->normal = vec_normalize(vec_sub(render->hit,
-					data->sphere->center));
-		render->light_dir = vec_normalize(vec_sub(data->light->position,
-					render->hit));
-		sphere_shadow_check(render, data);
+		r->normal = vec_normalize(vec_sub(r->hit, data->sphere->center));
+		r->light_dir = vec_normalize(vec_sub(data->light->position, r->hit));
+		sphere_shadow_check(r, data);
 	}
 	else if (type == PLANE)
 	{
-		render->normal = data->plane->normalized;
-		render->light_dir = vec_normalize(vec_sub(data->light->position,
-					render->hit));
-		plane_shadow_check(render, data);
+		if (vec_dot(data->ray.direction, data->plane->normalized) > 0)
+			r->normal = vec_scale(data->plane->normalized, -1.0);
+		else
+			r->normal = data->plane->normalized;
+		r->light_dir = vec_normalize(vec_sub(data->light->position, r->hit));
+		plane_shadow_check(r, data);
 	}
 	else if (type == CYLINDER)
 	{
-		cylinder_normal(render, data, element);
-		cylinder_shadow_check(render, data);
+		cylinder_normal(r, data, element);
+		cylinder_shadow_check(r, data);
 	}
 	return (1);
 }

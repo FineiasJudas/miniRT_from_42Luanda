@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 13:41:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/16 11:24:03 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:54:54 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,21 @@ static void	select_next_type(t_data *data)
 
 void	select_next_object(t_data *data)
 {
-	if (data->selected_node && data->selected_node->next)
-		set_selected_object(data, data->selected_type,
-			data->selected_node->next);
-	else
-		select_next_type(data);
+	int	tries;
+
+	tries = 0;
+	if (data->selected_type == NONE)
+		set_selected_object(data, SPHERE, data->sphere_l);
+	while (tries++ < 4)
+	{
+		if (data->selected_node && data->selected_node->next)
+			set_selected_object(data, data->selected_type,
+				data->selected_node->next);
+		else
+			select_next_type(data);
+		if (data->selected_node)
+			break ;
+	}
 	if (!data->selected_node)
 	{
 		data->selected_type = NONE;
@@ -48,14 +58,7 @@ void	select_next_object(t_data *data)
 		printf("Nada selecionado\n");
 		return ;
 	}
-	if (data->selected_type == SPHERE)
-		printf("Selecionou esfera\n");
-	else if (data->selected_type == CYLINDER)
-		printf("Selecionou cilindro\n");
-	else if (data->selected_type == PLANE)
-		printf("Selecionou plano\n");
-	else if (data->selected_type == LIGHT)
-		printf("Selecionou luz\n");
+	object_log(data);
 }
 
 int	is_any_object_selected(t_data *data)

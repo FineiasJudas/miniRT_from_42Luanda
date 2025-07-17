@@ -6,25 +6,25 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 16:46:18 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:47:01 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
 # define MINIRT_H
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
-# endif
-
 # ifndef PI
 #  define PI 3.14159265358979323846
+# endif
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
 # endif
 
 # define WIDTH 800
 # define HEIGHT 600
 # define EPS 1e-4
-# define INF 1e30
+# define INF 1e30	
 
 # include "../libft/libft.h"
 # include "minirt.h"
@@ -50,6 +50,14 @@ typedef struct s_vector
 	double			y;
 	double			z;
 }					t_vector;
+
+typedef struct s_rotate_v
+{
+	t_vector		r;
+	double			cos_a;
+	double			sin_a;
+}	t_rotate_v;
+
 
 typedef struct s_cyl_vars
 {
@@ -163,6 +171,7 @@ typedef struct s_data
 
 	t_plane			*plane;
 	t_sphere		*sphere;
+	t_sphere		*light_s;
 	t_light			*light;
 	t_cylinder		*cylinder;
 	t_list			*plane_l;
@@ -181,12 +190,14 @@ typedef struct s_data
 	t_object_type	selected_type;
 	void			*selected_obj;
 
+	t_rotate_v		rot;
+
 	char			*filename;
 	char			*line;
 	char			**tokens;
 	int				fd;
-	int				line_count;
 	int				invalid_line;
+	char			**matrix;
 }					t_data;
 
 char				*get_next_line(int fd);
@@ -243,7 +254,7 @@ int					file_line_counter(int fd, t_data *data);
 int					ft_strcmp(const char *s1, const char *s2);
 int					identify_and_process(char **tokens, t_data *data);
 int					process_line(char *line, t_data *data);
-int					read_and_process_lines(int fd, t_data *data);
+int					read_and_process_lines(t_data *data);
 int					close_window(t_data *data);
 int					resize_window(int width, int height, t_data *data);
 int					camera_move(int keycode, t_data *data);
@@ -258,7 +269,8 @@ void				collect_env_mem(char **env_table);
 void				free_mem(t_list **list);
 t_list				**get_mem_address(void);
 t_vector			look_at(t_vector from, t_vector to);
-t_vector			rotate_vector(t_vector v, char axis, double angle);
+t_vector			rotate_vector(t_data *data, t_vector v, char axis, double angle);
+int					is_blank_line(const char *s);
 int					plane_move(int keycode, t_plane *p, t_data *data);
 int					sphere_move(int keycode, t_sphere *s, t_data *data);
 void				cylinder_move(int keycode, t_cylinder *c, t_data *data);
@@ -267,5 +279,11 @@ int					camera_move(int keycode, t_data *data);
 int					any_object_moviment_key(int keycode);
 int					any_camera_moviment_key(int keycode);
 void				print_log(t_object_type type, t_data *data);
+void				gnl_free_stash(void);
+char				*m_strjoin(char *s1, char *s2);
+char				*m_strchr(char *s, int c);
+size_t				m_strlen(char *str);
+void				object_log(t_data *data);
+char				**read_file_into_matrix(int fd, int *out_count, t_data *data);
 
 #endif

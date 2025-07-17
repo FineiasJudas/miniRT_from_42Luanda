@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:48:53 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 09:31:24 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:41:27 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,3 @@ void	put_pixel(t_image *img, int x, int y, t_color color)
 	dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
 	*(unsigned int *)dst = color_to_int(color);
 }
-
-// total heap usage: 671 allocs, 652 frees, 144,005 bytes allocated
-// total heap usage: 669 allocs, 648 frees, 143,973 bytes allocated
-// total heap usage: 669 allocs, 649 frees, 143,973 bytes allocated
-// total heap usage: 669 allocs, 654 frees, 143,973 bytes allocated
-// total heap usage: 659 allocs, 634 frees, 143,813 bytes allocated

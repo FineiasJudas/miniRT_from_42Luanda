@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 10:37:06 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 09:11:12 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:00:46 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ static int	check_planes(t_data *d, double *t_min)
 			*t_min = d->p->tp;
 			d->hit_type = PLANE;
 			d->plane = d->p;
-			d->render->normal = d->p->normalized;
 		}
 		d->tmp = d->tmp->next;
 	}

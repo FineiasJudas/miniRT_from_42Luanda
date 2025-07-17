@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:43:49 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 09:09:45 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 14:34:14 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,16 @@ int	any_camera_moviment_key(int keycode)
 		|| keycode == 'i' || keycode == 'k')
 		return (1);
 	return (0);
+}
+
+void	object_log(t_data *data)
+{
+	if (data->selected_type == SPHERE)
+		printf("Selecionou esfera\n");
+	else if (data->selected_type == CYLINDER)
+		printf("Selecionou cilindro\n");
+	else if (data->selected_type == PLANE)
+		printf("Selecionou plano\n");
+	else if (data->selected_type == LIGHT)
+		printf("Selecionou luz\n");
 }

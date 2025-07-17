@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:10:35 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 08:55:53 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 15:01:43 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,17 +122,17 @@ int	camera_move(int keycode, t_data *data)
 int	light_move(int keycode, t_light *light, t_data *data)
 {
 	if (keycode == 65361)
-		light->position.x -= 0.5;
+		light->position.x -= 0.3;
 	else if (keycode == 65363)
-		light->position.x += 0.5;
+		light->position.x += 0.3;
 	else if (keycode == 65362)
-		light->position.y += 0.5;
+		light->position.y += 0.3;
 	else if (keycode == 65364)
-		light->position.y -= 0.5;
+		light->position.y -= 0.3;
 	else if (keycode == 'n')
-		light->position.z += 0.5;
+		light->position.z += 0.3;
 	else if (keycode == 'u')
-		light->position.z -= 0.5;
+		light->position.z -= 0.3;
 	data->light_s->center.x = light->position.x;
 	data->light_s->center.x = light->position.x;
 	data->light_s->center.y = light->position.y;
