@@ -6,39 +6,37 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:26:36 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:35:25 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 09:05:57 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-t_vector	rotate_vector(t_vector v, char axis, double angle)
+t_vector	rotate_vector(t_data *data, t_vector v, char axis, double angle)
 {
-	t_vector	r;
-	double		cos_a;
-	double		sin_a;
-
-	cos_a = cos(angle);
-	sin_a = sin(angle);
+	data->rot.cos_a = cos(angle);
+	data->rot.sin_a = sin(angle);
 	if (axis == 'x')
 	{
-		r.x = v.x;
-		r.y = v.y * cos_a - v.z * sin_a;
-		r.z = v.y * sin_a + v.z * cos_a;
+		data->rot.r.x = v.x;
+		data->rot.r.y = v.y * data->rot.cos_a - v.z * data->rot.sin_a;
+		data->rot.r.z = v.y * data->rot.sin_a + v.z * data->rot.cos_a;
 	}
 	else if (axis == 'y')
 	{
-		r.x = v.x * cos_a + v.z * sin_a;
-		r.y = v.y;
-		r.z = -v.x * sin_a + v.z * cos_a;
+		data->rot.r.x = v.x * data->rot.cos_a + v.z * data->rot.sin_a;
+		data->rot.r.y = v.y;
+		data->rot.r.z = -v.x * data->rot.sin_a + v.z * data->rot.cos_a;
 	}
 	else if (axis == 'z')
 	{
-		r.x = v.x * cos_a - v.y * sin_a;
-		r.y = v.x * sin_a + v.y * cos_a;
-		r.z = v.z;
+		data->rot.r.x = v.x * data->rot.cos_a - v.y * data->rot.sin_a;
+		data->rot.r.y = v.x * data->rot.sin_a + v.y * data->rot.cos_a;
+		data->rot.r.z = v.z;
 	}
-	return (r);
+	else
+		data->rot.r = (t_vector){0, 0, 0};
+	return (data->rot.r);
 }
 
 t_vector	look_at(t_vector from, t_vector to)

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:34:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 10:00:57 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/16 16:09:33 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,32 +69,4 @@ int	is_first_word_one_of(char *line)
 			2) == 0 || ft_strncmp(first_word, "cy", 2) == 0)
 		return (1);
 	return (0);
-}
-
-int	file_line_counter(int fd, t_data *data)
-{
-	char	*line;
-	int		count;
-
-	count = 0;
-	while (1)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		if (ft_strlen(line) < 1 || line[0] == '\n' || line[0] == '#')
-		{
-			free(line);
-			continue ;
-		}
-		if (is_first_word_one_of(line))
-			count++;
-		else
-		{
-			fprintf(stderr, "Erro\nLinha(s) inválida(s)\n");
-			data->invalid_line = 1;
-		}
-		free(line);
-	}
-	return (count);
 }

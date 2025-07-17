@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 10:11:18 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:43:24 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/16 11:54:30 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,17 @@ int	parse_light(char **tokens, t_data *light)
 	if (!tokens[1] || !tokens[2] || !tokens[3])
 		return (0);
 	light->light = (t_light *)malloc(sizeof(t_light));
-	if (!light->light)
+	light->light_s = (t_sphere *)malloc(sizeof(t_sphere));
+	if (!light->light || !light->light_s)
 		return (0);
 	collect_mem(light->light);
+	collect_mem(light->light_s);
 	light->light->position = conv_vector(tokens[1]);
 	light->light->brightness = float_convert(tokens[2]);
 	light->light->color = conv_color(tokens[3]);
+	light->light_s->center = light->light->position;
+	light->light_s->radius = 0.2;
+	light->light_s->color = light->light->color;
 	add_to_scene_list(&light->lights_l, light->light);
 	return (1);
 }

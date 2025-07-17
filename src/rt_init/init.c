@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:48:53 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 15:44:09 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 09:31:24 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	aux_create_data(t_data *data)
 	data->img.width = 0;
 	data->img.height = 0;
 	data->invalid_line = 0;
-	data->line_count = 0;
+	data->matrix = NULL;
 }
 
 void	create_data(t_data *data)
@@ -57,6 +57,7 @@ void	create_data(t_data *data)
 	data->sphere_l = NULL;
 	data->cylinder_l = NULL;
 	data->lights_l = NULL;
+	data->light_s = NULL;
 	data->plane_l = NULL;
 	data->tmp = NULL;
 	data->c = NULL;

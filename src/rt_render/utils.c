@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 10:37:06 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 13:48:11 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 09:11:12 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,18 @@ static int	check_cylinders(t_data *d, double *t_min)
 	return (0);
 }
 
+static int	check_light_as_sphere(t_data *d, double *t_min)
+{
+	if (intersect_ray_sphere(d->ray, d->light_s, &d->light_s->ts)
+		&& d->light_s->ts < *t_min && d->light_s->ts > EPS)
+	{
+		*t_min = d->light_s->ts;
+		d->hit_type = LIGHT;
+	}
+	d->render->color = scale_color(d->light_s->color, d->light->brightness);
+	return (0);
+}
+
 int	intersect_ray_object(t_data *d)
 {
 	double	t_min;
@@ -76,6 +88,7 @@ int	intersect_ray_object(t_data *d)
 	check_spheres(d, &t_min);
 	check_planes(d, &t_min);
 	check_cylinders(d, &t_min);
+	check_light_as_sphere(d, &t_min);
 	if (t_min < INF)
 		return (render_element(d->render, d, d->hit_type, (float)t_min));
 	return (0);

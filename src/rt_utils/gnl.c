@@ -6,96 +6,103 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:22:14 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 14:35:55 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/16 15:28:24 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-static char	*extract_line(char *stash)
-{
-	int		i;
-	char	*line;
-
-	i = 0;
-	if (!stash[i])
-		return (NULL);
-	while (stash[i] && stash[i] != '\n')
-		i++;
-	if (stash[i] == '\n')
-		i++;
-	line = ft_substr(stash, 0, i);
-	return (line);
-}
-
-static char	*update_stash(char *stash)
-{
-	int		i;
-	char	*new_stash;
-
-	i = 0;
-	while (stash[i] && stash[i] != '\n')
-		i++;
-	if (stash[i] == '\n')
-		i++;
-	if (!stash[i])
-	{
-		free(stash);
-		return (NULL);
-	}
-	new_stash = ft_substr(stash, i, ft_strlen(stash) - i);
-	free(stash);
-	return (new_stash);
-}
-
-static char	*read_to_stash(int fd, char *stash)
+static char	*ler_e_salvar(int fd, char *frase)
 {
 	char	*buffer;
-	ssize_t	bytes_read;
+	int		bytes;
 
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	bytes_read = 1;
-	while (bytes_read > 0 && !ft_strchr(stash, '\n'))
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer)
+		return (NULL);
+	bytes = 1;
+	while (!m_strchr(frase, '\n') && bytes != 0)
 	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
-		{
-			free(buffer);
-			free(stash);
-			return (NULL);
-		}
-		buffer[bytes_read] = '\0';
-		stash = ft_strjoin(stash, buffer);
-		if (!stash)
+		bytes = read(fd, buffer, BUFFER_SIZE);
+		if (bytes == -1)
 		{
 			free(buffer);
 			return (NULL);
 		}
+		buffer[bytes] = '\0';
+		frase = m_strjoin(frase, buffer);
 	}
 	free(buffer);
-	return (stash);
+	return (frase);
+}
+
+static char	*pegar_linha(char *frase)
+{
+	char	*salvo;
+	int		i;
+
+	i = 0;
+	if (!frase[i])
+		return (NULL);
+	while (frase[i] && frase[i] != '\n')
+		i ++;
+	salvo = (char *)malloc(sizeof(char) * (i + 2));
+	if (!salvo)
+		return (NULL);
+	i = 0;
+	while (frase[i] && frase[i] != '\n')
+	{
+		salvo[i] = frase[i];
+		i ++;
+	}
+	if (frase[i] == '\n')
+	{
+		salvo[i] = frase[i];
+		i ++;
+	}
+	salvo[i] = '\0';
+	return (salvo);
+}
+
+static char	*salvar_resto(char *frase)
+{
+	char	*salvo;
+	int		i;
+	int		j;
+
+	i = 0;
+	while (frase[i] && frase[i] != '\n')
+		i ++;
+	if (!frase[i])
+	{
+		free(frase);
+		return (NULL);
+	}
+	salvo = (char *)malloc(sizeof(char) * (m_strlen(frase) - i + 1));
+	if (!salvo)
+		return (NULL);
+	i ++;
+	j = 0;
+	while (frase[i])
+		salvo[j++] = frase[i++];
+	salvo[j] = '\0';
+	free(frase);
+	return (salvo);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*stash;
-	char		*line;
+	char		*linha;
+	static char	*resto;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	resto = ler_e_salvar(fd, resto);
+	if (!resto)
 		return (NULL);
-	if (!stash)
-	{
-		stash = malloc(sizeof(char));
-		if (!stash)
-			return (NULL);
-		stash[0] = '\0';
-	}
-	stash = read_to_stash(fd, stash);
-	if (!stash)
-		return (NULL);
-	line = extract_line(stash);
-	stash = update_stash(stash);
-	return (line);
+	linha = pegar_linha(resto);
+	resto = salvar_resto(resto);
+	return (linha);
 }
 
 t_color	scale_color(t_color color, float factor)

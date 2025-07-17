@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 14:53:09 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 08:31:09 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,43 +76,45 @@ int	process_line(char *line, t_data *data)
 	return (result);
 }
 
-int	read_and_process_lines(int fd, t_data *data)
+void	free_matrix(char **matrix)
 {
-	int	result;
+	int	i;
 
-	result = 0;
-	data->line_count = file_line_counter(fd, data);
-	close(fd);
-	data->fd = open_rt_file(data->filename);
-	if (data->line_count < 1 || data->line_count < 6)
-		return (0 * printf("O arquivo está vazio ou sem linhas válidas\n") + 1);
-	while (1)
+	i = 0;
+	if (!matrix)
+		return ;
+	while (matrix[i] != NULL)
 	{
-		data->line = get_next_line(data->fd);
-		if (data->line)
-		{
-			result += process_line(data->line, data);
-			if (data->line)
-				free(data->line);
-		}
-		else
-			break ;
-		if (result == data->line_count)
-			return (0);
+		free(matrix[i]);
+		i++;
 	}
-	return (1);
+	free(matrix);
 }
 
 int	parse_rt_file(char *filename, t_data *data)
 {
-	int	result;
+	int		i;
+	int		line_count;
+	int		result;
+	char	**lines;
 
-	data->filename = filename;
-	data->fd = open_rt_file(data->filename);
+	result = 0;
+	line_count = 0;
+	data->fd = open_rt_file(filename);
 	if (data->fd < 0)
 		return (1);
-	result = read_and_process_lines(data->fd, data);
-	printf("Resultado da leitura do ficheiro: %d\n", result);
+	lines = read_file_into_matrix(data->fd, &line_count, data);
 	close(data->fd);
-	return (result);
+	if (!lines)
+		return (fprintf(stderr, "Erro ao ler arquivo\n"), 1);
+	if (data->invalid_line)
+	{
+		free_matrix(lines);
+		return (fprintf(stderr, "Linha com identificador inválido\n"), 1);
+	}
+	i = -1;
+	while (++i < line_count)
+		result += process_line(lines[i], data);
+	free_matrix(lines);
+	return (0);
 }

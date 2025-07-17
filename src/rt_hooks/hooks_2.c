@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:43:49 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 09:53:42 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/17 09:09:45 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,17 @@
 
 int	close_window(t_data *data)
 {
-	free_mem(get_mem_address());
 	mlx_destroy_window(data->mlx, data->win);
 	if (data->img.img_ptr)
 		mlx_destroy_image(data->mlx, data->img.img_ptr);
 	if (data->mlx)
 		mlx_destroy_display(data->mlx);
+	free(data->mlx);
 	free_list(&data->sphere_l);
 	free_list(&data->cylinder_l);
-	free(data->mlx);
+	free_list(&data->lights_l);
+	free_list(&data->plane_l);
+	free_mem(get_mem_address());
 	printf("Janela fechada e memória liberada.\n");
 	exit(0);
 }
