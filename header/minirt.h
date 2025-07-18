@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 14:47:01 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:44:41 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <ctype.h>
+# include <string.h>
+# include <stdbool.h>
+# include <errno.h>
 
 typedef enum s_object_type
 {
@@ -285,5 +289,16 @@ char				*m_strchr(char *s, int c);
 size_t				m_strlen(char *str);
 void				object_log(t_data *data);
 char				**read_file_into_matrix(int fd, int *out_count, t_data *data);
+char				*validate_ambient(char *str);
+char *trim(char *s);
+bool is_valid_double(const char* str);
+char* removeEspacosETabs(char *str);
+bool is_valid_vector3d(const char* str);
+char *validate_camera(char *str);
+bool is_valid_vector3d(const char* str);
+char *validate_light(char *str);
+bool is_valid_rgb(const char* str);
+char *validate_plane(char *str);
+
 
 #endif

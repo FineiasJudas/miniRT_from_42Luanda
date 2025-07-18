@@ -64,6 +64,7 @@
     "stdio.h": "c",
     "get_next_line.h": "c",
     "chrono": "c",
-    "functional": "c"
+    "functional": "c",
+    "ctype.h": "c"
   }
 }

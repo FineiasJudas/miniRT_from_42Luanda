@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 08:31:09 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:44:54 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,9 @@ int	parse_rt_file(char *filename, t_data *data)
 	if (data->fd < 0)
 		return (1);
 	lines = read_file_into_matrix(data->fd, &line_count, data);
+	if (lines)
+		printf("Pl - %s\n", validate_plane(lines[0]));
+	return (1);
 	close(data->fd);
 	if (!lines)
 		return (fprintf(stderr, "Erro ao ler arquivo\n"), 1);

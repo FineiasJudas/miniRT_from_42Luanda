@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:46:36 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 08:44:05 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/18 12:50:51 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,19 @@ static char	*first_token(const char *s)
 	return (tok);
 }
 
+
+
 static void	valid_identifier(const char *tok, t_data *data)
 {
 	if (ft_strncmp(tok, "sp", 2) == 0 || ft_strncmp(tok, "cy", 2) == 0
 		|| ft_strncmp(tok, "pl", 2) == 0 || ft_strncmp(tok, "A", 1) == 0
 		|| ft_strncmp(tok, "L", 1) == 0 || ft_strncmp(tok, "C", 1) == 0)
 		data->invalid_line = 0;
+	else
+	{
+		data->invalid_line = 1;
+		fprintf(stderr, "Linha inválida\n");
+	}
 }
 
 static char	**append_line(char **matrix, int *count, char *line)
@@ -76,7 +83,7 @@ char	**read_file_into_matrix(int fd, int *out_count, t_data *data)
 			valid_identifier(tok, data);
 			free(tok);
 			data->matrix = append_line(data->matrix, &count, data->line);
-			if (!data->matrix)
+			if (!data->matrix || data->invalid_line)
 			{
 				free_partial(data->matrix, count);
 				return (NULL);

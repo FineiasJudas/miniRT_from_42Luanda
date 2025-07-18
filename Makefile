@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/15 16:47:54 by fjilaias          #+#    #+#              #
-#    Updated: 2025/07/16 15:50:24 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/07/18 15:51:02 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,12 @@ SRCS =  ./src/main.c \
 		./src/rt_in/read_file.c \
 		./src/rt_in/utils.c \
 		./src/rt_in/validate.c \
+		./src/rt_in/validate_camera.c \
+		./src/rt_in/validade_diff_ligth.c \
+		./src/rt_in/validate_ambient.c \
 		./src/rt_in/parse_elements.c \
+		./src/rt_in/validade_plane.c  \
+		./src/rt_in/validade_clind.c \
 		./src/rt_utils/conv.c \
 		./src/rt_utils/utils.c \
 		./src/rt_utils/vec_operations.c \
