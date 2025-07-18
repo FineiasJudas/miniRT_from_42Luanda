@@ -27,7 +27,7 @@ bool is_valid_brightness(const char* str)
 }
 
 // Função para validar a linha da luz difusa
-char *validate_light(char *str)
+char *validate_light(char *str, t_data *data)
 {
     char *tmp;
     char *position_p = NULL;
@@ -60,14 +60,12 @@ char *validate_light(char *str)
         i ++;
     }
     if (commas != 2) {
-        free(str);
         return (NULL);
     }
     
     // Aloca position_p
     position_p = malloc(sizeof(char) * (i + 1));
     if (!position_p) {
-        free(str);
         return (NULL);
     }
     
@@ -85,7 +83,6 @@ char *validate_light(char *str)
     brightness_p = malloc(sizeof(char) * (i + 1));
     if (!brightness_p) {
         free(position_p);
-        free(str);
         return (NULL);
     }
     
@@ -103,7 +100,6 @@ char *validate_light(char *str)
         if (!out) {
             free(position_p);
             free(brightness_p);
-            free(str);
             return (NULL);
         }
         
@@ -111,7 +107,6 @@ char *validate_light(char *str)
         if (!temp) {
             free(position_p);
             free(brightness_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -121,7 +116,6 @@ char *validate_light(char *str)
         if (!temp) {
             free(position_p);
             free(brightness_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -131,7 +125,6 @@ char *validate_light(char *str)
         if (!temp) {
             free(position_p);
             free(brightness_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -141,7 +134,6 @@ char *validate_light(char *str)
         if (!temp) {
             free(position_p);
             free(brightness_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -151,7 +143,6 @@ char *validate_light(char *str)
         if (!temp) {
             free(position_p);
             free(brightness_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -162,17 +153,15 @@ char *validate_light(char *str)
     }
     else
     {
-        printf("Dados errados\n");
+        data->invalid_line = 1;
         free(position_p);
         free(brightness_p);
-        free(str);
         return (NULL);
     }
     
     // Libera memória
     free(position_p);
     free(brightness_p);
-    free(str);
     
     return (out);
 }

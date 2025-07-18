@@ -45,6 +45,8 @@ typedef enum s_object_type
 	PLANE,
 	CYLINDER,
 	LIGHT,
+	AMBIENT,
+	CAMERA,
 	NONE
 }					t_object_type;
 
@@ -289,16 +291,20 @@ char				*m_strchr(char *s, int c);
 size_t				m_strlen(char *str);
 void				object_log(t_data *data);
 char				**read_file_into_matrix(int fd, int *out_count, t_data *data);
-char				*validate_ambient(char *str);
+char				*validate_ambient(char *st, t_data *datar);
 char *trim(char *s);
 bool is_valid_double(const char* str);
 char* removeEspacosETabs(char *str);
 bool is_valid_vector3d(const char* str);
-char *validate_camera(char *str);
+char *validate_camera(char *str, t_data *data);
 bool is_valid_vector3d(const char* str);
-char *validate_light(char *str);
+char *validate_light(char *str, t_data *data);
 bool is_valid_rgb(const char* str);
-char *validate_plane(char *str);
+char *validate_plane(char *str, t_data *data);
+char *validate_sphere(char *str, t_data *data);
+char *validate_cylinder(char *str, t_data *data);
+
+
 
 
 #endif

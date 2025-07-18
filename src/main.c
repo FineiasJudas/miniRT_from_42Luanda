@@ -58,7 +58,6 @@ int	main(int ac, char **av)
 	}
 	else
 		return (1 * fprintf(stderr, "Arquivo '.rt' não inserido\n"));
-	return (0);
 	data.render = (t_render *)malloc(sizeof(t_render));
 	if (!data.render)
 		return (1 * fprintf(stderr, "Erro ao alocar memória para render\n"));

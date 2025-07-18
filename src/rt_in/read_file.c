@@ -73,6 +73,8 @@ int	process_line(char *line, t_data *data)
 		return (1);
 	result = identify_and_process(tokens, data);
 	free_tokens(tokens);
+	if (data->invalid_line)
+		return(fprintf(stderr, "Erro nos dados do arquivo\n"), 1);
 	return (result);
 }
 
@@ -91,6 +93,33 @@ void	free_matrix(char **matrix)
 	free(matrix);
 }
 
+char	*identify_type(char *line, t_data *data)
+{
+	char	*result;
+	char	**tokens;
+
+	if (!line || ft_strlen(line) < 1)
+		return (NULL);
+	tokens = ft_split(line, ' ');
+	if (!tokens || !tokens[0])
+		return (NULL);
+	result = 0;
+	if (ft_strncmp(tokens[0], "A", 1) == 0)
+		result = validate_ambient(line, data);
+	else if (ft_strncmp(tokens[0], "C", 1) == 0)
+		result = validate_camera(line, data);
+	else if (ft_strncmp(tokens[0], "L", 1) == 0)
+		result = validate_light(line, data);
+	else if (ft_strncmp(tokens[0], "sp", 2) == 0)
+		result = validate_sphere(line, data);
+	else if (ft_strncmp(tokens[0], "pl", 2) == 0)
+		result = validate_plane(line, data);
+	else if (ft_strncmp(tokens[0], "cy", 2) == 0)
+		result = validate_cylinder(line, data);
+	free_matrix(tokens);
+	return (result);
+}
+
 int	parse_rt_file(char *filename, t_data *data)
 {
 	int		i;
@@ -104,9 +133,6 @@ int	parse_rt_file(char *filename, t_data *data)
 	if (data->fd < 0)
 		return (1);
 	lines = read_file_into_matrix(data->fd, &line_count, data);
-	if (lines)
-		printf("Pl - %s\n", validate_plane(lines[0]));
-	return (1);
 	close(data->fd);
 	if (!lines)
 		return (fprintf(stderr, "Erro ao ler arquivo\n"), 1);
@@ -117,7 +143,7 @@ int	parse_rt_file(char *filename, t_data *data)
 	}
 	i = -1;
 	while (++i < line_count)
-		result += process_line(lines[i], data);
+		result += process_line(identify_type(lines[i], data), data);
 	free_matrix(lines);
 	return (0);
 }

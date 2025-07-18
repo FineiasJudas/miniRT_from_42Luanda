@@ -12,8 +12,22 @@
 
 #include "minirt.h"
 
+// Função para validar um double positivo (usado para diâmetro e altura)
+bool is_valid_positive_double(const char* str)
+{
+    if (!is_valid_double(str))
+        return false;
+    
+    char* endptr;
+    double value = strtod(str, &endptr);
+    if (value <= 0.0)
+        return false;
+    
+    return true;
+}
+
 // Função para validar a linha do cilindro
-char *validate_cylinder(char *str)
+char *validate_cylinder(char *str, t_data *data)
 {
     char *tmp;
     char *center_p = NULL;
@@ -27,7 +41,6 @@ char *validate_cylinder(char *str)
 
     // Verifica se str é válido e começa com 'cy'
     if (!str || !strstr(str, "cy")) {
-        free(str);
         return (NULL);
     }
 
@@ -35,7 +48,7 @@ char *validate_cylinder(char *str)
     tmp = trim(strstr(str, "cy") + 2);
     
     // Calcula o tamanho da parte do vetor de centro
-   while (tmp[i])
+    while (tmp[i])
     {
         if (commas == 2 && ft_isalnum(tmp[i]))
         {
@@ -48,14 +61,12 @@ char *validate_cylinder(char *str)
         i ++;
     }
     if (commas != 2) {
-        free(str);
         return (NULL);
     }
     
     // Aloca center_p
     center_p = malloc(sizeof(char) * (i + 1));
     if (!center_p) {
-        free(str);
         return (NULL);
     }
     
@@ -68,7 +79,7 @@ char *validate_cylinder(char *str)
     commas = 0;
     
     // Calcula o tamanho da parte do vetor normal
-    while (next[i])
+   while (next[i])
     {
         if (commas == 2 && ft_isalnum(next[i]))
         {
@@ -82,7 +93,6 @@ char *validate_cylinder(char *str)
     }
     if (commas != 2) {
         free(center_p);
-        free(str);
         return (NULL);
     }
     
@@ -90,7 +100,6 @@ char *validate_cylinder(char *str)
     normal_p = malloc(sizeof(char) * (i + 1));
     if (!normal_p) {
         free(center_p);
-        free(str);
         return (NULL);
     }
     
@@ -109,7 +118,6 @@ char *validate_cylinder(char *str)
     if (!diameter_p) {
         free(center_p);
         free(normal_p);
-        free(str);
         return (NULL);
     }
     
@@ -129,7 +137,6 @@ char *validate_cylinder(char *str)
         free(center_p);
         free(normal_p);
         free(diameter_p);
-        free(str);
         return (NULL);
     }
     
@@ -151,7 +158,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             return (NULL);
         }
         
@@ -161,7 +167,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -185,7 +190,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -197,7 +201,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -209,7 +212,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -221,7 +223,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -233,7 +234,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -245,7 +245,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -257,8 +256,6 @@ char *validate_cylinder(char *str)
             free(normal_p);
             free(diameter_p);
             free(height_p);
-            free(str);
-            free(out);
             return (NULL);
         }
         out = temp;
@@ -268,12 +265,11 @@ char *validate_cylinder(char *str)
     }
     else
     {
-        printf("Dados errados\n");
+        data->invalid_line = 1;
         free(center_p);
         free(normal_p);
         free(diameter_p);
         free(height_p);
-        free(str);
         return (NULL);
     }
     
@@ -282,7 +278,6 @@ char *validate_cylinder(char *str)
     free(normal_p);
     free(diameter_p);
     free(height_p);
-    free(str);
     
     return (out);
 }

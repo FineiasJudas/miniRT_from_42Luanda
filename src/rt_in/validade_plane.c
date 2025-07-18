@@ -13,7 +13,7 @@
 #include "minirt.h"
 
 // Função para validar a linha do plano
-char *validate_plane(char *str)
+char *validate_plane(char *str, t_data *data)
 {
     char *tmp;
     char *position_p = NULL;
@@ -22,12 +22,6 @@ char *validate_plane(char *str)
     char *out = NULL;
     int i = 0;
     int commas = 0;
-
-    // Verifica se str é válido e começa com 'pl'
-    if (!str || !strstr(str, "pl")) {
-        free(str);
-        return (NULL);
-    }
 
     // Trim da parte após o 'pl'
     tmp = trim(strstr(str, "pl") + 2);
@@ -46,14 +40,12 @@ char *validate_plane(char *str)
         i ++;
     }
     if (commas != 2) {
-        free(str);
         return (NULL);
     }
     
     // Aloca position_p
     position_p = malloc(sizeof(char) * (i + 1));
     if (!position_p) {
-        free(str);
         return (NULL);
     }
     
@@ -80,7 +72,6 @@ char *validate_plane(char *str)
     }
     if (commas != 2) {
         free(position_p);
-        free(str);
         return (NULL);
     }
     
@@ -88,7 +79,6 @@ char *validate_plane(char *str)
     normal_p = malloc(sizeof(char) * (i + 1));
     if (!normal_p) {
         free(position_p);
-        free(str);
         return (NULL);
     }
     
@@ -106,7 +96,6 @@ char *validate_plane(char *str)
         if (!out) {
             free(position_p);
             free(normal_p);
-            free(str);
             return (NULL);
         }
         
@@ -114,7 +103,6 @@ char *validate_plane(char *str)
         if (!temp) {
             free(position_p);
             free(normal_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -124,7 +112,6 @@ char *validate_plane(char *str)
         if (!temp) {
             free(position_p);
             free(normal_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -134,7 +121,6 @@ char *validate_plane(char *str)
         if (!temp) {
             free(position_p);
             free(normal_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -144,7 +130,6 @@ char *validate_plane(char *str)
         if (!temp) {
             free(position_p);
             free(normal_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -154,7 +139,6 @@ char *validate_plane(char *str)
         if (!temp) {
             free(position_p);
             free(normal_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -165,17 +149,15 @@ char *validate_plane(char *str)
     }
     else
     {
-        printf("Dados errados\n");
+        data->invalid_line = 1;
         free(position_p);
         free(normal_p);
-        free(str);
         return (NULL);
     }
     
     // Libera memória
     free(position_p);
     free(normal_p);
-    free(str);
     
     return (out);
 }

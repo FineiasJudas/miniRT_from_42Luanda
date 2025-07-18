@@ -29,7 +29,8 @@ SRCS =  ./src/main.c \
 		./src/rt_in/validate_ambient.c \
 		./src/rt_in/parse_elements.c \
 		./src/rt_in/validade_plane.c  \
-		./src/rt_in/validade_clind.c \
+		./src/rt_in/validade_cylind.c \
+		./src/rt_in/validate_sphere.c \
 		./src/rt_utils/conv.c \
 		./src/rt_utils/utils.c \
 		./src/rt_utils/vec_operations.c \

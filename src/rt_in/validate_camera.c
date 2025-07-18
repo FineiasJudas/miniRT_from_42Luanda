@@ -76,7 +76,7 @@ bool is_valid_fov(const char* str)
 }
 
 // Função para validar a linha da câmera
-char *validate_camera(char *str)
+char *validate_camera(char *str, t_data *data)
 {
     char *tmp;
     char *origin_p = NULL;
@@ -85,12 +85,6 @@ char *validate_camera(char *str)
     char *out = NULL;
     int i = 0;
     int commas = 0;
-
-    // Verifica se str é válido e começa com 'C'
-    if (!str || !strchr(str, 'C')) {
-        free(str);
-        return (NULL);
-    }
 
     // Trim da parte após o 'C'
     tmp = trim(strchr(str, 'C') + 1);
@@ -109,14 +103,12 @@ char *validate_camera(char *str)
         i ++;
     }
     if (commas != 2) {
-        free(str);
         return (NULL);
     }
     
     // Aloca origin_p
     origin_p = malloc(sizeof(char) * (i + 1));
     if (!origin_p) {
-        free(str);
         return (NULL);
     }
     
@@ -141,7 +133,6 @@ char *validate_camera(char *str)
     }
     if (commas != 2) {
         free(origin_p);
-        free(str);
         return (NULL);
     }
     
@@ -149,7 +140,6 @@ char *validate_camera(char *str)
     direction_p = malloc(sizeof(char) * (i + 1));
     if (!direction_p) {
         free(origin_p);
-        free(str);
         return (NULL);
     }
     
@@ -167,7 +157,6 @@ char *validate_camera(char *str)
         if (!out) {
             free(origin_p);
             free(direction_p);
-            free(str);
             return (NULL);
         }
         
@@ -175,7 +164,6 @@ char *validate_camera(char *str)
         if (!temp) {
             free(origin_p);
             free(direction_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -185,7 +173,6 @@ char *validate_camera(char *str)
         if (!temp) {
             free(origin_p);
             free(direction_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -195,7 +182,6 @@ char *validate_camera(char *str)
         if (!temp) {
             free(origin_p);
             free(direction_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -205,7 +191,6 @@ char *validate_camera(char *str)
         if (!temp) {
             free(origin_p);
             free(direction_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -215,7 +200,6 @@ char *validate_camera(char *str)
         if (!temp) {
             free(origin_p);
             free(direction_p);
-            free(str);
             free(out);
             return (NULL);
         }
@@ -226,17 +210,15 @@ char *validate_camera(char *str)
     }
     else
     {
-        printf("Dados errados\n");
+        data->invalid_line = 1;
         free(origin_p);
         free(direction_p);
-        free(str);
         return (NULL);
     }
     
     // Libera memória
     free(origin_p);
     free(direction_p);
-    free(str);
     
     return (out);
 }

@@ -92,7 +92,7 @@ char* removeEspacosETabs(char *str)
     return str;
 }
 
-char *validate_ambient(char *str)
+char *validate_ambient(char *str, t_data *data)
 {
     int i = 0;
     char *tmp;
@@ -145,12 +145,11 @@ char *validate_ambient(char *str)
     }
     else
     {
-        printf("Dados errados\n");
+        data->invalid_line = 1;
         free(double_p);
         return (NULL); // Retorna NULL em caso de erro
     }
     free(double_p);
     // Libera a string de entrada, se necessário
-    free(str);
     return (out);
 }
