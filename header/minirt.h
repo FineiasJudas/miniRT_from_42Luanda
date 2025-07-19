@@ -255,7 +255,7 @@ int					parse_camera(char **tokens, t_data *scene);
 float				vec_dist(t_vector a, t_vector b);
 int					is_first_word_one_of(char *line);
 int					open_rt_file(char *filename);
-char				*ft_strtok(char *str, const char *delim);
+char				*ft_strtok(char *str, const char delim);
 int					file_line_counter(int fd, t_data *data);
 int					ft_strcmp(const char *s1, const char *s2);
 int					identify_and_process(char **tokens, t_data *data);
@@ -303,8 +303,12 @@ bool is_valid_rgb(const char* str);
 char *validate_plane(char *str, t_data *data);
 char *validate_sphere(char *str, t_data *data);
 char *validate_cylinder(char *str, t_data *data);
-
-
+bool is_valid_brightness(const char* str);
+bool is_valid_fov(const char* str);
+char *take_vector(char *input);
+char *ft_strjoin_free(char *s1, const char *s2);
+void* ft_realloc(void* ptr, size_t old_size, size_t new_size);
+size_t	mat_size(char **m);
 
 
 #endif

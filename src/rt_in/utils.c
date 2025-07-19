@@ -12,15 +12,16 @@
 
 #include "minirt.h"
 
-static int	is_delim(char c, const char *delim)
+size_t	mat_size(char **m)
 {
-	while (*delim)
-	{
-		if (c == *delim)
-			return (1);
-		delim++;
-	}
-	return (0);
+	size_t	i;
+
+	i = 0;
+	if (!m)
+		return (0);
+	while (m[i] != NULL)
+		i ++;
+	return (i);
 }
 
 int	open_rt_file(char *filename)
@@ -33,40 +34,47 @@ int	open_rt_file(char *filename)
 	return (fd);
 }
 
-char	*ft_strtok(char *str, const char *delim)
+char* ft_strtok(char* str, const char delim)
 {
-	static char	*next_token;
-	char		*token_start;
-	char		*token_end;
+    static char* buffer = NULL;
+    if (str)
+        buffer = str;
+    if (!buffer || *buffer == '\0')
+        return NULL;
 
-	next_token = NULL;
-	if (str)
-		next_token = str;
-	if (!next_token || !*next_token)
-		return (NULL);
-	token_start = next_token;
-	token_end = token_start;
-	while (*token_end && !is_delim(*token_end, delim))
-		token_end++;
-	if (*token_end)
-		*token_end++ = '\0';
-	next_token = token_end;
-	return (token_start);
+    char* token_start = buffer;
+    while (*buffer && *buffer != delim)
+        buffer++;
+
+    if (*buffer)
+    {
+        *buffer = '\0';
+        buffer++;
+    }
+
+    return token_start;
 }
 
-int	is_first_word_one_of(char *line)
+void* ft_realloc(void* ptr, size_t old_size, size_t new_size)
 {
-	char	*first_word;
-
-	if (!line || ft_strlen(line) < 1)
-		return (0);
-	first_word = ft_strtok(line, " ");
-	if (!first_word)
-		return (0);
-	if (ft_strncmp(first_word, "A", 1) == 0 || ft_strncmp(first_word, "C",
-			1) == 0 || ft_strncmp(first_word, "L", 1) == 0
-		|| ft_strncmp(first_word, "sp", 2) == 0 || ft_strncmp(first_word, "pl",
-			2) == 0 || ft_strncmp(first_word, "cy", 2) == 0)
-		return (1);
-	return (0);
+    if (new_size == 0)
+    {
+        free(ptr);
+        return NULL;
+    }
+    void* new_ptr = malloc(new_size);
+    if (!new_ptr)
+        return NULL;
+    if (ptr)
+    {
+        size_t copy_size;
+		if (old_size < new_size)
+			 copy_size = old_size;
+		else
+			copy_size = new_size;
+        ft_memcpy(new_ptr, ptr, copy_size);
+        free(ptr);
+    }
+    return new_ptr;
 }
+

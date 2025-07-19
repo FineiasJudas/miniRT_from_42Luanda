@@ -46,15 +46,15 @@ bool is_valid_rgb(const char* str)
     }
     if (commas != 2) return false;
     // Verifica padrões inválidos
-    size_t len = strlen(str);
+    size_t len = ft_strlen(str);
     if (str[0] == ',' || str[len-1] == ',') return false;
     if (strstr(str, ",,")) return false;
     
     // Processamento dos tokens
-    char* copy = strdup(str);
+    char* copy = ft_strdup(str);
     int count = 0;
     bool valid = true;
-    char* token = strtok(copy, ",");
+    char* token = ft_strtok(copy, ',');
     
     while (token) {
         count++;
@@ -72,7 +72,7 @@ bool is_valid_rgb(const char* str)
             break;
         }
         
-        token = strtok(NULL, ",");
+        token = ft_strtok(NULL, ',');
     }
     
     free(copy);
@@ -92,64 +92,46 @@ char* removeEspacosETabs(char *str)
     return str;
 }
 
-char *validate_ambient(char *str, t_data *data)
+bool parse_ambient_components(char *input, char **brightness, char **rgb)
 {
     int i = 0;
-    char *tmp;
-    char *double_p = NULL;
-    char *rgb_p;
-    char *out = NULL;
-    tmp = trim(strchr(str, 'A') + 1);
-    if (!tmp)
-        return NULL;
-    while (isalnum(tmp[i]) || tmp[i] == '_' || tmp[i] == '.' || tmp[i] == ',')
+    while (isalnum(input[i]) || input[i] == '_' || input[i] == '.' || input[i] == ',')
         i++;
-    double_p = malloc(sizeof(char) * (i + 1));
-    if (!double_p)
-        return (NULL);
-    ft_strlcpy(double_p, tmp, i + 1);
-    rgb_p = trim(tmp + strlen(double_p));
-    if (is_valid_double(double_p) && is_valid_rgb(rgb_p))
-    {
-        out = ft_strdup("A ");
-        if (!out)
-        {
-            free(double_p);
-            return (NULL);
-        }
-        char *temp = ft_strjoin(out, removeEspacosETabs(double_p));
-        if (!temp)
-        {
-            free(double_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        temp = ft_strjoin(out, " ");
-        if (!temp)
-        {
-            free(double_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        temp = ft_strjoin(out, removeEspacosETabs(rgb_p));
-        if (!temp)
-        {
-            free(double_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        printf("Dados certos!\n\n");
+
+    *brightness = malloc(i + 1);
+    if (!*brightness) return false;
+
+    ft_strlcpy(*brightness, input, i + 1);
+    *rgb = trim(input + i);
+
+    return (*rgb != NULL);
+}
+
+char *build_ambient_output(char *brightness, char *rgb)
+{
+    char *out = ft_strdup("A ");
+    if (!out) return NULL;
+
+    out = ft_strjoin_free(out, removeEspacosETabs(brightness));
+    out = ft_strjoin_free(out, " ");
+    out = ft_strjoin_free(out, removeEspacosETabs(rgb));
+    
+    return out;
+}
+
+char *validate_ambient(char *str, t_data *data)
+{
+    char *tmp = trim(strchr(str, 'A') + 1);
+    char *brightness, *rgb;
+
+    if (!parse_ambient_components(tmp, &brightness, &rgb)) return NULL;
+
+    if (is_valid_double(brightness) && is_valid_rgb(rgb)) {
+        char *out = build_ambient_output(brightness, rgb);
+        free(brightness); return out;
     }
-    else
-    {
-        data->invalid_line = 1;
-        free(double_p);
-        return (NULL); // Retorna NULL em caso de erro
-    }
-    free(double_p);
-    // Libera a string de entrada, se necessário
-    return (out);
+
+    data->invalid_line = 1;
+    free(brightness);
+    return NULL;
 }

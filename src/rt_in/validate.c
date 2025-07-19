@@ -26,8 +26,6 @@ static char	*first_token(const char *s)
 	return (tok);
 }
 
-
-
 static void	valid_identifier(const char *tok, t_data *data)
 {
 	if (ft_strncmp(tok, "sp", 2) == 0 || ft_strncmp(tok, "cy", 2) == 0
@@ -45,7 +43,7 @@ static char	**append_line(char **matrix, int *count, char *line)
 {
 	char	**tmp;
 
-	tmp = realloc(matrix, sizeof(char *) * (*count + 2));
+	tmp = ft_realloc(matrix, sizeof(char *) * mat_size(matrix), sizeof(char *) * (*count + 2));
 	if (!tmp)
 		return (NULL);
 	matrix = tmp;

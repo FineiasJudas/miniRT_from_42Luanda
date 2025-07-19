@@ -66,15 +66,14 @@ int	process_line(char *line, t_data *data)
 	char	**tokens;
 	int		result;
 
+	result = 0;
 	if (!line || ft_strlen(line) < 1)
-		return ((0 * printf("Sem tokens!\n")) + 1);
+		return (1);
 	tokens = ft_split(line, ' ');
 	if (!tokens)
 		return (1);
 	result = identify_and_process(tokens, data);
 	free_tokens(tokens);
-	if (data->invalid_line)
-		return(fprintf(stderr, "Erro nos dados do arquivo\n"), 1);
 	return (result);
 }
 
@@ -134,16 +133,15 @@ int	parse_rt_file(char *filename, t_data *data)
 		return (1);
 	lines = read_file_into_matrix(data->fd, &line_count, data);
 	close(data->fd);
-	if (!lines)
-		return (fprintf(stderr, "Erro ao ler arquivo\n"), 1);
-	if (data->invalid_line)
-	{
-		free_matrix(lines);
-		return (fprintf(stderr, "Linha com identificador inválido\n"), 1);
-	}
+	if (!lines || data->invalid_line)
+		return (free_matrix(lines), 1);
 	i = -1;
 	while (++i < line_count)
-		result += process_line(identify_type(lines[i], data), data);
+	{
+		result = process_line(identify_type(lines[i], data), data);
+		if (result == 0)
+			return (free_matrix(lines), 1);
+	}
 	free_matrix(lines);
 	return (0);
 }

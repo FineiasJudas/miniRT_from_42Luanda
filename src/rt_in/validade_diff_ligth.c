@@ -12,7 +12,18 @@
 
 #include "minirt.h"
 
-// Função para validar o brilho (deve ser um double entre 0.0 e 1.0)
+char *ft_strjoin_free(char *s1, const char *s2)
+{
+    char *joined;
+    
+    if (!s1 || !s2)
+        return NULL;
+
+    joined = ft_strjoin(s1, s2);
+    free(s1);
+    return joined;
+}
+
 bool is_valid_brightness(const char* str)
 {
     if (!is_valid_double(str))
@@ -26,142 +37,101 @@ bool is_valid_brightness(const char* str)
     return true;
 }
 
-// Função para validar a linha da luz difusa
-char *validate_light(char *str, t_data *data)
+char *take_vector(char *input)
 {
-    char *tmp;
-    char *position_p = NULL;
-    char *brightness_p = NULL;
-    char *rgb_p;
-    char *out = NULL;
-    int i = 0;
-    int commas = 0;
+    int i = 0, commas = 0;
 
-    // Verifica se str é válido e começa com 'L'
-    if (!str || !strchr(str, 'L')) {
-        free(str);
-        return (NULL);
-    }
-
-    // Trim da parte após o 'L'
-    tmp = trim(strchr(str, 'L') + 1);
-    
-    // Calcula o tamanho da parte do vetor de posição
-    while (tmp[i])
+    while (input[i])
     {
-        if (commas == 2 && ft_isalnum(tmp[i]))
+        if (commas == 2 && ft_isalnum(input[i]))
         {
-            while (tmp[i] && (ft_isalnum(tmp[i]) || tmp[i] == '_' || tmp[i] == '.'))
+            while (input[i] && (ft_isalnum(input[i]) || input[i] == '_' || input[i] == '.'))
                 i ++;
             break ;
         }
-        if (tmp[i] == ',')
+        if (input[i] == ',')
             commas ++;
         i ++;
     }
-    if (commas != 2) {
-        return (NULL);
-    }
-    
-    // Aloca position_p
-    position_p = malloc(sizeof(char) * (i + 1));
-    if (!position_p) {
-        return (NULL);
-    }
-    
-    ft_strlcpy(position_p, tmp, i + 1);
-    position_p[i] = '\0';
-    
-    // Trim da parte do brilho
-    char *next = trim(tmp + i);
-    i = 0;
-    
-    // Calcula o tamanho da parte do brilho
-    while (next[i] && !isspace(next[i])) i++;
-    
-    // Aloca brightness_p
-    brightness_p = malloc(sizeof(char) * (i + 1));
+
+    if (commas != 2)
+        return NULL;
+
+    char *vector = malloc(sizeof(char) * (i + 1));
+    if (!vector)
+        return NULL;
+
+    ft_strlcpy(vector, input, i + 1);
+    vector[i] = '\0';
+
+    return vector;
+}
+
+char *extract_brightness_component(char *str)
+{
+    int i = 0;
+
+    while (str[i] && !isspace(str[i]))
+        i++;
+
+    char *brightness = malloc(sizeof(char) * (i + 1));
+    if (!brightness)
+        return NULL;
+
+    ft_strlcpy(brightness, str, i + 1);
+    brightness[i] = '\0';
+
+    return brightness;
+}
+
+bool validate_light_components(char *pos, char *bri, char *rgb, t_data *data)
+{
+    if (is_valid_vector3d(pos) &&
+        is_valid_brightness(bri) &&
+        is_valid_rgb(rgb))
+        return true;
+
+    data->invalid_line = 1;
+    return false;
+}
+
+char *build_light_output(char *pos, char *bri, char *rgb)
+{
+    char *out = ft_strdup("L ");
+    if (!out) return NULL;
+
+    out = ft_strjoin_free(out, removeEspacosETabs(pos));
+    out = ft_strjoin_free(out, " ");
+    out = ft_strjoin_free(out, removeEspacosETabs(bri));
+    out = ft_strjoin_free(out, " ");
+    out = ft_strjoin_free(out, removeEspacosETabs(rgb));
+
+    return out;
+}
+
+char *validate_light(char *str, t_data *data)
+{
+    char *tmp = trim(strchr(str, 'L') + 1);
+    char *position_p = take_vector(tmp);
+    if (!position_p) return NULL;
+
+    char *next = trim(tmp + ft_strlen(position_p));
+    char *brightness_p = extract_brightness_component(next);
     if (!brightness_p) {
         free(position_p);
-        return (NULL);
+        return NULL;
     }
-    
-    ft_strlcpy(brightness_p, next, i + 1);
-    brightness_p[i] = '\0';
-    
-    // Trim da parte do RGB
-    rgb_p = trim(next + i);
-    
-    // Valida os componentes
-    if (is_valid_vector3d(position_p) && is_valid_brightness(brightness_p) && is_valid_rgb(rgb_p))
-    {
-        // Constrói a string de saída
-        out = ft_strdup("L ");
-        if (!out) {
-            free(position_p);
-            free(brightness_p);
-            return (NULL);
-        }
-        
-        char *temp = ft_strjoin(out, removeEspacosETabs(position_p));
-        if (!temp) {
-            free(position_p);
-            free(brightness_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        
-        temp = ft_strjoin(out, " ");
-        if (!temp) {
-            free(position_p);
-            free(brightness_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        
-        temp = ft_strjoin(out, removeEspacosETabs(brightness_p));
-        if (!temp) {
-            free(position_p);
-            free(brightness_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        
-        temp = ft_strjoin(out, " ");
-        if (!temp) {
-            free(position_p);
-            free(brightness_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        
-        temp = ft_strjoin(out, removeEspacosETabs(rgb_p));
-        if (!temp) {
-            free(position_p);
-            free(brightness_p);
-            free(out);
-            return (NULL);
-        }
-        out = temp;
-        
-        printf("Dados certos!\n\n");
-        printf("FINAL - %s\n", out);
-    }
-    else
-    {
-        data->invalid_line = 1;
+
+    char *rgb_p = trim(next + ft_strlen(brightness_p));
+
+    if (validate_light_components(position_p, brightness_p, rgb_p, data)) {
+        char *out = build_light_output(position_p, brightness_p, rgb_p);
         free(position_p);
         free(brightness_p);
-        return (NULL);
+        return out;
     }
-    
-    // Libera memória
+
     free(position_p);
     free(brightness_p);
-    
-    return (out);
+    return NULL;
 }

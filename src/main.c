@@ -54,7 +54,7 @@ int	main(int ac, char **av)
 	{
 		if (!is_a_rt_extension(av[1]) || parse_rt_file(av[1], &data) != 0
 			|| data.invalid_line)
-			return (1);
+			return (fprintf(stderr, "Erro nos dados de entrada!\n"), 1);
 	}
 	else
 		return (1 * fprintf(stderr, "Arquivo '.rt' não inserido\n"));

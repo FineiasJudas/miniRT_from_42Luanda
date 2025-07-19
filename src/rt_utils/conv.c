@@ -50,8 +50,9 @@ double	float_convert(char *arg)
 	}
 	else
 	{
-		printf("%s não é um tipo ponto flutuante\n", arg);
-		return (-1);
+		integer = arg;
+		in = ft_atoi(integer);
+		return ((double)in);
 	}
 	in = ft_atoi(integer);
 	f = ft_atoi(floater);
