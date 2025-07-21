@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
-# define MINIRT_H
+# define MINIRT_H 
 
 # ifndef PI
 #  define PI 3.14159265358979323846
@@ -311,7 +311,7 @@ char				*ft_strjoin_free(char *s1, const char *s2);
 void				*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 size_t				mat_size(char **m); 
 void				free_matrix(char **matrix);
-int					free_data(t_data *data); 
+int					free_data(t_data *data);  
 int					essential_tokens(char **matriz);
 
 #endif
