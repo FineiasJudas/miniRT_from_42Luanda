@@ -119,7 +119,7 @@ int	parse_rt_file(char *filename, t_data *data)
 		return (1);
 	lines = read_file_into_matrix(data->fd, &line_count, data);
 	close(data->fd);
-	if (!lines || data->invalid_line)
+	if (!lines || data->invalid_line || !essential_tokens(lines))
 		return (free_matrix(lines), 1);
 	i = -1;
 	while (++i < line_count)

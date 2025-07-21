@@ -309,8 +309,9 @@ bool				is_valid_fov(const char *str);
 char				*take_vector(char *input);
 char				*ft_strjoin_free(char *s1, const char *s2);
 void				*ft_realloc(void *ptr, size_t old_size, size_t new_size);
-size_t				mat_size(char **m);
+size_t				mat_size(char **m); 
 void				free_matrix(char **matrix);
-int					free_data(t_data *data);
+int					free_data(t_data *data); 
+int					essential_tokens(char **matriz);
 
 #endif

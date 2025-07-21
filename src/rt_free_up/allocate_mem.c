@@ -19,7 +19,6 @@ int	free_data(t_data *data)
 	free_list(&data->lights_l);
 	free_list(&data->plane_l);
 	free_mem(get_mem_address());
-	printf("Janela fechada e memória liberada.\n");
 	return (0);
 }
 
@@ -44,4 +43,33 @@ void	*allocate_mem(size_t nmemb, size_t size)
 		exit(1);
 	collect_mem(content);
 	return (content);
+}
+
+int	essential_tokens(char **matriz)
+{
+	int	i;
+	int alc[3];
+	char	**tokens;
+
+	if (!matriz || (mat_size(matriz) < 3))
+		return (0);
+	i = 0;
+	alc[0] = 0;
+	alc[1] = 0;
+	alc[2] = 0;
+	while (matriz[i])
+	{
+		tokens = ft_split(matriz[i], ' ');
+		if (ft_strncmp(tokens[0], "A", 1) == 0)
+			alc[0] ++;
+		else if (ft_strncmp(tokens[0], "L", 1) == 0)
+			alc[1] ++;
+		else if (ft_strncmp(tokens[0], "C", 1) == 0)
+			alc[2] ++;
+		i ++;
+		free_matrix(tokens);
+	}
+	if (alc[0] == 1 && alc[1] == 1 && alc[2] == 1)
+		return (1);
+	return (0);
 }
