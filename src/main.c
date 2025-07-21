@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/18 12:27:25 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 11:30:11 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	main(int ac, char **av)
 			return (fprintf(stderr, "Erro nos dados de entrada!\n"), 1);
 	}
 	else
-		return (1 * fprintf(stderr, "Arquivo '.rt' não inserido\n"));
+		return (1 * fprintf(stderr, "Entrada errada\n"));
 	data.render = (t_render *)malloc(sizeof(t_render));
 	if (!data.render)
 		return (1 * fprintf(stderr, "Erro ao alocar memória para render\n"));

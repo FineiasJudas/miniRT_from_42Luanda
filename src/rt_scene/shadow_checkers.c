@@ -6,13 +6,12 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 09:26:54 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 16:01:25 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 09:35:11 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-/* Refatoração de intersect_cylinder em funções menores e struct de variáveis */
 static void	init_cyl_vars(t_cyl_vars *v, t_ray ray, t_cylinder cyl)
 {
 	v->r = cyl.diameter * 0.5;

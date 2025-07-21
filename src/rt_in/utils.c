@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:34:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/16 16:09:33 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 12:25:02 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ size_t	mat_size(char **m)
 	if (!m)
 		return (0);
 	while (m[i] != NULL)
-		i ++;
+		i++;
 	return (i);
 }
 
@@ -34,47 +34,47 @@ int	open_rt_file(char *filename)
 	return (fd);
 }
 
-char* ft_strtok(char* str, const char delim)
+char	*ft_strtok(char *str, const char delim)
 {
-    static char* buffer = NULL;
-    if (str)
-        buffer = str;
-    if (!buffer || *buffer == '\0')
-        return NULL;
+	static char	*buffer = NULL;
+	char		*token_start;
 
-    char* token_start = buffer;
-    while (*buffer && *buffer != delim)
-        buffer++;
-
-    if (*buffer)
-    {
-        *buffer = '\0';
-        buffer++;
-    }
-
-    return token_start;
+	if (str)
+		buffer = str;
+	if (!buffer || *buffer == '\0')
+		return (NULL);
+	token_start = buffer;
+	while (*buffer && *buffer != delim)
+		buffer++;
+	if (*buffer)
+	{
+		*buffer = '\0';
+		buffer++;
+	}
+	return (token_start);
 }
 
-void* ft_realloc(void* ptr, size_t old_size, size_t new_size)
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
 {
-    if (new_size == 0)
-    {
-        free(ptr);
-        return NULL;
-    }
-    void* new_ptr = malloc(new_size);
-    if (!new_ptr)
-        return NULL;
-    if (ptr)
-    {
-        size_t copy_size;
+	void	*new_ptr;
+	size_t	copy_size;
+
+	if (new_size == 0)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	new_ptr = malloc(new_size);
+	if (!new_ptr)
+		return (NULL);
+	if (ptr)
+	{
 		if (old_size < new_size)
-			 copy_size = old_size;
+			copy_size = old_size;
 		else
 			copy_size = new_size;
-        ft_memcpy(new_ptr, ptr, copy_size);
-        free(ptr);
-    }
-    return new_ptr;
+		ft_memcpy(new_ptr, ptr, copy_size);
+		free(ptr);
+	}
+	return (new_ptr);
 }
-

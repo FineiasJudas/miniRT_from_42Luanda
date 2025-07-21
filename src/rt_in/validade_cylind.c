@@ -1,86 +1,114 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   validade_clind.c                                   :+:      :+:    :+:   */
+/*   validade_cylind.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:49:58 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/18 15:51:54 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 12:24:42 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-bool is_valid_positive_double(const char* str)
+bool	is_valid_double(const char *str)
 {
-    if (!is_valid_double(str))
-        return false;
-    
-    char* endptr;
-    double value = strtod(str, &endptr);
-    if (value <= 0.0)
-        return false;
-    
-    return true;
+	char	*endptr;
+
+	strtod(str, &endptr);
+	if (endptr == str || *endptr != '\0')
+		return (false);
+	return (true);
 }
 
-bool parse_cylinder_components(char *input, char **center, char **normal, char **diam, char **height, char **rgb)
+bool	is_valid_positive_double(const char *str)
 {
-    *center = take_vector(input);
-    if (!*center) return false;
+	char	*endptr;
+	double	value;
 
-    char *next = trim(input + ft_strlen(*center));
-    *normal = take_vector(next);
-    if (!*normal) return false;
-
-    next = trim(next + ft_strlen(*normal));
-    int i = 0; while (next[i] && !isspace(next[i])) i++;
-    *diam = strndup(next, i); if (!*diam) return false;
-
-    next = trim(next + i);
-    i = 0; while (next[i] && !isspace(next[i])) i++;
-    *height = strndup(next, i); if (!*height) return false;
-
-    *rgb = trim(next + i);
-    return (*rgb != NULL);
+	if (!is_valid_double(str))
+		return (false);
+	value = strtod(str, &endptr);
+	if (value <= 0.0)
+		return (false);
+	return (true);
 }
 
-char *build_cylinder_output(char *center, char *normal, char *diam, char *height, char *rgb)
+bool	parse_cylinder_components(char *input, char **center, char **normal,
+		char **d_h_r)
 {
-    char *out = ft_strdup("cy ");
-    if (!out) return NULL;
+	char	*next;
+	int		i;
 
-    out = ft_strjoin_free(out, removeEspacosETabs(center));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(normal));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(diam));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(height));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(rgb));
-
-    return out;
+	*center = take_vector(input);
+	if (!*center)
+		return (false);
+	next = trim(input + ft_strlen(*center));
+	*normal = take_vector(next);
+	if (!*normal)
+		return (false);
+	next = trim(next + ft_strlen(*normal));
+	i = 0;
+	while (next[i] && !isspace(next[i]))
+		i++;
+	d_h_r[0] = strndup(next, i);
+	if (!d_h_r[0])
+		return (false);
+	next = trim(next + i);
+	i = 0;
+	while (next[i] && !isspace(next[i]))
+		i++;
+	d_h_r[1] = strndup(next, i);
+	if (!d_h_r[1])
+		return (false);
+	return (d_h_r[2] = trim(next + i), d_h_r[2] != NULL);
 }
 
-char *validate_cylinder(char *str, t_data *data)
+char	*build_cylinder_output(char *center, char *normal, char **d_h_r)
 {
-    char *tmp = trim(strstr(str, "cy") + 2);
-    char *center, *normal, *diam, *height, *rgb;
+	char	*out;
 
-    if (!parse_cylinder_components(tmp, &center, &normal, &diam, &height, &rgb)) return NULL;
+	out = ft_strdup("cy ");
+	if (!out)
+		return (NULL);
+	out = ft_strjoin_free(out, remove_spaces_tabs(center));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(normal));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(d_h_r[0]));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(d_h_r[1]));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(d_h_r[2]));
+	return (out);
+}
 
-    if (is_valid_vector3d(center) && is_valid_vector3d(normal) &&
-        is_valid_positive_double(diam) && is_valid_positive_double(height) &&
-        is_valid_rgb(rgb)) {
-        
-        char *out = build_cylinder_output(center, normal, diam, height, rgb);
-        free(center); free(normal); free(diam); free(height);
-        return out;
-    }
+char	*validate_cylinder(char *str, t_data *data)
+{
+	char	*tmp;
+	char	*out;
+	char	*center;
+	char	*normal;
+	char	**d_h_r;
 
-    data->invalid_line = 1;
-    free(center); free(normal); free(diam); free(height);
-    return NULL;
+	tmp = trim(strstr(str, "cy") + 2);
+	d_h_r = (char **)malloc(sizeof(char *) * 3);
+	if (!parse_cylinder_components(tmp, &center, &normal, d_h_r))
+		return (NULL);
+	if (is_valid_vector3d(center) && is_valid_vector3d(normal)
+		&& is_valid_positive_double(d_h_r[0])
+		&& is_valid_positive_double(d_h_r[1]) && is_valid_rgb(d_h_r[2]))
+	{
+		out = build_cylinder_output(center, normal, d_h_r);
+		free(center);
+		free(normal);
+		free(d_h_r[0]);
+		free(d_h_r[1]);
+		free(d_h_r);
+		return (out);
+	}
+	data->invalid_line = 1;
+	free(center);
+	return (free(normal), free(d_h_r[0]), free(d_h_r[1]), free(d_h_r), NULL);
 }

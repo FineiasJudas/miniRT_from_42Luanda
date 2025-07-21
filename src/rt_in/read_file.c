@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/18 15:44:54 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:24:23 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,22 +74,8 @@ int	process_line(char *line, t_data *data)
 		return (1);
 	result = identify_and_process(tokens, data);
 	free_tokens(tokens);
+	free(line);
 	return (result);
-}
-
-void	free_matrix(char **matrix)
-{
-	int	i;
-
-	i = 0;
-	if (!matrix)
-		return ;
-	while (matrix[i] != NULL)
-	{
-		free(matrix[i]);
-		i++;
-	}
-	free(matrix);
 }
 
 char	*identify_type(char *line, t_data *data)
@@ -102,7 +88,7 @@ char	*identify_type(char *line, t_data *data)
 	tokens = ft_split(line, ' ');
 	if (!tokens || !tokens[0])
 		return (NULL);
-	result = 0;
+	result = NULL;
 	if (ft_strncmp(tokens[0], "A", 1) == 0)
 		result = validate_ambient(line, data);
 	else if (ft_strncmp(tokens[0], "C", 1) == 0)

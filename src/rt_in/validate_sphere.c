@@ -6,58 +6,97 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:52:19 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/18 15:52:29 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 12:24:09 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-bool parse_sphere_components(char *input, char **pos, char **ratio, char **rgb)
+void	free_matrix(char **matrix)
 {
-    *pos = take_vector(input);
-    if (!*pos) return false;
+	int	i;
 
-    char *next = trim(input + ft_strlen(*pos));
-
-    int i = 0;
-    while (next[i] && !isspace(next[i])) i++;
-
-    *ratio = malloc(i + 1);
-    if (!*ratio) return false;
-
-    ft_strlcpy(*ratio, next, i + 1);
-    *rgb = trim(next + i);
-    return (*rgb != NULL);
+	i = 0;
+	if (!matrix)
+		return ;
+	while (matrix[i] != NULL)
+	{
+		free(matrix[i]);
+		i++;
+	}
+	free(matrix);
 }
 
-char *build_sphere_output(char *pos, char *ratio, char *rgb)
+bool	is_valid_fov(const char *str)
 {
-    char *out = ft_strdup("sp ");
-    if (!out) return NULL;
+	char	*endptr;
+	double	fov;
 
-    out = ft_strjoin_free(out, removeEspacosETabs(pos));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(ratio));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(rgb));
-
-    return out;
+	if (!is_valid_double(str))
+		return (false);
+	fov = strtod(str, &endptr);
+	if (fov < 0.0 || fov > 180.0)
+		return (false);
+	return (true);
 }
 
-char *validate_sphere(char *str, t_data *data)
+bool	parse_sphere_components(char *input, char **pos, char **ratio,
+		char **rgb)
 {
-    char *tmp = trim(strstr(str, "sp") + 2);
-    char *position, *ratio, *rgb;
+	char	*next;
+	int		i;
 
-    if (!parse_sphere_components(tmp, &position, &ratio, &rgb)) return NULL;
+	*pos = take_vector(input);
+	if (!*pos)
+		return (false);
+	next = trim(input + ft_strlen(*pos));
+	i = 0;
+	while (next[i] && !isspace(next[i]))
+		i++;
+	*ratio = malloc(i + 1);
+	if (!*ratio)
+		return (false);
+	ft_strlcpy(*ratio, next, i + 1);
+	*rgb = trim(next + i);
+	return (*rgb != NULL);
+}
 
-    if (is_valid_vector3d(position) && is_valid_double(ratio) && is_valid_rgb(rgb)) {
-        char *out = build_sphere_output(position, ratio, rgb);
-        free(position); free(ratio);
-        return out;
-    }
+char	*build_sphere_output(char *pos, char *ratio, char *rgb)
+{
+	char	*out;
 
-    data->invalid_line = 1;
-    free(position); free(ratio);
-    return NULL;
+	out = ft_strdup("sp ");
+	if (!out)
+		return (NULL);
+	out = ft_strjoin_free(out, remove_spaces_tabs(pos));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(ratio));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(rgb));
+	return (out);
+}
+
+char	*validate_sphere(char *str, t_data *data)
+{
+	char	*tmp;
+	char	*out;
+	char	*position;
+	char	*ratio;
+	char	*rgb;
+
+	tmp = trim(strstr(str, "sp") + 2);
+	if (!parse_sphere_components(tmp, &position, &ratio, &rgb))
+		return (NULL);
+	if (is_valid_vector3d(position) && is_valid_double(ratio)
+		&& is_valid_rgb(rgb))
+	{
+		out = build_sphere_output(position, ratio, rgb);
+		free(position);
+		free(ratio);
+		return (out);
+	}
+	data->invalid_line = 1;
+	free(position);
+	free(ratio);
+	return (NULL);
 }

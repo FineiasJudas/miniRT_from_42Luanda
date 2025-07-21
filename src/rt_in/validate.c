@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:46:36 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/18 12:50:51 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 11:59:54 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ static char	**append_line(char **matrix, int *count, char *line)
 {
 	char	**tmp;
 
-	tmp = ft_realloc(matrix, sizeof(char *) * mat_size(matrix), sizeof(char *) * (*count + 2));
+	tmp = ft_realloc(matrix, sizeof(char *) * mat_size(matrix),
+			sizeof(char *) * (*count + 2));
 	if (!tmp)
 		return (NULL);
 	matrix = tmp;

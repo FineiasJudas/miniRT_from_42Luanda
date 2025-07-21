@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/18 15:44:41 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:08:49 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,20 @@
 # define WIDTH 800
 # define HEIGHT 600
 # define EPS 1e-4
-# define INF 1e30	
+# define INF 1e30
 
 # include "../libft/libft.h"
 # include "minirt.h"
 # include "mlx.h"
+# include <ctype.h>
+# include <errno.h>
 # include <fcntl.h>
 # include <math.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>
-# include <ctype.h>
 # include <string.h>
-# include <stdbool.h>
-# include <errno.h>
+# include <unistd.h>
 
 typedef enum s_object_type
 {
@@ -62,8 +62,7 @@ typedef struct s_rotate_v
 	t_vector		r;
 	double			cos_a;
 	double			sin_a;
-}	t_rotate_v;
-
+}					t_rotate_v;
 
 typedef struct s_cyl_vars
 {
@@ -275,7 +274,8 @@ void				collect_env_mem(char **env_table);
 void				free_mem(t_list **list);
 t_list				**get_mem_address(void);
 t_vector			look_at(t_vector from, t_vector to);
-t_vector			rotate_vector(t_data *data, t_vector v, char axis, double angle);
+t_vector			rotate_vector(t_data *data, t_vector v, char axis,
+						double angle);
 int					is_blank_line(const char *s);
 int					plane_move(int keycode, t_plane *p, t_data *data);
 int					sphere_move(int keycode, t_sphere *s, t_data *data);
@@ -290,25 +290,26 @@ char				*m_strjoin(char *s1, char *s2);
 char				*m_strchr(char *s, int c);
 size_t				m_strlen(char *str);
 void				object_log(t_data *data);
-char				**read_file_into_matrix(int fd, int *out_count, t_data *data);
-char				*validate_ambient(char *st, t_data *datar);
-char *trim(char *s);
-bool is_valid_double(const char* str);
-char* removeEspacosETabs(char *str);
-bool is_valid_vector3d(const char* str);
-char *validate_camera(char *str, t_data *data);
-bool is_valid_vector3d(const char* str);
-char *validate_light(char *str, t_data *data);
-bool is_valid_rgb(const char* str);
-char *validate_plane(char *str, t_data *data);
-char *validate_sphere(char *str, t_data *data);
-char *validate_cylinder(char *str, t_data *data);
-bool is_valid_brightness(const char* str);
-bool is_valid_fov(const char* str);
-char *take_vector(char *input);
-char *ft_strjoin_free(char *s1, const char *s2);
-void* ft_realloc(void* ptr, size_t old_size, size_t new_size);
-size_t	mat_size(char **m);
-
+char				**read_file_into_matrix(int fd, int *out_count,
+						t_data *data);
+char				*validate_ambient(const char *st, t_data *datar);
+char				*trim(char *s);
+bool				is_valid_double(const char *str);
+char				*remove_spaces_tabs(char *str);
+bool				is_valid_vector3d(const char *str);
+char				*validate_camera(char *str, t_data *data);
+bool				is_valid_vector3d(const char *str);
+char				*validate_light(char *str, t_data *data);
+bool				is_valid_rgb(const char *str);
+char				*validate_plane(char *str, t_data *data);
+char				*validate_sphere(char *str, t_data *data);
+char				*validate_cylinder(char *str, t_data *data);
+bool				is_valid_brightness(const char *str);
+bool				is_valid_fov(const char *str);
+char				*take_vector(char *input);
+char				*ft_strjoin_free(char *s1, const char *s2);
+void				*ft_realloc(void *ptr, size_t old_size, size_t new_size);
+size_t				mat_size(char **m);
+void				free_matrix(char **matrix);
 
 #endif

@@ -6,53 +6,104 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:39:00 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/18 15:48:24 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:25:40 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-bool parse_plane_components(char *input, char **pos, char **normal, char **rgb)
+char	*ft_strjoin_free(char *s1, const char *s2)
 {
-    *pos = take_vector(input);
-    if (!*pos) return false;
+	char	*joined;
 
-    char *next = trim(input + ft_strlen(*pos));
-    *normal = take_vector(next);
-    if (!*normal) return false;
-
-    *rgb = trim(next + ft_strlen(*normal));
-    return (*rgb != NULL);
+	if (!s1 || !s2)
+		return (NULL);
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	return (joined);
 }
 
-char *build_plane_output(char *pos, char *normal, char *rgb)
+char	*take_vector(char *input)
 {
-    char *out = ft_strdup("pl ");
-    if (!out) return NULL;
+	int		i_c[2];
+	char	*vector;
 
-    out = ft_strjoin_free(out, removeEspacosETabs(pos));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(normal));
-    out = ft_strjoin_free(out, " ");
-    out = ft_strjoin_free(out, removeEspacosETabs(rgb));
-
-    return out;
+	i_c[0] = 0;
+	i_c[1] = 0;
+	while (input[i_c[0]])
+	{
+		if (i_c[1] == 2 && ft_isalnum(input[i_c[0]]))
+		{
+			while (input[i_c[0]] && (ft_isalnum(input[i_c[0]])
+					|| input[i_c[0]] == '_' || input[i_c[0]] == '.'))
+				i_c[0]++;
+			break ;
+		}
+		if (input[i_c[0]] == ',')
+			i_c[1]++;
+		i_c[0]++;
+	}
+	if (i_c[1] != 2)
+		return (NULL);
+	vector = malloc(sizeof(char) * (i_c[0] + 1));
+	if (!vector)
+		return (NULL);
+	ft_strlcpy(vector, input, i_c[0] + 1);
+	return (vector[i_c[0]] = '\0', vector);
 }
 
-char *validate_plane(char *str, t_data *data)
+bool	parse_plane_components(char *input, char **pos, char **normal,
+		char **rgb)
 {
-    char *tmp = trim(strstr(str, "pl") + 2);
-    char *pos, *normal, *rgb;
+	char	*next;
 
-    if (!parse_plane_components(tmp, &pos, &normal, &rgb)) return NULL;
+	*pos = take_vector(input);
+	if (!*pos)
+		return (false);
+	next = trim(input + ft_strlen(*pos));
+	*normal = take_vector(next);
+	if (!*normal)
+		return (false);
+	*rgb = trim(next + ft_strlen(*normal));
+	return (*rgb != NULL);
+}
 
-    if (is_valid_vector3d(pos) && is_valid_vector3d(normal) && is_valid_rgb(rgb)) {
-        char *out = build_plane_output(pos, normal, rgb);
-        free(pos); free(normal);
-        return out;
-    }
+char	*build_plane_output(char *pos, char *normal, char *rgb)
+{
+	char	*out;
 
-    data->invalid_line = 1;
-    free(pos); free(normal);
-    return NULL;
+	out = ft_strdup("pl ");
+	if (!out)
+		return (NULL);
+	out = ft_strjoin_free(out, remove_spaces_tabs(pos));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(normal));
+	out = ft_strjoin_free(out, " ");
+	out = ft_strjoin_free(out, remove_spaces_tabs(rgb));
+	return (out);
+}
+
+char	*validate_plane(char *str, t_data *data)
+{
+	char	*tmp;
+	char	*out;
+	char	*pos;
+	char	*normal;
+	char	*rgb;
+
+	tmp = trim(strstr(str, "pl") + 2);
+	if (!parse_plane_components(tmp, &pos, &normal, &rgb))
+		return (NULL);
+	if (is_valid_vector3d(pos) && is_valid_vector3d(normal)
+		&& is_valid_rgb(rgb))
+	{
+		out = build_plane_output(pos, normal, rgb);
+		free(pos);
+		free(normal);
+		return (out);
+	}
+	data->invalid_line = 1;
+	free(pos);
+	free(normal);
+	return (NULL);
 }

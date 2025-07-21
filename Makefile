@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/15 16:47:54 by fjilaias          #+#    #+#              #
-#    Updated: 2025/07/18 15:51:02 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/07/21 11:17:10 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SRCS =  ./src/main.c \
 		./src/rt_utils/gnl_utils.c \
 		./src/rt_in/read_file.c \
 		./src/rt_in/utils.c \
+		./src/rt_in/utils_2.c \
 		./src/rt_in/validate.c \
 		./src/rt_in/validate_camera.c \
 		./src/rt_in/validade_diff_ligth.c \
