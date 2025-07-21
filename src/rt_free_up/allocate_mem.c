@@ -6,11 +6,22 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/11 10:06:15 by lantonio          #+#    #+#             */
-/*   Updated: 2025/07/16 11:23:12 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 15:43:41 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+
+int	free_data(t_data *data)
+{
+	free_list(&data->sphere_l);
+	free_list(&data->cylinder_l);
+	free_list(&data->lights_l);
+	free_list(&data->plane_l);
+	free_mem(get_mem_address());
+	printf("Janela fechada e memória liberada.\n");
+	return (0);
+}
 
 t_list	**get_mem_address(void)
 {

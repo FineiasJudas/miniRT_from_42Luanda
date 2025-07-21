@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 13:08:49 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 15:43:48 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,5 +311,6 @@ char				*ft_strjoin_free(char *s1, const char *s2);
 void				*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 size_t				mat_size(char **m);
 void				free_matrix(char **matrix);
+int					free_data(t_data *data);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 13:24:23 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/21 15:48:57 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ int	process_line(char *line, t_data *data)
 		return (1);
 	result = identify_and_process(tokens, data);
 	free_tokens(tokens);
-	free(line);
+	if (line)
+		free(line);
 	return (result);
 }
 
@@ -109,10 +110,9 @@ int	parse_rt_file(char *filename, t_data *data)
 {
 	int		i;
 	int		line_count;
-	int		result;
 	char	**lines;
+	char	*validated;
 
-	result = 0;
 	line_count = 0;
 	data->fd = open_rt_file(filename);
 	if (data->fd < 0)
@@ -124,9 +124,11 @@ int	parse_rt_file(char *filename, t_data *data)
 	i = -1;
 	while (++i < line_count)
 	{
-		result = process_line(identify_type(lines[i], data), data);
-		if (result == 0)
-			return (free_matrix(lines), 1);
+		validated = identify_type(lines[i], data);
+		if (validated)
+			process_line(validated, data);
+		else
+			return (free_data(data), free_matrix(lines), 1);
 	}
 	free_matrix(lines);
 	return (0);
