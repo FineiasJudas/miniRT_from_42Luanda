@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 10:11:18 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 13:09:28 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 12:59:39 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	parse_sphere(char **tokens, t_data *scene)
 		return (0);
 	collect_mem(scene->sphere);
 	scene->sphere->center = conv_vector(tokens[1]);
-	scene->sphere->radius = float_convert(tokens[2]) / 2.0;
+	scene->sphere->radius = my_strtod(tokens[2], &scene->endptr) / 2.0;
 	scene->sphere->color = conv_color(tokens[3]);
 	add_to_scene_list(&scene->sphere_l, scene->sphere);
 	return (1);
@@ -52,7 +52,7 @@ int	parse_ambient(char **tokens, t_data *a)
 	if (!a->ambient)
 		return (0);
 	collect_mem(a->ambient);
-	a->ambient->ratio = float_convert(tokens[1]);
+	a->ambient->ratio = my_strtod(tokens[1], &a->endptr);
 	a->ambient->color = conv_color(tokens[2]);
 	return (1);
 }
@@ -67,8 +67,8 @@ int	parse_cylinder(char **tokens, t_data *cylinder)
 	collect_mem(cylinder->cylinder);
 	cylinder->cylinder->center = conv_vector(tokens[1]);
 	cylinder->cylinder->normalized = vec_normalize(conv_vector(tokens[2]));
-	cylinder->cylinder->diameter = ft_atoi(tokens[3]);
-	cylinder->cylinder->height = ft_atoi(tokens[4]);
+	cylinder->cylinder->diameter = my_strtod(tokens[3], &cylinder->endptr);
+	cylinder->cylinder->height = my_strtod(tokens[4], &cylinder->endptr);
 	cylinder->cylinder->color = conv_color(tokens[5]);
 	add_to_scene_list(&cylinder->cylinder_l, cylinder->cylinder);
 	return (1);
@@ -85,8 +85,8 @@ int	parse_light(char **tokens, t_data *light)
 	collect_mem(light->light);
 	collect_mem(light->light_s);
 	light->light->position = conv_vector(tokens[1]);
-	light->light->brightness = float_convert(tokens[2]);
-	light->light->color = conv_color(tokens[3]);
+	light->light->brightness = my_strtod(tokens[2], &light->endptr);
+	light->light->color = conv_color("255,255,255");
 	light->light_s->center = light->light->position;
 	light->light_s->radius = 0.2;
 	light->light_s->color = light->light->color;

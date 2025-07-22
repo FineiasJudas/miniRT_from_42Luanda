@@ -6,12 +6,12 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 15:43:48 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:44:06 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINIRT_H
-# define MINIRT_H 
+# define MINIRT_H
 
 # ifndef PI
 #  define PI 3.14159265358979323846
@@ -21,8 +21,8 @@
 #  define BUFFER_SIZE 42
 # endif
 
-# define WIDTH 800
-# define HEIGHT 600
+# define WIDTH 1000
+# define HEIGHT 800
 # define EPS 1e-4
 # define INF 1e30
 
@@ -203,6 +203,7 @@ typedef struct s_data
 	int				fd;
 	int				invalid_line;
 	char			**matrix;
+	char			*endptr;
 }					t_data;
 
 char				*get_next_line(int fd);
@@ -270,7 +271,9 @@ int					free_tokens(char **tokens);
 void				free_list(t_list **list);
 void				collect_mem(void *content);
 void				*allocate_mem(size_t nmemb, size_t size);
+char				*ft_strstr(const char *haystack, const char *needle);
 void				collect_env_mem(char **env_table);
+double				my_strtod(const char *__restrict__ nptr, char **__restrict__ endptr);
 void				free_mem(t_list **list);
 t_list				**get_mem_address(void);
 t_vector			look_at(t_vector from, t_vector to);
@@ -296,7 +299,6 @@ char				*validate_ambient(const char *st, t_data *datar);
 char				*trim(char *s);
 bool				is_valid_double(const char *str);
 char				*remove_spaces_tabs(char *str);
-bool				is_valid_vector3d(const char *str);
 char				*validate_camera(char *str, t_data *data);
 bool				is_valid_vector3d(const char *str);
 char				*validate_light(char *str, t_data *data);
@@ -309,9 +311,12 @@ bool				is_valid_fov(const char *str);
 char				*take_vector(char *input);
 char				*ft_strjoin_free(char *s1, const char *s2);
 void				*ft_realloc(void *ptr, size_t old_size, size_t new_size);
-size_t				mat_size(char **m); 
+size_t				mat_size(char **m);
 void				free_matrix(char **matrix);
-int					free_data(t_data *data);  
+int					free_data(t_data *data);
 int					essential_tokens(char **matriz);
+int					ft_isspace(char c);
+long				ft_strtol(const char *nptr, char **endptr, int base);
+char				*ft_strndup(const char *s, size_t n);
 
 #endif

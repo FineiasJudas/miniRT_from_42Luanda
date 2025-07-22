@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 12:40:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 12:24:02 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:38:07 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool	has_valid_vector_format(const char *str)
 			commas++;
 		i++;
 	}
-	if (commas != 2 || str[0] == ',' || str[len - 1] == ',' || strstr(str,
+	if (commas != 2 || str[0] == ',' || str[len - 1] == ',' || ft_strstr(str,
 			",,"))
 		return (false);
 	return (true);
@@ -98,7 +98,7 @@ char	*validate_camera(char *str, t_data *data)
 	char	*direction;
 	char	*fov;
 
-	tmp = trim(strchr(str, 'C') + 1);
+	tmp = trim(ft_strchr(str, 'C') + 1);
 	if (!parse_camera_components(tmp, &origin, &direction, &fov))
 	{
 		return (NULL);
@@ -114,5 +114,6 @@ char	*validate_camera(char *str, t_data *data)
 	data->invalid_line = 1;
 	free(origin);
 	free(direction);
+	fprintf(stderr, "Dado inválido em câmera\n");
 	return (NULL);
 }

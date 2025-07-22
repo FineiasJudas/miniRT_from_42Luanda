@@ -45,7 +45,7 @@ static char	*pegar_linha(char *frase)
 	if (!frase[i])
 		return (NULL);
 	while (frase[i] && frase[i] != '\n')
-		i ++;
+		i++;
 	salvo = (char *)malloc(sizeof(char) * (i + 2));
 	if (!salvo)
 		return (NULL);
@@ -53,12 +53,12 @@ static char	*pegar_linha(char *frase)
 	while (frase[i] && frase[i] != '\n')
 	{
 		salvo[i] = frase[i];
-		i ++;
+		i++;
 	}
 	if (frase[i] == '\n')
 	{
 		salvo[i] = frase[i];
-		i ++;
+		i++;
 	}
 	salvo[i] = '\0';
 	return (salvo);
@@ -72,7 +72,7 @@ static char	*salvar_resto(char *frase)
 
 	i = 0;
 	while (frase[i] && frase[i] != '\n')
-		i ++;
+		i++;
 	if (!frase[i])
 	{
 		free(frase);
@@ -81,7 +81,7 @@ static char	*salvar_resto(char *frase)
 	salvo = (char *)malloc(sizeof(char) * (m_strlen(frase) - i + 1));
 	if (!salvo)
 		return (NULL);
-	i ++;
+	i++;
 	j = 0;
 	while (frase[i])
 		salvo[j++] = frase[i++];

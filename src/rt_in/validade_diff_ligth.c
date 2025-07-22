@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:27:58 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 11:28:15 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:37:47 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ bool	is_valid_brightness(const char *str)
 
 	if (!is_valid_double(str))
 		return (false);
-	brightness = strtod(str, &endptr);
+	brightness = my_strtod(str, &endptr);
 	if (brightness < 0.0 || brightness > 1.0)
-		return (false);
+		return (fprintf(stderr,
+				"A intensidade da luz deve estar entre 0.0 e 1.0\n"), false);
 	return (true);
 }
 
@@ -31,7 +32,7 @@ char	*extract_brightness_component(char *str)
 	char	*brightness;
 
 	i = 0;
-	while (str[i] && !isspace(str[i]))
+	while (str[i] && !ft_isspace(str[i]))
 		i++;
 	brightness = malloc(sizeof(char) * (i + 1));
 	if (!brightness)
@@ -72,7 +73,7 @@ char	*validate_light(char *str, t_data *data)
 	char	*brightness_p;
 	char	*rgb_p;
 
-	tmp[0] = trim(strchr(str, 'L') + 1);
+	tmp[0] = trim(ft_strchr(str, 'L') + 1);
 	position_p = take_vector(tmp[0]);
 	if (!position_p)
 		return (NULL);
@@ -88,5 +89,6 @@ char	*validate_light(char *str, t_data *data)
 		free(brightness_p);
 		return (tmp[1]);
 	}
+	fprintf(stderr, "Dado inválido em luz difusa\n");
 	return (free(position_p), free(brightness_p), NULL);
 }

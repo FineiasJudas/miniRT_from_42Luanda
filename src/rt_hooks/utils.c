@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:10:35 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 15:01:43 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 12:48:16 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ void	cylinder_move(int keycode, t_cylinder *c, t_data *data)
 int	camera_move(int keycode, t_data *data)
 {
 	if (keycode == 'w')
-		data->camera->origin.z += 0.5;
-	else if (keycode == 's')
 		data->camera->origin.z -= 0.5;
+	else if (keycode == 's')
+		data->camera->origin.z += 0.5;
 	else if (keycode == 'd')
 		data->camera->origin.x += 0.5;
 	else if (keycode == 'a')

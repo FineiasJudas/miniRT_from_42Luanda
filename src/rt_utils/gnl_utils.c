@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:17:51 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 08:03:34 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:58:23 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ size_t	m_strlen(char *str)
 
 	i = 0;
 	while (str[i] != '\0')
-		i ++;
+		i++;
 	return (i);
 }
 
@@ -66,4 +66,26 @@ char	*m_strchr(char *s, int c)
 		i++;
 	}
 	return (0);
+}
+
+char	*ft_strndup(const char *s, size_t n)
+{
+	size_t	j;
+	size_t	i;
+	char	*dup;
+
+	i = 0;
+	while (s[i] && i < n)
+		i++;
+	dup = malloc(i + 1);
+	if (!dup)
+		return (NULL);
+	j = 0;
+	while (j < i)
+	{
+		dup[j] = s[j];
+		j++;
+	}
+	dup[i] = '\0';
+	return (dup);
 }

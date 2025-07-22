@@ -6,7 +6,7 @@
 #    By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/15 16:47:54 by fjilaias          #+#    #+#              #
-#    Updated: 2025/07/21 11:17:10 by fjilaias         ###   ########.fr        #
+#    Updated: 2025/07/22 12:32:24 by fjilaias         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRCS =  ./src/main.c \
 		./src/rt_in/validade_cylind.c \
 		./src/rt_in/validate_sphere.c \
 		./src/rt_utils/conv.c \
+		./src/rt_utils/conv_2.c \
 		./src/rt_utils/utils.c \
 		./src/rt_utils/vec_operations.c \
 		./src/rt_init/init.c \

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 08:43:07 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 15:26:01 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:39:47 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ char	*trim(char *s)
 {
 	char	*end;
 
-	while (isspace(*s))
+	while (ft_isspace(*s))
 		s++;
-	end = s + strlen(s) - 1;
-	while (end > s && isspace(*end))
+	end = s + ft_strlen(s) - 1;
+	while (end > s && ft_isspace(*end))
 		*end-- = '\0';
 	return (s);
 }
@@ -77,10 +77,10 @@ char	*validate_ambient(const char *str, t_data *data)
 	char	*brightness;
 	char	*rgb;
 
-	tmp = trim(strchr(str, 'A') + 1);
+	tmp = trim(ft_strchr(str, 'A') + 1);
 	if (!parse_ambient_components(tmp, &brightness, &rgb))
 		return (NULL);
-	if (is_valid_double(brightness) && is_valid_rgb(rgb))
+	if (is_valid_brightness(brightness) && is_valid_rgb(rgb))
 	{
 		out = build_ambient_output(brightness, rgb);
 		free(brightness);
@@ -88,5 +88,6 @@ char	*validate_ambient(const char *str, t_data *data)
 	}
 	data->invalid_line = 1;
 	free(brightness);
+	fprintf(stderr, "Dado inválido em luz ambiente\n");
 	return (NULL);
 }

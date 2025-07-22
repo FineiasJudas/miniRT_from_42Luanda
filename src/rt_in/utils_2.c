@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 11:12:57 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 15:57:03 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:36:19 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool	is_valid_rgb_component(const char *str)
 	char	*end;
 	long	num;
 
-	num = strtol(str, &end, 10);
+	num = ft_strtol(str, &end, 10);
 	return (*end == '\0' && num >= 0 && num <= 255);
 }
 
@@ -55,7 +55,7 @@ bool	valid_structure(const char *str)
 	len = ft_strlen(str);
 	if (str[0] == ',' || str[len - 1] == ',')
 		return (false);
-	if (strstr(str, ",,"))
+	if (ft_strstr(str, ",,"))
 		return (false);
 	return (true);
 }

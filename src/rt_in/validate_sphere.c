@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:52:19 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 12:24:09 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:23:49 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool	is_valid_fov(const char *str)
 
 	if (!is_valid_double(str))
 		return (false);
-	fov = strtod(str, &endptr);
+	fov = my_strtod(str, &endptr);
 	if (fov < 0.0 || fov > 180.0)
 		return (false);
 	return (true);
@@ -51,7 +51,7 @@ bool	parse_sphere_components(char *input, char **pos, char **ratio,
 		return (false);
 	next = trim(input + ft_strlen(*pos));
 	i = 0;
-	while (next[i] && !isspace(next[i]))
+	while (next[i] && !ft_isspace(next[i]))
 		i++;
 	*ratio = malloc(i + 1);
 	if (!*ratio)
@@ -84,7 +84,7 @@ char	*validate_sphere(char *str, t_data *data)
 	char	*ratio;
 	char	*rgb;
 
-	tmp = trim(strstr(str, "sp") + 2);
+	tmp = trim(ft_strstr(str, "sp") + 2);
 	if (!parse_sphere_components(tmp, &position, &ratio, &rgb))
 		return (NULL);
 	if (is_valid_vector3d(position) && is_valid_double(ratio)
@@ -98,5 +98,6 @@ char	*validate_sphere(char *str, t_data *data)
 	data->invalid_line = 1;
 	free(position);
 	free(ratio);
+	fprintf(stderr, "Dado inválido esfera\n");
 	return (NULL);
 }

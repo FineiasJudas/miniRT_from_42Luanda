@@ -47,8 +47,8 @@ void	*allocate_mem(size_t nmemb, size_t size)
 
 int	essential_tokens(char **matriz)
 {
-	int	i;
-	int alc[3];
+	int		i;
+	int		alc[3];
 	char	**tokens;
 
 	if (!matriz || (mat_size(matriz) < 3))
@@ -61,12 +61,12 @@ int	essential_tokens(char **matriz)
 	{
 		tokens = ft_split(matriz[i], ' ');
 		if (ft_strncmp(tokens[0], "A", 1) == 0)
-			alc[0] ++;
+			alc[0]++;
 		else if (ft_strncmp(tokens[0], "L", 1) == 0)
-			alc[1] ++;
+			alc[1]++;
 		else if (ft_strncmp(tokens[0], "C", 1) == 0)
-			alc[2] ++;
-		i ++;
+			alc[2]++;
+		i++;
 		free_matrix(tokens);
 	}
 	if (alc[0] == 1 && alc[1] == 1 && alc[2] == 1)

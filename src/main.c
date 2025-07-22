@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 11:30:11 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 14:01:58 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	main(int ac, char **av)
 	{
 		if (!is_a_rt_extension(av[1]) || parse_rt_file(av[1], &data) != 0
 			|| data.invalid_line)
-			return (fprintf(stderr, "Erro nos dados de entrada!\n"), 1);
+			return (fprintf(stderr, "Erro no arquivo de entrada!\n"), 1);
 	}
 	else
-		return (1 * fprintf(stderr, "Entrada errada\n"));
+		return (1 * fprintf(stderr, "Erro\nUse: ./miniRT 'arquivo.rt'\n"));
 	data.render = (t_render *)malloc(sizeof(t_render));
 	if (!data.render)
 		return (1 * fprintf(stderr, "Erro ao alocar memória para render\n"));

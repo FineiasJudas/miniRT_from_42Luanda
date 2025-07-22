@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:49:58 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 12:24:42 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:43:13 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ bool	is_valid_double(const char *str)
 {
 	char	*endptr;
 
-	strtod(str, &endptr);
+	my_strtod(str, &endptr);
 	if (endptr == str || *endptr != '\0')
-		return (false);
+		return (fprintf(stderr, "Há um valor double inválido\n"), false);
 	return (true);
 }
 
@@ -29,9 +29,9 @@ bool	is_valid_positive_double(const char *str)
 
 	if (!is_valid_double(str))
 		return (false);
-	value = strtod(str, &endptr);
+	value = my_strtod(str, &endptr);
 	if (value <= 0.0)
-		return (false);
+		return (fprintf(stderr, "Valor double não positivo\n"), false);
 	return (true);
 }
 
@@ -50,16 +50,16 @@ bool	parse_cylinder_components(char *input, char **center, char **normal,
 		return (false);
 	next = trim(next + ft_strlen(*normal));
 	i = 0;
-	while (next[i] && !isspace(next[i]))
+	while (next[i] && !ft_isspace(next[i]))
 		i++;
-	d_h_r[0] = strndup(next, i);
+	d_h_r[0] = ft_strndup(next, i);
 	if (!d_h_r[0])
 		return (false);
 	next = trim(next + i);
 	i = 0;
-	while (next[i] && !isspace(next[i]))
+	while (next[i] && !ft_isspace(next[i]))
 		i++;
-	d_h_r[1] = strndup(next, i);
+	d_h_r[1] = ft_strndup(next, i);
 	if (!d_h_r[1])
 		return (false);
 	return (d_h_r[2] = trim(next + i), d_h_r[2] != NULL);
@@ -92,7 +92,7 @@ char	*validate_cylinder(char *str, t_data *data)
 	char	*normal;
 	char	**d_h_r;
 
-	tmp = trim(strstr(str, "cy") + 2);
+	tmp = trim(ft_strstr(str, "cy") + 2);
 	d_h_r = (char **)malloc(sizeof(char *) * 3);
 	if (!parse_cylinder_components(tmp, &center, &normal, d_h_r))
 		return (NULL);

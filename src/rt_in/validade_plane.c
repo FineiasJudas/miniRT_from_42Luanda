@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:39:00 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 13:25:40 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:23:34 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char	*validate_plane(char *str, t_data *data)
 	char	*normal;
 	char	*rgb;
 
-	tmp = trim(strstr(str, "pl") + 2);
+	tmp = trim(ft_strstr(str, "pl") + 2);
 	if (!parse_plane_components(tmp, &pos, &normal, &rgb))
 		return (NULL);
 	if (is_valid_vector3d(pos) && is_valid_vector3d(normal)
@@ -105,5 +105,6 @@ char	*validate_plane(char *str, t_data *data)
 	data->invalid_line = 1;
 	free(pos);
 	free(normal);
+	fprintf(stderr, "Dado inválido em plano\n");
 	return (NULL);
 }
