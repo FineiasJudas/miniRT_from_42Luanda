@@ -273,7 +273,8 @@ void				collect_mem(void *content);
 void				*allocate_mem(size_t nmemb, size_t size);
 char				*ft_strstr(const char *haystack, const char *needle);
 void				collect_env_mem(char **env_table);
-double				my_strtod(const char *__restrict__ nptr, char **__restrict__ endptr);
+double				my_strtod(const char *__restrict__ nptr,
+						char **__restrict__ endptr);
 void				free_mem(t_list **list);
 t_list				**get_mem_address(void);
 t_vector			look_at(t_vector from, t_vector to);
