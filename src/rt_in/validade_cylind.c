@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:49:58 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 13:43:13 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/23 09:00:59 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,10 @@ char	*validate_cylinder(char *str, t_data *data)
 		free(normal);
 		free(d_h_r[0]);
 		free(d_h_r[1]);
-		free(d_h_r);
-		return (out);
+		return (free(d_h_r), out);
 	}
 	data->invalid_line = 1;
 	free(center);
+	fprintf(stderr, "Dado inválido no cilindro\n");
 	return (free(normal), free(d_h_r[0]), free(d_h_r[1]), free(d_h_r), NULL);
 }
