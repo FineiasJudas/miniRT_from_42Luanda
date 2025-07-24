@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:49:00 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/16 14:03:23 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:27:12 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	add_to_scene_list(t_list **list, void *element)
 	node = ft_lstnew(element);
 	if (!node)
 	{
-		fprintf(stderr, "Erro ao alocar memória para objeto\n");
+		printf("Erro ao alocar memória para objeto\n");
 		exit(1);
 	}
 	ft_lstadd_back(list, node);

@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:52:19 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 13:23:49 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:37:04 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ char	*validate_sphere(char *str, t_data *data)
 	tmp = trim(ft_strstr(str, "sp") + 2);
 	if (!parse_sphere_components(tmp, &position, &ratio, &rgb))
 		return (NULL);
-	if (is_valid_vector3d(position) && is_valid_double(ratio)
+	if (is_valid_vector3d(position) && is_valid_positive_double(ratio)
 		&& is_valid_rgb(rgb))
 	{
 		out = build_sphere_output(position, ratio, rgb);
@@ -98,6 +98,6 @@ char	*validate_sphere(char *str, t_data *data)
 	data->invalid_line = 1;
 	free(position);
 	free(ratio);
-	fprintf(stderr, "Dado inválido esfera\n");
+	printf("Dado inválido na esfera\n");
 	return (NULL);
 }

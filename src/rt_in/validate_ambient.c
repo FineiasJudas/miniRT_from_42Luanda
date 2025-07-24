@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 08:43:07 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 13:39:47 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:26:41 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,6 @@ char	*validate_ambient(const char *str, t_data *data)
 	}
 	data->invalid_line = 1;
 	free(brightness);
-	fprintf(stderr, "Dado inválido em luz ambiente\n");
+	printf("Dado inválido em luz ambiente\n");
 	return (NULL);
 }

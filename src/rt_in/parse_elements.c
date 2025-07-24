@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 10:11:18 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 12:59:39 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:23:11 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	parse_plane(char **tokens, t_data *plane)
 int	parse_sphere(char **tokens, t_data *scene)
 {
 	if (count_tokens(tokens) != 4)
-		printf("Formato inválido para esfera");
+		return (0 * printf("Formato inválido para esfera"));
 	if (!tokens[1] || !tokens[2] || !tokens[3])
 		return (0);
 	scene->sphere = (t_sphere *)malloc(sizeof(t_sphere));
