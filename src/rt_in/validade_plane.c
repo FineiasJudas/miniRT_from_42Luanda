@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:39:00 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 13:23:34 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:26:32 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,6 @@ char	*validate_plane(char *str, t_data *data)
 	data->invalid_line = 1;
 	free(pos);
 	free(normal);
-	fprintf(stderr, "Dado inválido em plano\n");
+	printf("Dado inválido em plano\n");
 	return (NULL);
 }

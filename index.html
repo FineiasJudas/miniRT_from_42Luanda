@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização de Reflexão de Luz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .scenario {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .scenario h2 {
+            margin-top: 0;
+            color: #64b5f6;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        
+        canvas {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            display: block;
+            margin: 20px 0;
+        }
+        
+        .description {
+            font-size: 0.9em;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-top: 15px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.8em;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #64b5f6, #42a5f5);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .animated {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualização de Reflexão de Luz</h1>
+        
+        <div class="scenarios">
+            <!-- Cenário 1: Plano Horizontal -->
+            <div class="scenario">
+                <h2>Cenário 1: Plano Horizontal</h2>
+                <canvas id="canvas1" width="300" height="300"></canvas>
+                <div class="description">
+                    Superfície plana com vetor normal vertical. O raio incidente e refletido formam ângulos iguais com a normal, demonstrando a lei da reflexão.
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6b6b;"></div>
+                        <span>Raio Incidente</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4ecdc4;"></div>
+                        <span>Raio Refletido</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffe66d;"></div>
+                        <span>Vetor Normal</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cenário 2: Esfera -->
+            <div class="scenario">
+                <h2>Cenário 2: Superfície Esférica</h2>
+                <canvas id="canvas2" width="300" height="300"></canvas>
+                <div class="description">
+                    Superfície curva onde o vetor normal varia conforme a posição. Múltiplos raios mostram como a curvatura afeta a reflexão.
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6b6b;"></div>
+                        <span>Raios Incidentes</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4ecdc4;"></div>
+                        <span>Raios Refletidos</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffe66d;"></div>
+                        <span>Vetores Normais</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cenário 3: Cilindro -->
+            <div class="scenario">
+                <h2>Cenário 3: Superfície Cilíndrica</h2>
+                <canvas id="canvas3" width="300" height="300"></canvas>
+                <div class="description">
+                    Superfície cilíndrica com normais perpendiculares à curvatura. A reflexão varia conforme a posição na superfície curva.
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6b6b;"></div>
+                        <span>Raios Incidentes</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4ecdc4;"></div>
+                        <span>Raios Refletidos</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffe66d;"></div>
+                        <span>Vetores Normais</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="startAnimation()">Animar Reflexões</button>
+            <button onclick="stopAnimation()">Parar Animação</button>
+            <button onclick="resetAnimation()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let animationId;
+        let time = 0;
+        let isAnimating = false;
+
+        function drawArrow(ctx, fromX, fromY, toX, toY, color, width = 2) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+            
+            // Arrow head
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            const headLength = 10;
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
+        }
+
+        function drawDashedLine(ctx, fromX, fromY, toX, toY, color, dashLength = 5) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            ctx.setLineDash([dashLength, dashLength]);
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawScenario1() {
+            const canvas = document.getElementById('canvas1');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw surface (horizontal line)
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(50, 200);
+            ctx.lineTo(250, 200);
+            ctx.stroke();
+            
+            // Surface label
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px Arial';
+            ctx.fillText('Superfície', 130, 220);
+            
+            const centerX = 150;
+            const centerY = 200;
+            
+            // Normal vector (pointing up)
+            drawArrow(ctx, centerX, centerY, centerX, centerY - 60, '#ffe66d', 3);
+            ctx.fillStyle = '#ffe66d';
+            ctx.fillText('Normal', centerX + 5, centerY - 65);
+            
+            // Incident ray (45 degrees from top-left)
+            const incidentEndX = centerX - 50;
+            const incidentEndY = centerY - 50;
+            drawArrow(ctx, incidentEndX - 40, incidentEndY - 40, centerX, centerY, '#ff6b6b', 3);
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillText('Incidente', incidentEndX - 60, incidentEndY - 25);
+            
+            // Reflected ray (45 degrees to top-right)
+            const reflectedEndX = centerX + 50;
+            const reflectedEndY = centerY - 50;
+            drawArrow(ctx, centerX, centerY, reflectedEndX + 40, reflectedEndY - 40, '#4ecdc4', 3);
+            ctx.fillStyle = '#4ecdc4';
+            ctx.fillText('Refletido', reflectedEndX + 20, reflectedEndY - 25);
+            
+            // Angle indicators
+            drawDashedLine(ctx, centerX - 30, centerY, centerX + 30, centerY, '#666666');
+            
+            // Angle labels
+            ctx.fillStyle = '#cccccc';
+            ctx.font = '10px Arial';
+            ctx.fillText('45°', centerX - 35, centerY - 15);
+            ctx.fillText('45°', centerX + 20, centerY - 15);
+        }
+
+        function drawScenario2() {
+            const canvas = document.getElementById('canvas2');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = 150;
+            const centerY = 150;
+            const radius = 80;
+            
+            // Draw sphere (circle)
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Multiple points on the sphere for demonstration
+            const angles = [0, Math.PI/4, Math.PI/2, 3*Math.PI/4, Math.PI];
+            
+            angles.forEach((angle, index) => {
+                const pointX = centerX + radius * Math.cos(angle);
+                const pointY = centerY + radius * Math.sin(angle);
+                
+                // Normal vector (pointing outward from center)
+                const normalEndX = pointX + 40 * Math.cos(angle);
+                const normalEndY = pointY + 40 * Math.sin(angle);
+                drawArrow(ctx, pointX, pointY, normalEndX, normalEndY, '#ffe66d', 2);
+                
+                // Incident ray (coming towards the surface)
+                const incidentStartX = pointX - 50 * Math.cos(angle - Math.PI/3);
+                const incidentStartY = pointY - 50 * Math.sin(angle - Math.PI/3);
+                drawArrow(ctx, incidentStartX, incidentStartY, pointX, pointY, '#ff6b6b', 2);
+                
+                // Calculate reflected ray direction
+                const reflectedAngle = 2 * angle - (angle - Math.PI/3);
+                const reflectedEndX = pointX + 50 * Math.cos(reflectedAngle);
+                const reflectedEndY = pointY + 50 * Math.sin(reflectedAngle);
+                drawArrow(ctx, pointX, pointY, reflectedEndX, reflectedEndY, '#4ecdc4', 2);
+            });
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px Arial';
+            ctx.fillText('Esfera', centerX - 15, centerY + radius + 20);
+        }
+
+        function drawScenario3() {
+            const canvas = document.getElementById('canvas3');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = 150;
+            const radius = 60;
+            
+            // Draw cylinder (vertical ellipse sides)
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, 150, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Points on the cylinder for demonstration
+            const angles = [-Math.PI/2, -Math.PI/4, 0, Math.PI/4, Math.PI/2];
+            
+            angles.forEach((angle) => {
+                const pointX = centerX + radius * Math.cos(angle);
+                const pointY = 150 + radius * Math.sin(angle);
+                
+                // Normal vector (perpendicular to surface, pointing outward)
+                const normalEndX = pointX + 40 * Math.cos(angle);
+                const normalEndY = pointY + 40 * Math.sin(angle);
+                drawArrow(ctx, pointX, pointY, normalEndX, normalEndY, '#ffe66d', 2);
+                
+                // Incident ray
+                const incidentAngle = angle + Math.PI/3;
+                const incidentStartX = pointX - 40 * Math.cos(incidentAngle);
+                const incidentStartY = pointY - 40 * Math.sin(incidentAngle);
+                drawArrow(ctx, incidentStartX, incidentStartY, pointX, pointY, '#ff6b6b', 2);
+                
+                // Reflected ray
+                const reflectedAngle = 2 * angle - incidentAngle;
+                const reflectedEndX = pointX + 40 * Math.cos(reflectedAngle);
+                const reflectedEndY = pointY + 40 * Math.sin(reflectedAngle);
+                drawArrow(ctx, pointX, pointY, reflectedEndX, reflectedEndY, '#4ecdc4', 2);
+            });
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px Arial';
+            ctx.fillText('Cilindro', centerX - 20, 260);
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            
+            time += 0.02;
+            
+            // Add subtle animation effects
+            drawScenario1();
+            drawScenario2();
+            drawScenario3();
+            
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function startAnimation() {
+            isAnimating = true;
+            document.querySelectorAll('canvas').forEach(canvas => {
+                canvas.classList.add('animated');
+            });
+            animate();
+        }
+
+        function stopAnimation() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            document.querySelectorAll('canvas').forEach(canvas => {
+                canvas.classList.remove('animated');
+            });
+        }
+
+        function resetAnimation() {
+            stopAnimation();
+            time = 0;
+            drawScenario1();
+            drawScenario2();
+            drawScenario3();
+        }
+
+        // Initial draw
+        window.addEventListener('load', () => {
+            drawScenario1();
+            drawScenario2();
+            drawScenario3();
+        });
+    </script>
+</body>
+</html>

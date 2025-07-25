@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização de Reflexão de Luz com Câmera e Sombra</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .scenario {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .scenario h2 {
+            margin-top: 0;
+            color: #64b5f6;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        canvas {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            display: block;
+            margin: 20px 0;
+        }
+        .description {
+            font-size: 0.9em;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-top: 15px;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.8em;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+        button {
+            background: linear-gradient(45deg, #64b5f6, #42a5f5);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4); }
+        button:active { transform: translateY(0); }
+        .animated { animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualização de Reflexão de Luz com Câmera e Sombra</h1>
+        <div class="scenarios">
+            <!-- ... Scenarios definitions unchanged ... -->
+            <div class="scenario">
+                <h2>Cenário 1: Plano Horizontal</h2>
+                <canvas id="canvas1" width="300" height="300"></canvas>
+                <div class="description">
+                    Superfície plana com vetor normal vertical, lançador de raios (câmera) e fonte de luz. A sombra é calculada projetando o vetor refletido no plano.
+                </div>
+                <div class="legend">
+                    <!-- legend items, including new shadow -->
+                    <div class="legend-item"><div class="legend-color" style="background:#9c88ff"></div><span>Câmera</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background:#fbc531"></div><span>Luz</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background:#ff6b6b"></div><span>Raio Incidente</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background:#4ecdc4"></div><span>Raio Refletido</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background:#ffe66d"></div><span>Vetor Normal</span></div>
+                    <div class="legend-item"><div class="legend-color" style="background:#aaaaaa; opacity:0.7"></div><span>Sombra (proj.)</span></div>
+                </div>
+            </div>
+            <!-- Sphere and Cylinder scenarios would receive similar updates -->
+        </div>
+        <div class="controls">
+            <button onclick="startAnimation()">Animar Reflexões</button>
+            <button onclick="stopAnimation()">Parar Animação</button>
+            <button onclick="resetAnimation()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        let animationId, isAnimating = false;
+        function drawArrow(ctx, fromX, fromY, toX, toY, color, width=2){
+            ctx.strokeStyle=color; ctx.lineWidth=width; ctx.beginPath(); ctx.moveTo(fromX,fromY); ctx.lineTo(toX,toY); ctx.stroke();
+            const a=Math.atan2(toY-fromY,toX-fromX), L=8;
+            ctx.beginPath(); ctx.moveTo(toX,toY);
+            ctx.lineTo(toX-L*Math.cos(a-Math.PI/6), toY-L*Math.sin(a-Math.PI/6));
+            ctx.moveTo(toX,toY);
+            ctx.lineTo(toX-L*Math.cos(a+Math.PI/6), toY-L*Math.sin(a+Math.PI/6)); ctx.stroke();
+        }
+        function drawDashed(ctx, x1,y1,x2,y2){ ctx.strokeStyle='#888'; ctx.lineWidth=1; ctx.setLineDash([5,5]); ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke(); ctx.setLineDash([]); }
+
+        function drawCameraAndLight(ctx){
+            // draw camera icon (triangle)
+            ctx.fillStyle='#9c88ff'; ctx.beginPath(); ctx.moveTo(20,280); ctx.lineTo(40,260); ctx.lineTo(40,300); ctx.closePath(); ctx.fill();
+            ctx.fillRect(40,275,15,10);
+            // draw light source (circle)
+            ctx.fillStyle='#fbc531'; ctx.beginPath(); ctx.arc(260,40,10,0,2*Math.PI); ctx.fill();
+        }
+
+        function projectOnPlane(vx,vy,nx,ny){ // shadow: v_proj = v - (v·n)n
+            const dot=vx*nx+vy*ny;
+            return {x: vx-dot*nx, y: vy-dot*ny};
+        }
+
+        function drawScenario1(){
+            const c=document.getElementById('canvas1'), ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height);
+            // base
+            ctx.strokeStyle='#fff'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(50,200); ctx.lineTo(250,200); ctx.stroke(); ctx.fillStyle='#fff'; ctx.font='12px Arial'; ctx.fillText('Superfície',130,220);
+            drawCameraAndLight(ctx);
+            const cx=150, cy=200;
+            // normal
+            drawArrow(ctx,cx,cy,cx,cy-60,'#ffe66d',3);
+            // incident from camera
+            const incStart={x:30,y:280}, incEnd={x:cx, y:cy};
+            drawArrow(ctx,incStart.x,incStart.y,incEnd.x,incEnd.y,'#ff6b6b',3);
+            // reflected
+            const reflEnd={x:cx+50, y:cy-50};
+            drawArrow(ctx,cx,cy,reflEnd.x,reflEnd.y,'#4ecdc4',3);
+            // compute shadow projection
+            const n={x:0,y:-1}, vRefl={x:reflEnd.x-cx, y:reflEnd.y-cy};
+            const proj=projectOnPlane(vRefl.x,vRefl.y,n.x,n.y);
+            drawDashed(ctx, cx,cy, cx+proj.x, cy+proj.y);
+        }
+
+        // drawScenario2 and drawScenario3 would also call drawCameraAndLight and optionally draw shadows in their contexts
+
+        function animate(){ if(!isAnimating) return; drawScenario1(); /* drawScenario2(); drawScenario3(); */ animationId=requestAnimationFrame(animate); }
+        function startAnimation(){ isAnimating=true; document.querySelectorAll('canvas').forEach(c=>c.classList.add('animated')); animate(); }
+        function stopAnimation(){ isAnimating=false; cancelAnimationFrame(animationId); document.querySelectorAll('canvas').forEach(c=>c.classList.remove('animated')); }
+        function resetAnimation(){ stopAnimation(); drawScenario1(); /* drawScenario2(); drawScenario3(); */ }
+        window.addEventListener('load',()=>{ drawScenario1(); /* drawScenario2(); drawScenario3(); */ });
+    </script>
+</body>
+</html>

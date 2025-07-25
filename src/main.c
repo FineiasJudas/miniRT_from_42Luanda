@@ -6,7 +6,7 @@
 /*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:56:40 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 08:32:17 by manandre         ###   ########.fr       */
+/*   Updated: 2025/07/25 08:34:44 by manandre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ int	is_a_rt_extension(char *filename)
 	if (filename[len - 3] == '.' && filename[len - 2] == 'r' && filename[len
 			- 1] == 't')
 		return (1);
-	fprintf(stderr, "O ficheiro %s não tem a extensão .rt\n", filename);
-	fprintf(stderr, "Por favor, use um ficheiro com a extensão .rt\n");
+	printf("O ficheiro %s não tem a extensão .rt\n", filename);
+	printf("Por favor, use um ficheiro com a extensão .rt\n");
 	return (0);
 }
 
@@ -54,13 +54,13 @@ int	main(int ac, char **av)
 	{
 		if (!is_a_rt_extension(av[1]) || parse_rt_file(av[1], &data) != 0
 			|| data.invalid_line)
-			return (fprintf(stderr, "Erro no arquivo de entrada!\n"), 1);
+			return (printf("Erro no arquivo de entrada!\n"), 1);
 	}
 	else
-		return (1 * fprintf(stderr, "Erro\nUse: ./miniRT 'arquivo.rt'\n"));
+		return (1 * printf("Erro\nUse: ./miniRT 'arquivo.rt'\n"));
 	data.render = (t_render *)malloc(sizeof(t_render));
 	if (!data.render)
-		return (1 * fprintf(stderr, "Erro ao alocar memória para render\n"));
+		return (1 * printf("Erro ao alocar memória para render\n"));
 	collect_mem(data.render);
 	data.mlx = mlx_init();
 	data.win = mlx_new_window(data.mlx, WIDTH, HEIGHT, "miniRT");

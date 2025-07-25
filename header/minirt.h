@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 13:44:06 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/25 08:34:11 by manandre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,5 +319,6 @@ int					essential_tokens(char **matriz);
 int					ft_isspace(char c);
 long				ft_strtol(const char *nptr, char **endptr, int base);
 char				*ft_strndup(const char *s, size_t n);
+bool				is_valid_positive_double(const char *str);
 
 #endif

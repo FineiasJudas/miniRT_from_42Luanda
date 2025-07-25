@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   conv.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
+/*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:49:00 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/16 14:03:23 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/25 10:23:29 by manandre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,9 @@ t_vector	conv_vector(char *str)
 	components = ft_split(str, ',');
 	if (!components || count_tokens(components) != 3)
 		printf("Coordenadas de vetor inválidas");
-	v.x = ft_atoi(components[0]);
-	v.y = ft_atoi(components[1]);
-	v.z = ft_atoi(components[2]);
+	v.x = my_strtod(components[0], NULL);
+	v.y = my_strtod(components[1], NULL);
+	v.z = my_strtod(components[2], NULL);
 	free_tokens(components);
 	return (v);
 }
@@ -99,7 +99,7 @@ void	add_to_scene_list(t_list **list, void *element)
 	node = ft_lstnew(element);
 	if (!node)
 	{
-		fprintf(stderr, "Erro ao alocar memória para objeto\n");
+		printf("Erro ao alocar memória para objeto\n");
 		exit(1);
 	}
 	ft_lstadd_back(list, node);

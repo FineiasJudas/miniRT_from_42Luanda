@@ -6,7 +6,7 @@
 /*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 08:17:56 by manandre         ###   ########.fr       */
+/*   Updated: 2025/07/25 09:33:54 by manandre         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	parse_camera(char **tokens, t_data *scene)
 	if (!scene->camera)
 		return (0);
 	collect_mem(scene->camera);
-	scene->camera->dir = vec_normalize(conv_vector(tokens[1]));
+	//scene->camera->dir = vec_normalize(conv_vector(tokens[1]));
 	if (scene->camera->dir.x == 0 && scene->camera->dir.y == 0
 		&& scene->camera->dir.z == 0)
 	{
@@ -33,8 +33,9 @@ int	parse_camera(char **tokens, t_data *scene)
 		scene->camera->dir.y *= -1;
 		scene->camera->dir.z *= -1;
 	}
-	scene->camera->dir = conv_vector(tokens[1]);
-	scene->camera->origin = conv_vector(tokens[2]);
+	//scene->camera->dir = conv_vector(tokens[1]);
+	scene->camera->dir = vec_normalize(conv_vector(tokens[2]));
+	scene->camera->origin = conv_vector(tokens[1]);
 	scene->camera->fov = ft_atoi(tokens[3]);
 	return (1);
 }

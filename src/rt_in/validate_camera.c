@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 12:40:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 13:38:07 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:26:48 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,6 @@ char	*validate_camera(char *str, t_data *data)
 	data->invalid_line = 1;
 	free(origin);
 	free(direction);
-	fprintf(stderr, "Dado inválido em câmera\n");
+	printf("Dado inválido em câmera\n");
 	return (NULL);
 }
