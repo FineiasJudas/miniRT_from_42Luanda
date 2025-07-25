@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:43:49 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 08:15:36 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/25 22:18:41 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	any_camera_moviment_key(int keycode)
 {
 	if (keycode == 119 || keycode == 115 || keycode == 97 || keycode == 100
 		|| keycode == 113 || keycode == 101 || keycode == 'j' || keycode == 'l'
-		|| keycode == 'i' || keycode == 'k')
+		|| keycode == 'i' || keycode == 'k' || keycode == 'v' || keycode == 'b')
 		return (1);
 	return (0);
 }

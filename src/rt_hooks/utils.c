@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:10:35 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 12:48:16 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/25 22:42:04 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ int	sphere_move(int keycode, t_sphere *s, t_data *data)
 	else if (keycode == 65364)
 		s->center.y -= 0.5;
 	else if (keycode == 'o')
-		s->radius += 0.5;
+		s->radius += 0.2;
 	else if (keycode == 'p')
-		s->radius -= 0.5;
+		s->radius -= 0.2;
 	else if (keycode == 'n')
 		s->center.z += 0.5;
 	else if (keycode == 'u')
@@ -73,9 +73,9 @@ void	cylinder_move(int keycode, t_cylinder *c, t_data *data)
 	else if (keycode == 65364)
 		c->center.y -= 0.5;
 	else if (keycode == 'o')
-		c->height += 0.5;
+		c->height += 0.3;
 	else if (keycode == 'p')
-		c->height -= 0.5;
+		c->height -= 0.3;
 	else if (keycode == 'u')
 		c->center.z -= 0.5;
 	else if (keycode == 'n')

@@ -78,7 +78,7 @@ int	cylinder_shadow_check(t_render *render, t_data *data)
 		diffuse_intensity = 0.0;
 	else
 		diffuse_intensity = fmax(0.0, vec_dot(render->normal,
-					render->light_dir));
+					render->light_dir)) * data->light->brightness;
 	render->color = ambient_light(&data->cylinder->color, diffuse_intensity,
 			data->ambient);
 	return (0);

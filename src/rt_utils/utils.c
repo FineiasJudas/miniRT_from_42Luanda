@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:26:36 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 09:05:57 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/25 22:21:31 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_vector	rotate_vector(t_data *data, t_vector v, char axis, double angle)
 	}
 	else if (axis == 'z')
 	{
+		printf("VB:::::::::::::: \n");
 		data->rot.r.x = v.x * data->rot.cos_a - v.y * data->rot.sin_a;
 		data->rot.r.y = v.x * data->rot.sin_a + v.y * data->rot.cos_a;
 		data->rot.r.z = v.z;

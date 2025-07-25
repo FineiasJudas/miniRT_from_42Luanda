@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 08:34:11 by manandre         ###   ########.fr       */
+/*   Updated: 2025/07/25 22:32:45 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ typedef struct s_data
 	char			*endptr;
 }					t_data;
 
+int					resize_window(int width, int height, t_data *data);
 char				*get_next_line(int fd);
 int					parse_rt_file(char *filename, t_data *scene);
 t_vector			conv_vector(char *str);

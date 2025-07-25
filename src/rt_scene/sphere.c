@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/21 09:34:18 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/25 21:35:42 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	sphere_shadow_check(t_render *render, t_data *data)
 		diffuse_intensity = 0.0;
 	else
 		diffuse_intensity = fmax(0.0, vec_dot(render->normal,
-					render->light_dir));
+					render->light_dir)) * data->light->brightness;
 	render->color = ambient_light(&data->sphere->color, diffuse_intensity,
 			data->ambient);
 	return (0);

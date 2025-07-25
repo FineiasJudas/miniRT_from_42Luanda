@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:26 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 13:23:29 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/25 22:09:21 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	shadow_planes_check(t_render *render, t_data *data)
 	in_shadow = 0;
 	dist_light = vec_dist(data->light->position, render->hit);
 	data->shadow_ray = (t_ray){vec_add(render->hit, vec_scale(render->normal,
-				0.001)), vec_normalize(render->light_dir)};
+				1e-4)), vec_normalize(render->light_dir)};
 	data->tmp = data->plane_l;
 	while (data->tmp)
 	{
@@ -54,7 +54,7 @@ int	plane_shadow_check(t_render *render, t_data *data)
 		diffuse_intensity = 0.0f;
 	else
 		diffuse_intensity = fmax(0.0, vec_dot(render->normal,
-					render->light_dir));
+					render->light_dir)) * data->light->brightness;
 	render->color = ambient_light(&data->plane->color, diffuse_intensity,
 			data->ambient);
 	return (0);
