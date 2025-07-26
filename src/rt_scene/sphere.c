@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/26 02:49:31 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 10:54:51 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,15 @@ int	shadow_spheres_check(t_render *render, t_data *data)
 
 	in_shadow = 0;
 	dist_light = vec_dist(data->light->position, render->hit);
-	data->shadow_ray = (t_ray){vec_add(render->hit, vec_scale(render->normal,
-				0.001)), vec_normalize(vec_sub(data->light->position,
-				render->hit))};
+	data->bias_offset = vec_scale(render->light_dir, data->bias);
+	data->shadow_ray.origin = vec_add(render->hit, data->bias_offset);
+	data->shadow_ray.direction = vec_normalize(render->light_dir);
 	data->tmp = data->sphere_l;
 	while (data->tmp)
 	{
 		data->s = (t_sphere *)data->tmp->content;
 		if (intersect_ray_sphere(data->shadow_ray, data->s, &t_sphere_shadow)
-			&& t_sphere_shadow > EPS && t_sphere_shadow < dist_light)
+			&& t_sphere_shadow > data->bias && t_sphere_shadow < dist_light)
 		{
 			in_shadow = 1;
 			break ;

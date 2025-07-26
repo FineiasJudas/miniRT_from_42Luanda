@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/26 02:56:27 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 10:41:53 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@ t_vector			vec_normalize(t_vector v);
 t_vector			vec_scale(t_vector v, float s);
 t_vector			vec_add(t_vector a, t_vector b);
 t_color				scale_color(t_color color, float factor);
-void				cylinder_normal(t_render *render, t_data *data, float t);
+void				cylinder_normal(t_render *render, t_data *data);
 t_color				ambient_light(t_color *src, double intensity,
 						t_ambient *ambient);
 int					get_ray_direction(int *xy, int width, int height,
