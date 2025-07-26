@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:10:35 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 22:42:04 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 01:10:02 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,35 +60,6 @@ int	sphere_move(int keycode, t_sphere *s, t_data *data)
 		s->center.z += 0.5;
 	render_scene(data);
 	return (0);
-}
-
-void	cylinder_move(int keycode, t_cylinder *c, t_data *data)
-{
-	if (keycode == 65361)
-		c->center.x -= 0.5;
-	else if (keycode == 65363)
-		c->center.x += 0.5;
-	else if (keycode == 65362)
-		c->center.y += 0.5;
-	else if (keycode == 65364)
-		c->center.y -= 0.5;
-	else if (keycode == 'o')
-		c->height += 0.3;
-	else if (keycode == 'p')
-		c->height -= 0.3;
-	else if (keycode == 'u')
-		c->center.z -= 0.5;
-	else if (keycode == 'n')
-		c->center.z += 0.5;
-	else if (keycode == 'x')
-		c->normalized = rotate_vector(data, c->normalized, 'x', 0.087);
-	else if (keycode == 'y')
-		c->normalized = rotate_vector(data, c->normalized, 'y', 0.087);
-	else if (keycode == 'z')
-		c->normalized = rotate_vector(data, c->normalized, 'z', 0.087);
-	c->normalized = vec_normalize(c->normalized);
-	print_log(2, data);
-	render_scene(data);
 }
 
 int	camera_move(int keycode, t_data *data)

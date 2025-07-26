@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:26 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 22:09:21 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 02:57:08 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,22 @@
 
 int	shadow_planes_check(t_render *render, t_data *data)
 {
-	float	plane;
+	float	plane_t;
 	float	dist_light;
 	int		in_shadow;
 
 	in_shadow = 0;
 	dist_light = vec_dist(data->light->position, render->hit);
-	data->shadow_ray = (t_ray){vec_add(render->hit, vec_scale(render->normal,
-				1e-4)), vec_normalize(render->light_dir)};
+	data->bias_offset = vec_scale(render->light_dir, data->bias);
+	data->shadow_ray.origin = vec_add(render->hit, data->bias_offset);
+	data->shadow_ray.direction = vec_normalize(render->light_dir);
 	data->tmp = data->plane_l;
 	while (data->tmp)
 	{
 		data->p = (t_plane *)data->tmp->content;
-		plane = intersect_ray_plane(&data->shadow_ray.origin,
+		plane_t = intersect_ray_plane(&data->shadow_ray.origin,
 				&data->shadow_ray.direction, data->p);
-		if (plane > EPS && plane < dist_light)
+		if (plane_t > data->bias && plane_t < dist_light)
 		{
 			in_shadow = 1;
 			break ;

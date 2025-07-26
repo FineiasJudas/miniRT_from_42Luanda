@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:48:53 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/17 14:41:27 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 02:56:32 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static void	aux_create_data(t_data *data)
 	data->img.height = 0;
 	data->invalid_line = 0;
 	data->matrix = NULL;
+	data->bias = (float)(0.00100000004749745131F);
 }
 
 void	create_data(t_data *data)

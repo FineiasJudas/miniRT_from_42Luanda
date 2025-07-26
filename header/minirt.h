@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 09:58:59 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 22:32:45 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 02:56:27 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,10 @@ typedef struct s_sphere
 	double			radius;
 	float			ts;
 	t_color			color;
+
+	float			sqrt_disc;
+	float			t0;
+	float			t1;
 }					t_sphere;
 
 typedef struct s_cylinder
@@ -204,6 +208,9 @@ typedef struct s_data
 	int				invalid_line;
 	char			**matrix;
 	char			*endptr;
+
+	t_vector		bias_offset;
+	float			bias;
 }					t_data;
 
 int					resize_window(int width, int height, t_data *data);

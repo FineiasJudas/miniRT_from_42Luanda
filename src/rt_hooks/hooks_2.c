@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:43:49 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 22:18:41 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 07:41:50 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,9 @@ int	any_object_moviment_key(int keycode)
 {
 	if (keycode == 65361 || keycode == 65363 || keycode == 65362
 		|| keycode == 65364 || keycode == 'u' || keycode == 'n'
-		|| keycode == 'x' || keycode == 'y' || keycode == 'z' || keycode == 'o'
-		|| keycode == 'p')
+		|| keycode == 'x' || keycode == 'y' || keycode == 'z'
+		|| keycode == 'o' || keycode == 'p' || keycode == 'b'
+		|| keycode == 'v')
 		return (1);
 	return (0);
 }

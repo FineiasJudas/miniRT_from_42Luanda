@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:47:45 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 22:14:00 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 02:57:40 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int	render_element(t_render *r, t_data *data, t_object_type type, float element)
 	if (type == SPHERE)
 	{
 		r->normal = vec_normalize(vec_sub(r->hit, data->sphere->center));
+		if (vec_dot(data->ray.direction, r->normal) > 0.0f)
+			r->normal = vec_scale(r->normal, -1.0f);
 		r->light_dir = vec_normalize(vec_sub(data->light->position, r->hit));
 		sphere_shadow_check(r, data);
 	}

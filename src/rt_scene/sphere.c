@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:42:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 21:35:42 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/26 02:49:31 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,19 +62,27 @@ int	sphere_shadow_check(t_render *render, t_data *data)
 
 int	intersect_ray_sphere(t_ray ray, t_sphere *s, float *t)
 {
+	t_vector	oc;
 	float		a;
 	float		b;
 	float		c;
 	float		disc;
-	t_vector	oc;
 
 	oc = vec_sub(ray.origin, s->center);
 	a = vec_dot(ray.direction, ray.direction);
-	b = 2.0 * vec_dot(oc, ray.direction);
+	b = 2.0f * vec_dot(oc, ray.direction);
 	c = vec_dot(oc, oc) - s->radius * s->radius;
 	disc = b * b - 4 * a * c;
-	if (disc < 0)
+	if (disc < 0.0f)
 		return (0);
-	*t = (-b - sqrtf(disc)) / (2.0 * a);
-	return (*t > 0);
+	s->sqrt_disc = sqrtf(disc);
+	s->t0 = (-b - s->sqrt_disc) / (2.0f * a);
+	s->t1 = (-b + s->sqrt_disc) / (2.0f * a);
+	if (s->t0 < EPS && s->t1 < EPS)
+		return (0);
+	if (s->t0 > EPS)
+		*t = s->t0;
+	else
+		*t = s->t1;
+	return (1);
 }
