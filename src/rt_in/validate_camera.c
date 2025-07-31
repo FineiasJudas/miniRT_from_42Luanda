@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 12:40:32 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/31 10:30:29 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 13:09:16 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool	is_valid_vector3d(const char *str)
 	char	*cleaned;
 
 	if (!has_valid_vector_format(str))
-		return (false);
+		return (printf("Error\nVector inválido\n"), false);
 	copy = ft_strdup(str);
 	if (!copy)
 		return (false);
@@ -52,7 +52,7 @@ bool	is_valid_vector3d(const char *str)
 		count++;
 		cleaned = trim(token);
 		if (!*cleaned || !is_valid_double(cleaned))
-			return (free(copy), printf("Error\nVector inválido\n"), false);
+			return (free(copy), false);
 		token = ft_strtok(NULL, ',');
 	}
 	free(copy);

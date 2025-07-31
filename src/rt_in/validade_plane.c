@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:39:00 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/31 10:24:59 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 13:36:16 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ char	*take_vector(char *input)
 		i_c[0]++;
 	}
 	if (i_c[1] != 2)
-		return (NULL);
+		return (ft_strdup(",,,,"));
 	vector = malloc(sizeof(char) * (i_c[0] + 1));
 	if (!vector)
 		return (NULL);
