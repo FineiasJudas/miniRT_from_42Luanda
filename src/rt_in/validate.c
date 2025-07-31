@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 15:46:36 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 21:39:48 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 11:55:48 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	valid_identifier(const char *tok, t_data *data)
 	else
 	{
 		data->invalid_line = 1;
-		printf("Linha inválida\n");
+		printf("Error\nLinha inválida\n");
 	}
 }
 

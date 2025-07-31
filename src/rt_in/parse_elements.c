@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_elements.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 10:11:18 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 10:12:47 by manandre         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:26:27 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	parse_plane(char **tokens, t_data *plane)
 int	parse_sphere(char **tokens, t_data *scene)
 {
 	if (count_tokens(tokens) != 4)
-		return (0 * printf("Formato inválido para esfera"));
+		return (0 * printf("Error\nFormato inválido para esfera"));
 	if (!tokens[1] || !tokens[2] || !tokens[3])
 		return (0);
 	scene->sphere = (t_sphere *)malloc(sizeof(t_sphere));
@@ -88,7 +88,7 @@ int	parse_light(char **tokens, t_data *light)
 	light->light->brightness = my_strtod(tokens[2], &light->endptr);
 	light->light->color = conv_color("255,255,255");
 	light->light_s->center = light->light->position;
-	light->light_s->radius = 0.2;
+	light->light_s->radius = 0.1;
 	light->light_s->color = light->light->color;
 	add_to_scene_list(&light->lights_l, light->light);
 	return (1);

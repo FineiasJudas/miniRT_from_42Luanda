@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   read_file.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 14:53:31 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 09:33:54 by manandre         ###   ########.fr       */
+/*   Updated: 2025/07/31 11:59:19 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	parse_camera(char **tokens, t_data *scene)
 	if (scene->camera->dir.x == 0 && scene->camera->dir.y == 0
 		&& scene->camera->dir.z == 0)
 	{
-		printf("Direção da câmera inválida\n");
+		printf("Error\nDireção da câmera inválida\n");
 		return (0);
 	}
 	if (scene->camera->dir.z < 0)

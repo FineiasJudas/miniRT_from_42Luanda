@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:52:19 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/24 15:37:04 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 11:54:59 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool	is_valid_fov(const char *str)
 		return (false);
 	fov = my_strtod(str, &endptr);
 	if (fov < 0.0 || fov > 180.0)
-		return (false);
+		return (printf("Error\nFOV inválido. Use 0 à 180\n"), false);
 	return (true);
 }
 

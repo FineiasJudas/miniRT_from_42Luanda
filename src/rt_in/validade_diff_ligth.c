@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:27:58 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/24 15:26:23 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 11:20:24 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@ bool	is_valid_brightness(const char *str)
 	char	*endptr;
 	double	brightness;
 
-	if (!is_valid_double(str))
+	if (!is_valid_positive_double(str))
 		return (false);
 	brightness = my_strtod(str, &endptr);
 	if (brightness < 0.0 || brightness > 1.0)
 		return (printf(
-				"A intensidade da luz deve estar entre 0.0 e 1.0\n"), false);
+				"Error\nA intensidade da luz é de 0.0 à 1.0\n"), false);
 	return (true);
 }
 

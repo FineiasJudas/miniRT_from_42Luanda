@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 15:49:58 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/24 15:26:01 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:01:37 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ bool	is_valid_double(const char *str)
 
 	my_strtod(str, &endptr);
 	if (endptr == str || *endptr != '\0')
-		return (printf("Há um valor double inválido\n"), false);
+		return (printf("Error\nValor double inválido\n"), false);
 	return (true);
 }
 
@@ -31,7 +31,7 @@ bool	is_valid_positive_double(const char *str)
 		return (false);
 	value = my_strtod(str, &endptr);
 	if (value <= 0.0)
-		return (printf("Valor double não positivo\n"), false);
+		return (printf("Error\nValor double não positivo\n"), false);
 	return (true);
 }
 

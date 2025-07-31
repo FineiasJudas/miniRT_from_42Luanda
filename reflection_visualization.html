@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Completo de Reflexão e Iluminação</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e, #16213e);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            background: linear-gradient(45deg, #64b5f6, #42a5f5, #29b6f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+            opacity: 0.8;
+            color: #b3e5fc;
+        }
+        
+        .scenarios {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .scenario {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            border: 1px solid rgba(100, 181, 246, 0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .scenario:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(100, 181, 246, 0.2);
+        }
+        
+        .scenario h2 {
+            margin-top: 0;
+            color: #64b5f6;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        canvas {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            background: radial-gradient(circle at center, rgba(20,20,40,0.8), rgba(10,10,25,0.9));
+            border: 2px solid rgba(100, 181, 246, 0.2);
+            display: block;
+            margin: 20px 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        
+        .description {
+            font-size: 0.95em;
+            line-height: 1.7;
+            opacity: 0.9;
+            margin-top: 20px;
+            text-align: center;
+            color: #e1f5fe;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+            font-size: 0.85em;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .legend-color {
+            width: 24px;
+            height: 4px;
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(255,255,255,0.3);
+        }
+        
+        .controls {
+            text-align: center;
+            margin-top: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #1976d2, #42a5f5, #64b5f6);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(25, 118, 210, 0.6);
+            background: linear-gradient(135deg, #1565c0, #1976d2, #42a5f5);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        .animated-glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(100, 181, 246, 0.5); }
+            to { box-shadow: 0 0 40px rgba(100, 181, 246, 0.8), 0 0 60px rgba(100, 181, 246, 0.4); }
+        }
+        
+        .info-panel {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(100, 181, 246, 0.2);
+        }
+        
+        .info-panel h3 {
+            color: #64b5f6;
+            margin-top: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema Completo de Reflexão e Iluminação</h1>
+        <p class="subtitle">Fonte de Luz • Vetores Normais • Reflexão • Câmera • Sombras</p>
+        
+        <div class="scenarios">
+            <!-- Cenário 1: Plano Horizontal -->
+            <div class="scenario">
+                <h2>🔲 Superfície Plana</h2>
+                <canvas id="canvas1" width="400" height="400"></canvas>
+                <div class="description">
+                    <strong>Sistema Fundamental de Reflexão:</strong><br>
+                    • <span style="color: #ffeb3b;">Fonte de luz</span> emite raios direcionais<br>
+                    • <span style="color: #9c27b0;">Vetor normal</span> aponta perpendicularmente à superfície plana<br>
+                    • <span style="color: #ff5722;">Raio incidente</span> atinge a superfície em ângulo específico<br>
+                    • <span style="color: #4caf50;">Raio refletido</span> segue a Lei da Reflexão: θᵢ = θᵣ<br>
+                    • <span style="color: #2196f3;">Câmera/olho</span> detecta apenas raios que chegam em sua direção<br>
+                    • <span style="color: #424242;">Sombra</span> formada pela obstrução da luz pelo objeto
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffeb3b;"></div>
+                        <span>Fonte Luz</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff5722;"></div>
+                        <span>Raio Luz</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4caf50;"></div>
+                        <span>Reflexão</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196f3;"></div>
+                        <span>Visão</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9c27b0;"></div>
+                        <span>Normal</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #424242;"></div>
+                        <span>Sombra</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cenário 2: Esfera -->
+            <div class="scenario">
+                <h2>🔮 Superfície Esférica</h2>
+                <canvas id="canvas2" width="400" height="400"></canvas>
+                <div class="description">
+                    <strong>Reflexão em Superfície Curva (Esférica):</strong><br>
+                    • <span style="color: #9c27b0;">Normais radiais</span> apontam do centro para fora em cada ponto<br>
+                    • <span style="color: #ff5722;">Múltiplos raios</span> incidem em diferentes ângulos na superfície<br>
+                    • <span style="color: #4caf50;">Reflexões divergentes</span> espalham-se em direções variadas<br>
+                    • <strong>Resultado:</strong> Iluminação difusa - partes claras (próximas à luz) e escuras (afastadas)<br>
+                    • <span style="color: #2196f3;">Câmera capta</span> apenas reflexões que chegam ao seu ponto de vista<br>
+                    • <span style="color: #424242;">Sombra circular</span> projetada no chão pela forma esférica
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffeb3b;"></div>
+                        <span>Fonte Luz</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff5722;"></div>
+                        <span>Raios Luz</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4caf50;"></div>
+                        <span>Reflexões</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196f3;"></div>
+                        <span>Visão</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9c27b0;"></div>
+                        <span>Normais</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #424242;"></div>
+                        <span>Sombra</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cenário 3: Cilindro -->
+            <div class="scenario">
+                <h2>🥤 Superfície Cilíndrica</h2>
+                <canvas id="canvas3" width="400" height="400"></canvas>
+                <div class="description">
+                    <strong>Reflexão em Superfície Cilíndrica (Vista Lateral):</strong><br>
+                    • <span style="color: #9c27b0;">Normais horizontais</span> perpendiculares às superfícies curvas laterais<br>
+                    • <strong>Curvatura unidirecional:</strong> curvo horizontalmente, reto verticalmente<br>
+                    • <span style="color: #ff5722;">Raios laterais</span> incidem nas superfícies curvas esquerda e direita<br>
+                    • <span style="color: #4caf50;">Reflexões direcionais</span> seguem padrão específico da geometria cilíndrica<br>
+                    • <strong>Efeito visual:</strong> Faixa de luz no meio, laterais mais escuras<br>
+                    • <span style="color: #424242;">Sombra alongada</span> característica da forma cilíndrica
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffeb3b;"></div>
+                        <span>Fonte Luz</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff5722;"></div>
+                        <span>Raios Luz</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4caf50;"></div>
+                        <span>Reflexões</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #2196f3;"></div>
+                        <span>Visão</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9c27b0;"></div>
+                        <span>Normais</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #424242;"></div>
+                        <span>Sombra</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button onclick="startAnimation()">▶️ Animar Sistema</button>
+            <button onclick="stopAnimation()">⏸️ Pausar</button>
+            <button onclick="resetVisualization()">🔄 Reiniciar</button>
+            <button onclick="toggleElements()">👁️ Toggle Elementos</button>
+            <button onclick="changeLightPosition()">💡 Mover Luz</button>
+        </div>
+        
+        <div class="info-panel">
+            <h3>💡 Conceitos Fundamentais Ilustrados</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div>
+                    <h4 style="color: #64b5f6; margin-bottom: 10px;">🔬 Física da Reflexão</h4>
+                    <p><strong>Lei da Reflexão:</strong> O ângulo de incidência sempre igual ao ângulo de reflexão (θᵢ = θᵣ)</p>
+                    <p><strong>Vetor Normal:</strong> Determina a orientação da superfície e controla a direção da reflexão</p>
+                    <p><strong>Fórmula:</strong> R = I - 2(I·N)N, onde I=incidente, N=normal, R=refletido</p>
+                </div>
+                
+                <div>
+                    <h4 style="color: #64b5f6; margin-bottom: 10px;">🎮 Aplicações Práticas</h4>
+                    <p><strong>Renderização 3D:</strong> Cálculo de iluminação realista em jogos e filmes</p>
+                    <p><strong>Ray Tracing:</strong> Simulação precisa de como a luz interage com objetos</p>
+                    <p><strong>Materiais:</strong> Diferentes superfícies (metal, vidro, plástico) usam estes princípios</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h4 style="color: #64b5f6; margin-bottom: 10px;">📊 Comparação das Geometrias</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+                        <strong>🔲 Plano</strong><br>
+                        • Normal constante<br>
+                        • Reflexão especular<br>
+                        • Espelho perfeito
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+                        <strong>🔮 Esfera</strong><br>
+                        • Normais radiais<br>
+                        • Reflexões divergentes<br>
+                        • Iluminação difusa
+                    </div>
+                    <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;">
+                        <strong>🥤 Cilindro</strong><br>
+                        • Normais perpendiculares<br>
+                        • Curvatura unidirecional<br>
+                        • Padrão de faixa
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let animationId;
+        let time = 0;
+        let isAnimating = false;
+        let showElements = {
+            light: true,
+            eye: true,
+            normals: true,
+            shadows: true,
+            reflections: true
+        };
+        let lightPosition = 0;
+
+        // Utility functions
+        function drawArrow(ctx, fromX, fromY, toX, toY, color, width = 2, style = 'solid') {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            
+            if (style === 'dashed') {
+                ctx.setLineDash([8, 4]);
+            }
+            
+            // Add glow effect
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 8;
+            
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+            
+            // Arrow head
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+            const headLength = 12;
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function drawLightSource(ctx, x, y, intensity = 1) {
+            if (!showElements.light) return;
+            
+            ctx.save();
+            
+            // Outer glow
+            const glowGradient = ctx.createRadialGradient(x, y, 0, x, y, 25);
+            glowGradient.addColorStop(0, `rgba(255, 235, 59, ${0.8 * intensity})`);
+            glowGradient.addColorStop(0.5, `rgba(255, 235, 59, ${0.4 * intensity})`);
+            glowGradient.addColorStop(1, 'rgba(255, 235, 59, 0)');
+            ctx.fillStyle = glowGradient;
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Light rays
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI * 2) / 8 + time * 0.5;
+                const rayLength = 15 + Math.sin(time * 2 + i) * 3;
+                const startX = x + Math.cos(angle) * 12;
+                const startY = y + Math.sin(angle) * 12;
+                const endX = x + Math.cos(angle) * rayLength;
+                const endY = y + Math.sin(angle) * rayLength;
+                
+                ctx.strokeStyle = '#ffeb3b';
+                ctx.lineWidth = 2;
+                ctx.shadowColor = '#ffeb3b';
+                ctx.shadowBlur = 5;
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+            }
+            
+            // Main light source
+            ctx.fillStyle = '#ffeb3b';
+            ctx.shadowColor = '#ffeb3b';
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Inner highlight
+            ctx.fillStyle = '#fff59d';
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.arc(x - 2, y - 2, 4, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function drawEye(ctx, x, y) {
+            if (!showElements.eye) return;
+            
+            ctx.save();
+            
+            // Eye glow
+            ctx.shadowColor = '#2196f3';
+            ctx.shadowBlur = 10;
+            
+            // Eye outline
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.ellipse(x, y, 16, 12, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Iris
+            ctx.fillStyle = '#1976d2';
+            ctx.shadowBlur = 5;
+            ctx.beginPath();
+            ctx.arc(x, y, 8, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Pupil
+            ctx.fillStyle = '#0d47a1';
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Highlight
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(x - 2, y - 2, 2, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+
+        function drawShadow(ctx, objectX, objectY, lightX, lightY, groundY, size = 30) {
+            if (!showElements.shadows) return;
+            
+            // Calculate shadow direction
+            const dx = objectX - lightX;
+            const dy = objectY - lightY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance === 0) return;
+            
+            const shadowLength = 80;
+            const shadowX = objectX + (dx / distance) * shadowLength;
+            const shadowY = groundY;
+            
+            ctx.save();
+            
+            // Shadow gradient
+            const shadowGradient = ctx.createRadialGradient(shadowX, shadowY, 0, shadowX, shadowY, size);
+            shadowGradient.addColorStop(0, 'rgba(0, 0, 0, 0.6)');
+            shadowGradient.addColorStop(0.7, 'rgba(0, 0, 0, 0.3)');
+            shadowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            ctx.fillStyle = shadowGradient;
+            ctx.beginPath();
+            ctx.ellipse(shadowX, shadowY, size, size * 0.3, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Shadow projection line
+            ctx.strokeStyle = 'rgba(66, 66, 66, 0.5)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(objectX, objectY);
+            ctx.lineTo(shadowX, shadowY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            ctx.restore();
+        }
+
+        function reflect(incidentX, incidentY, normalX, normalY) {
+            const dot = incidentX * normalX + incidentY * normalY;
+            return {
+                x: incidentX - 2 * dot * normalX,
+                y: incidentY - 2 * dot * normalY
+            };
+        }
+
+        function normalize(x, y) {
+            const length = Math.sqrt(x * x + y * y);
+            return { x: x / length, y: y / length };
+        }
+
+        function drawScenario1() {
+            const canvas = document.getElementById('canvas1');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = 200;
+            const centerY = 280;
+            const lightX = 120 + Math.sin(time + lightPosition) * 20;
+            const lightY = 140 + Math.cos(time + lightPosition) * 15;
+            const eyeX = 320;
+            const eyeY = 160;
+            
+            // Draw light source
+            drawLightSource(ctx, lightX, lightY);
+            
+            // Draw eye
+            drawEye(ctx, eyeX, eyeY);
+            
+            // Draw surface
+            ctx.save();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 4;
+            ctx.shadowColor = '#ffffff';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.moveTo(80, centerY);
+            ctx.lineTo(320, centerY);
+            ctx.stroke();
+            ctx.restore();
+            
+            // Surface normal
+            if (showElements.normals) {
+                drawArrow(ctx, centerX, centerY, centerX, centerY - 60, '#9c27b0', 3);
+            }
+            
+            // Light ray to surface
+            drawArrow(ctx, lightX, lightY, centerX, centerY, '#ff5722', 3);
+            
+            // Calculate reflection
+            const incident = normalize(centerX - lightX, centerY - lightY);
+            const normal = { x: 0, y: -1 };
+            const reflected = reflect(incident.x, incident.y, normal.x, normal.y);
+            
+            // Draw reflected ray
+            if (showElements.reflections) {
+                const reflectEndX = centerX + reflected.x * 90;
+                const reflectEndY = centerY + reflected.y * 90;
+                drawArrow(ctx, centerX, centerY, reflectEndX, reflectEndY, '#4caf50', 3);
+            }
+            
+            // Eye ray
+            drawArrow(ctx, eyeX, eyeY, centerX, centerY, '#2196f3', 2, 'dashed');
+            
+            // Draw shadow
+            drawShadow(ctx, centerX, centerY - 5, lightX, lightY, centerY + 50);
+            
+            // Labels
+            ctx.fillStyle = '#ffeb3b';
+            ctx.font = 'bold 11px Arial';
+            ctx.fillText('💡 LUZ', lightX - 15, lightY + 35);
+            
+            ctx.fillStyle = '#2196f3';
+            ctx.fillText('👁️ OLHO', eyeX - 15, eyeY + 35);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('SUPERFÍCIE PLANA', centerX - 40, centerY + 25);
+        }
+
+        function drawScenario2() {
+            const canvas = document.getElementById('canvas2');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = 200;
+            const centerY = 200;
+            const radius = 80;
+            const lightX = 100 + Math.sin(time + lightPosition) * 15;
+            const lightY = 120 + Math.cos(time + lightPosition) * 10;
+            const eyeX = 320;
+            const eyeY = 140;
+            
+            // Draw light source
+            drawLightSource(ctx, lightX, lightY, 0.8);
+            
+            // Draw eye
+            drawEye(ctx, eyeX, eyeY);
+            
+            // Draw sphere with gradient
+            ctx.save();
+            const sphereGradient = ctx.createRadialGradient(centerX - 20, centerY - 20, 0, centerX, centerY, radius);
+            sphereGradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+            sphereGradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.1)');
+            sphereGradient.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
+            ctx.fillStyle = sphereGradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#ffffff';
+            ctx.shadowBlur = 8;
+            ctx.stroke();
+            ctx.restore();
+            
+            // Multiple reflection points
+            const angles = [0, Math.PI/4, Math.PI/2, 3*Math.PI/4, Math.PI, 5*Math.PI/4];
+            
+            angles.forEach((angle, index) => {
+                const pointX = centerX + radius * Math.cos(angle);
+                const pointY = centerY + radius * Math.sin(angle);
+                
+                // Normal vector
+                if (showElements.normals) {
+                    const normalEndX = pointX + 40 * Math.cos(angle);
+                    const normalEndY = pointY + 40 * Math.sin(angle);
+                    drawArrow(ctx, pointX, pointY, normalEndX, normalEndY, '#9c27b0', 2);
+                }
+                
+                // Light ray
+                if (index % 2 === 0) {
+                    drawArrow(ctx, lightX, lightY, pointX, pointY, '#ff5722', 2);
+                    
+                    // Calculate and draw reflection
+                    if (showElements.reflections) {
+                        const incident = normalize(pointX - lightX, pointY - lightY);
+                        const normal = { x: Math.cos(angle), y: Math.sin(angle) };
+                        const reflected = reflect(incident.x, incident.y, normal.x, normal.y);
+                        
+                        const reflectEndX = pointX + reflected.x * 60;
+                        const reflectEndY = pointY + reflected.y * 60;
+                        drawArrow(ctx, pointX, pointY, reflectEndX, reflectEndY, '#4caf50', 2);
+                    }
+                }
+                
+                // Eye rays to some points
+                if (index % 3 === 0) {
+                    drawArrow(ctx, eyeX, eyeY, pointX, pointY, '#2196f3', 1.5, 'dashed');
+                }
+            });
+            
+            // Draw shadow
+            drawShadow(ctx, centerX, centerY + radius, lightX, lightY, centerY + radius + 60, 50);
+            
+            // Labels
+            ctx.fillStyle = '#ffeb3b';
+            ctx.font = 'bold 11px Arial';
+            ctx.fillText('💡 LUZ', lightX - 15, lightY + 30);
+            
+            ctx.fillStyle = '#2196f3';
+            ctx.fillText('👁️ OLHO', eyeX - 15, eyeY + 30);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('ESFERA', centerX - 20, centerY + radius + 90);
+        }
+
+        function drawScenario3() {
+            const canvas = document.getElementById('canvas3');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const centerX = 200;
+            const centerY = 200;
+            const cylinderWidth = 120;
+            const cylinderHeight = 160;
+            const lightX = 80 + Math.sin(time + lightPosition) * 15;
+            const lightY = 120 + Math.cos(time + lightPosition) * 10;
+            const eyeX = 340;
+            const eyeY = 140;
+            
+            // Draw light source
+            drawLightSource(ctx, lightX, lightY, 0.9);
+            
+            // Draw eye
+            drawEye(ctx, eyeX, eyeY);
+            
+            // Draw cylinder side view (rectangle with rounded ends)
+            ctx.save();
+            
+            // Main cylinder body
+            const cylinderLeft = centerX - cylinderWidth/2;
+            const cylinderRight = centerX + cylinderWidth/2;
+            const cylinderTop = centerY - cylinderHeight/2;
+            const cylinderBottom = centerY + cylinderHeight/2;
+            
+            // Cylinder gradient (left to right for cylindrical lighting)
+            const cylinderGradient = ctx.createLinearGradient(cylinderLeft, centerY, cylinderRight, centerY);
+            cylinderGradient.addColorStop(0, 'rgba(255, 255, 255, 0.05)');
+            cylinderGradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.2)');
+            cylinderGradient.addColorStop(0.4, 'rgba(255, 255, 255, 0.4)');
+            cylinderGradient.addColorStop(0.6, 'rgba(255, 255, 255, 0.3)');
+            cylinderGradient.addColorStop(0.8, 'rgba(255, 255, 255, 0.15)');
+            cylinderGradient.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
+            
+            // Draw cylinder body
+            ctx.fillStyle = cylinderGradient;
+            ctx.fillRect(cylinderLeft, cylinderTop, cylinderWidth, cylinderHeight);
+            
+            // Draw cylinder outline
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#ffffff';
+            ctx.shadowBlur = 8;
+            ctx.strokeRect(cylinderLeft, cylinderTop, cylinderWidth, cylinderHeight);
+            
+            // Draw top and bottom ellipses (to show it's a cylinder)
+            ctx.beginPath();
+            ctx.ellipse(centerX, cylinderTop, cylinderWidth/2, 15, 0, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.ellipse(centerX, cylinderBottom, cylinderWidth/2, 15, 0, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            ctx.restore();
+            
+            // Points along the curved surface for normals and reflections
+            const surfacePoints = [
+                { x: cylinderLeft, y: centerY - 40, normalAngle: Math.PI },      // Left side, upper
+                { x: cylinderLeft, y: centerY, normalAngle: Math.PI },           // Left side, center
+                { x: cylinderLeft, y: centerY + 40, normalAngle: Math.PI },      // Left side, lower
+                { x: cylinderRight, y: centerY - 40, normalAngle: 0 },          // Right side, upper
+                { x: cylinderRight, y: centerY, normalAngle: 0 },               // Right side, center
+                { x: cylinderRight, y: centerY + 40, normalAngle: 0 },          // Right side, lower
+            ];
+            
+            surfacePoints.forEach((point, index) => {
+                const pointX = point.x;
+                const pointY = point.y;
+                const normalAngle = point.normalAngle;
+                
+                // Normal vector (perpendicular to cylindrical surface)
+                if (showElements.normals) {
+                    const normalLength = 40;
+                    const normalEndX = pointX + normalLength * Math.cos(normalAngle);
+                    const normalEndY = pointY + normalLength * Math.sin(normalAngle);
+                    drawArrow(ctx, pointX, pointY, normalEndX, normalEndY, '#9c27b0', 2.5);
+                }
+                
+                // Light ray to surface points
+                if (index % 2 === 0) {
+                    drawArrow(ctx, lightX, lightY, pointX, pointY, '#ff5722', 2.5);
+                    
+                    // Calculate and draw reflection
+                    if (showElements.reflections) {
+                        const incident = normalize(pointX - lightX, pointY - lightY);
+                        const normal = { x: Math.cos(normalAngle), y: Math.sin(normalAngle) };
+                        const reflected = reflect(incident.x, incident.y, normal.x, normal.y);
+                        
+                        const reflectEndX = pointX + reflected.x * 60;
+                        const reflectEndY = pointY + reflected.y * 60;
+                        drawArrow(ctx, pointX, pointY, reflectEndX, reflectEndY, '#4caf50', 2.5);
+                    }
+                }
+                
+                // Eye rays to some points
+                if (index === 1 || index === 4) {
+                    drawArrow(ctx, eyeX, eyeY, pointX, pointY, '#2196f3', 2, 'dashed');
+                }
+            });
+                
+            
+            // Additional demonstration: show how normals are always perpendicular to curved surface
+            ctx.save();
+            ctx.strokeStyle = 'rgba(156, 39, 176, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+            
+            // Draw construction lines showing normal is perpendicular to surface
+            surfacePoints.forEach((point, index) => {
+                if (index < 3) { // Only for left side points
+                    const tangentY1 = point.y - 30;
+                    const tangentY2 = point.y + 30;
+                    ctx.beginPath();
+                    ctx.moveTo(point.x, tangentY1);
+                    ctx.lineTo(point.x, tangentY2);
+                    ctx.stroke();
+                }
+            });
+            
+            ctx.restore();
+            
+            // Draw shadow of cylinder
+            drawShadow(ctx, centerX, cylinderBottom, lightX, lightY, cylinderBottom + 60, 80);
+            
+            // Labels
+            ctx.fillStyle = '#ffeb3b';
+            ctx.font = 'bold 11px Arial';
+            ctx.fillText('💡 LUZ', lightX - 15, lightY + 30);
+            
+            ctx.fillStyle = '#2196f3';
+            ctx.fillText('👁️ OLHO', eyeX - 15, eyeY + 30);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('CILINDRO (Vista Lateral)', centerX - 45, cylinderBottom + 90);
+            
+            // Add explanatory text
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.font = '10px Arial';
+            ctx.fillText('Normais perpendiculares', cylinderLeft - 10, cylinderTop - 20);
+            ctx.fillText('à superfície curva', cylinderLeft - 10, cylinderTop - 8);
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            
+            time += 0.03;
+            
+            drawScenario1();
+            drawScenario2();
+            drawScenario3();
+            
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function startAnimation() {
+            isAnimating = true;
+            document.querySelectorAll('canvas').forEach(canvas => {
+                canvas.classList.add('animated-glow');
+            });
+            animate();
+        }
+
+        function stopAnimation() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            document.querySelectorAll('canvas').forEach(canvas => {
+                canvas.classList.remove('animated-glow');
+            });
+        }
+
+        function resetVisualization() {
+            stopAnimation();
+            time = 0;
+            lightPosition = 0;
+            showElements = {
+                light: true,
+                eye: true,
+                normals: true,
+                shadows: true,
+                reflections: true
+            };
+            drawScenario1();
+            drawScenario2();
+            drawScenario3();
+        }
+
+        function toggleElements() {
+            const keys = Object.keys(showElements);
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            showElements[randomKey] = !showElements[randomKey];
+            
+            drawScenario1();
+            drawScenario2();
+            drawScenario3();
+        }
+
+        function changeLightPosition() {
+            lightPosition += Math.PI / 4;
+            drawScenario1();
+            drawScenario2();
+            drawScenario3();
+        }
+
+        // Initial setup
+        window.addEventListener('load', () => {
+            // Add some initial animations to canvas
+            document.querySelectorAll('canvas').forEach(canvas => {
+                canvas.style.opacity = '0';
+                canvas.style.transition = 'opacity 1s ease-in-out';
+                setTimeout(() => {
+                    canvas.style.opacity = '1';
+                }, 100);
+            });
+            
+            // Draw initial state
+            setTimeout(() => {
+                drawScenario1();
+                drawScenario2();
+                drawScenario3();
+            }, 200);
+        });
+
+        // Add keyboard controls
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case ' ': // Spacebar
+                    e.preventDefault();
+                    if (isAnimating) {
+                        stopAnimation();
+                    } else {
+                        startAnimation();
+                    }
+                    break;
+                case 'r':
+                case 'R':
+                    resetVisualization();
+                    break;
+                case 't':
+                case 'T':
+                    toggleElements();
+                    break;
+                case 'l':
+                case 'L':
+                    changeLightPosition();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
+                

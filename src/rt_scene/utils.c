@@ -6,13 +6,12 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/30 07:52:28 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/15 15:25:23 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/29 10:44:32 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-// utilitário: distância ponto-a-ponto
 float	vec_dist(t_vector a, t_vector b)
 {
 	t_vector	d;

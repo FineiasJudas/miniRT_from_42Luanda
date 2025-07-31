@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_ambient.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: manandre <manandre@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 08:43:07 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/25 10:01:36 by manandre         ###   ########.fr       */
+/*   Updated: 2025/07/31 11:39:01 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ bool	parse_ambient_components(char *input, char **brightness, char **rgb)
 
 	i = 0;
 	while (isalnum(input[i]) || input[i] == '_' || input[i] == '.'
-		|| input[i] == ',')
+		|| input[i] == ',' || input[i] == '-' || input[i] == '+')
 		i++;
 	*brightness = malloc(i + 1);
 	if (!*brightness)

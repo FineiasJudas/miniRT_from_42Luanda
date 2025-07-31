@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 11:12:57 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/22 14:57:23 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 11:10:50 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ bool	valid_commas(const char *str)
 bool	is_valid_rgb(const char *str)
 {
 	if (!str || !valid_commas(str) || !valid_structure(str))
-		return (false);
-	return (validate_rgb_values(str));
+		return (printf("Error\nRGB inválido\n"), false);
+	if (validate_rgb_values(str))
+		return (true);
+	return (printf("Error\nRGB inválido\n"), false);
 }

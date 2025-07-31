@@ -6,7 +6,7 @@
 /*   By: fjilaias <fjilaias@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 15:10:35 by fjilaias          #+#    #+#             */
-/*   Updated: 2025/07/26 11:41:30 by fjilaias         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:18:29 by fjilaias         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,23 +41,23 @@ int	plane_move(int keycode, t_plane *p, t_data *data)
 int	sphere_move(int keycode, t_sphere *s, t_data *data)
 {
 	if (keycode == 65361)
-		s->center.x -= 0.5;
+		s->center.x -= 0.3;
 	else if (keycode == 65363)
-		s->center.x += 0.5;
+		s->center.x += 0.3;
 	else if (keycode == 65362)
-		s->center.y += 0.5;
+		s->center.y += 0.3;
 	else if (keycode == 65364)
-		s->center.y -= 0.5;
-	else if (keycode == 'o')
-		s->radius += 0.2;
+		s->center.y -= 0.3;
+	else if (keycode == 'o' && (s->radius - 0.1) >= 0.1)
+		s->radius -= 0.1;
 	else if (keycode == 'p')
-		s->radius -= 0.2;
+		s->radius += 0.1;
 	else if (keycode == 'n')
-		s->center.z += 0.5;
+		s->center.z += 0.3;
 	else if (keycode == 'u')
-		s->center.z -= 0.5;
+		s->center.z -= 0.3;
 	else if (keycode == 'n')
-		s->center.z += 0.5;
+		s->center.z += 0.3;
 	render_scene(data);
 	return (0);
 }
